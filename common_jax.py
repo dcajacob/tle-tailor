@@ -33,7 +33,7 @@ satellite = EarthSatellite(line1, line2, "APRIZESAT 10", ts)
 
 def create_sgp4_sat(elements, satellite, ops_mode="i"):
     """Createa new EarthSatellite object using the provided orbital elements and
-    additional parameters, like epoch from a seed EarthSatellite obkect
+    additional parameters, like epoch from a seed EarthSatellite object
 
     Args:
         elements (list): Orbital elements set

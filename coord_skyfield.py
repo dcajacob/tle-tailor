@@ -12,6 +12,16 @@ ts = load.timescale()
 
 
 def ITRF2TEME(time_stamps, ephemeris):
+    """Convert ephemeris from ITRF (ECEF) to TEME (SGP4 ECI)
+
+    Args:
+        ts (np.array): Array of UTC datetime objects
+        ephemeris (np.array): Array of epehemeris / position and velocity vectors in km and km/sec
+
+    Returns:
+        np.array: Array of state vectors in TEME
+    """
+
     temes = []
     for idx, timestamp in enumerate(time_stamps):
         r = Distance(km=ephemeris[idx][0])

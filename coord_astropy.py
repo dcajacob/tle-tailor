@@ -6,6 +6,16 @@ from astropy.coordinates import ITRS, TEME, CartesianDifferential, CartesianRepr
 from astropy import units as u
 
 def ITRF2TEME(ts, ephemeris):
+    """Convert ephemeris from ITRF (ECEF) to TEME (SGP4 ECI)
+
+    Args:
+        ts (np.array): Array of UTC datetime objects
+        ephemeris (np.array): Array of epehemeris / position and velocity vectors in km and km/sec
+
+    Returns:
+        np.array: Array of state vectors in TEME
+    """
+
     temes = []
     for idx, timestamp in enumerate(ts):
         t = Time(timestamp)
