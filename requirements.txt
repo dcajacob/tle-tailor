@@ -1,0 +1,14 @@
+arrow
+astropy
+jax
+jaxlib
+jedi
+matplotlib
+numpy
+pandas
+pyarrow
+pytz
+scipy
+sgp4
+skyfield
+spacetrack

@@ -1,0 +1,130 @@
+%General Mission Analysis Tool(GMAT) Script
+%Created: 2022-11-29 18:21:31
+
+
+%----------------------------------------
+%---------- Spacecraft
+%----------------------------------------
+
+Create Spacecraft Sat;
+GMAT Sat.DateFormat = UTCGregorian;
+GMAT Sat.Epoch = '1 Jan 2022 00:00:00.000';
+GMAT Sat.CoordinateSystem = EarthFixed;
+GMAT Sat.DisplayStateType = Cartesian;
+GMAT Sat.X = 7000;
+GMAT Sat.Y = 0;
+GMAT Sat.Z = 0;
+GMAT Sat.VX = 7;
+GMAT Sat.VY = 0;
+GMAT Sat.VZ = 0;
+GMAT Sat.DryMass = 15;
+GMAT Sat.Cd = 2.2;
+GMAT Sat.Cr = 1.8;
+GMAT Sat.DragArea = 0.2;
+GMAT Sat.SRPArea = 0.5;
+GMAT Sat.SPADDragScaleFactor = 1;
+GMAT Sat.SPADSRPScaleFactor = 1;
+GMAT Sat.NAIFId = -10000001;
+GMAT Sat.NAIFIdReferenceFrame = -9000001;
+GMAT Sat.OrbitColor = Red;
+GMAT Sat.TargetColor = Teal;
+GMAT Sat.OrbitErrorCovariance = [ 1e+70 0 0 0 0 0 ; 0 1e+70 0 0 0 0 ; 0 0 1e+70 0 0 0 ; 0 0 0 1e+70 0 0 ; 0 0 0 0 1e+70 0 ; 0 0 0 0 0 1e+70 ];
+GMAT Sat.CdSigma = 1e+70;
+GMAT Sat.CrSigma = 1e+70;
+GMAT Sat.Id = 'SatId';
+GMAT Sat.Attitude = CoordinateSystemFixed;
+GMAT Sat.SPADSRPInterpolationMethod = Bilinear;
+GMAT Sat.SPADSRPScaleFactorSigma = 1e+70;
+GMAT Sat.SPADDragInterpolationMethod = Bilinear;
+GMAT Sat.SPADDragScaleFactorSigma = 1e+70;
+GMAT Sat.ModelFile = 'aura.3ds';
+GMAT Sat.ModelOffsetX = 0;
+GMAT Sat.ModelOffsetY = 0;
+GMAT Sat.ModelOffsetZ = 0;
+GMAT Sat.ModelRotationX = 0;
+GMAT Sat.ModelRotationY = 0;
+GMAT Sat.ModelRotationZ = 0;
+GMAT Sat.ModelScale = 1;
+GMAT Sat.AttitudeDisplayStateType = 'Quaternion';
+GMAT Sat.AttitudeRateDisplayStateType = 'AngularVelocity';
+GMAT Sat.AttitudeCoordinateSystem = EarthMJ2000Eq;
+GMAT Sat.EulerAngleSequence = '321';
+
+
+
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel DefaultProp_ForceModel;
+GMAT DefaultProp_ForceModel.CentralBody = Earth;
+GMAT DefaultProp_ForceModel.PrimaryBodies = {Earth};
+GMAT DefaultProp_ForceModel.PointMasses = {Jupiter, Luna, Sun};
+GMAT DefaultProp_ForceModel.SRP = Off;
+GMAT DefaultProp_ForceModel.RelativisticCorrection = Off;
+GMAT DefaultProp_ForceModel.ErrorControl = RSSStep;
+GMAT DefaultProp_ForceModel.GravityField.Earth.Degree = 70;
+GMAT DefaultProp_ForceModel.GravityField.Earth.Order = 70;
+GMAT DefaultProp_ForceModel.GravityField.Earth.StmLimit = 100;
+GMAT DefaultProp_ForceModel.GravityField.Earth.PotentialFile = 'EGM96.cof';
+GMAT DefaultProp_ForceModel.GravityField.Earth.TideModel = 'None';
+GMAT DefaultProp_ForceModel.Drag.AtmosphereModel = JacchiaRoberts;
+GMAT DefaultProp_ForceModel.Drag.HistoricWeatherSource = 'ConstantFluxAndGeoMag';
+GMAT DefaultProp_ForceModel.Drag.PredictedWeatherSource = 'ConstantFluxAndGeoMag';
+GMAT DefaultProp_ForceModel.Drag.CSSISpaceWeatherFile = 'SpaceWeather-All-v1.2.txt';
+GMAT DefaultProp_ForceModel.Drag.SchattenFile = 'SchattenPredict.txt';
+GMAT DefaultProp_ForceModel.Drag.F107 = 150;
+GMAT DefaultProp_ForceModel.Drag.F107A = 150;
+GMAT DefaultProp_ForceModel.Drag.MagneticIndex = 3;
+GMAT DefaultProp_ForceModel.Drag.SchattenErrorModel = 'Nominal';
+GMAT DefaultProp_ForceModel.Drag.SchattenTimingModel = 'NominalCycle';
+GMAT DefaultProp_ForceModel.Drag.DragModel = 'Spherical';
+
+%----------------------------------------
+%---------- Propagators
+%----------------------------------------
+
+Create Propagator DefaultProp;
+GMAT DefaultProp.FM = DefaultProp_ForceModel;
+GMAT DefaultProp.Type = RungeKutta89;
+GMAT DefaultProp.InitialStepSize = 60;
+GMAT DefaultProp.Accuracy = 9.999999999999999e-12;
+GMAT DefaultProp.MinStep = 0.001;
+GMAT DefaultProp.MaxStep = 2700;
+GMAT DefaultProp.MaxStepAttempts = 50;
+GMAT DefaultProp.StopIfAccuracyIsViolated = true;
+
+%----------------------------------------
+%---------- Subscribers
+%----------------------------------------
+
+Create EphemerisFile EphemerisFile1;
+GMAT EphemerisFile1.UpperLeft = [ 0.07000000000000001 0.02549889135254989 ];
+GMAT EphemerisFile1.Size = [ 0.9971428571428571 0.9733924611973392 ];
+GMAT EphemerisFile1.RelativeZOrder = 107;
+GMAT EphemerisFile1.Maximized = true;
+GMAT EphemerisFile1.Spacecraft = Sat;
+GMAT EphemerisFile1.Filename = 'EphemerisFile_Sat.e';
+GMAT EphemerisFile1.FileFormat = STK-TimePosVel;
+GMAT EphemerisFile1.EpochFormat = UTCGregorian;
+GMAT EphemerisFile1.InitialEpoch = InitialSpacecraftEpoch;
+GMAT EphemerisFile1.FinalEpoch = FinalSpacecraftEpoch;
+GMAT EphemerisFile1.StepSize = IntegratorSteps;
+GMAT EphemerisFile1.Interpolator = Lagrange;
+GMAT EphemerisFile1.InterpolationOrder = 7;
+GMAT EphemerisFile1.CoordinateSystem = EarthFixed;
+GMAT EphemerisFile1.OutputFormat = LittleEndian;
+GMAT EphemerisFile1.IncludeCovariance = None;
+GMAT EphemerisFile1.WriteEphemeris = true;
+GMAT EphemerisFile1.DistanceUnit = Kilometers;
+GMAT EphemerisFile1.IncludeEventBoundaries = true;
+
+
+%----------------------------------------
+%---------- Mission Sequence
+%----------------------------------------
+
+BeginMissionSequence;
+Propagate DefaultProp(Sat) {Sat.ElapsedSecs = 345600.0};
