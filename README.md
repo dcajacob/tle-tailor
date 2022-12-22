@@ -67,4 +67,4 @@ These notebooks demonstrate the case where you have OPMs from your launch provid
     
 ### References:
 
- * This work relies heavily on previous work from David Vallado and Paul Crawford in their 2008 AIAA paper titled "SGP4 Orbit Determination" as well as their released C++ code. Dr. Vallado's textbook "Fundamentals of Astrodynamics and Applications" is also an excellent reference to further understand the Differential Corrector model.
+ * This work relies heavily on previous work from David Vallado and Paul Crawford in their 2008 AIAA paper titled "SGP4 Orbit Determination" as well as their released C++ code. Dr. Vallado's textbook "Fundamentals of Astrodynamics and Applications" is also an excellent reference to further understand the Differential Corrector model. https://celestrak.org/publications/AIAA/2008-6770/AIAA-2008-6770.pdf
