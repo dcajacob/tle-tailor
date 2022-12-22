@@ -15,6 +15,7 @@ def coarse_fit(satellite, rms_epsilon=0.002, debug=False):
 
     Based on some code I found on the internet. Unfortunately, I didn't properly document it at the time.
     I believe this code from Cees Bassa might be it or very similar: https://github.com/cbassa/sattools/blob/master/rv2tle.c
+    Or, more likely: rv2tle from https://github.com/cbassa/twoline/blob/master/twoline/twoline.py
 
     Args:
         satellite (EarthSatellite): Initial guess satellite object
