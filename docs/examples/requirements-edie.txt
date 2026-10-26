@@ -1,0 +1,2 @@
+# Optional receiver-log walkthrough only; not a TLE Tailor or docs-build dependency.
+novatel-edie==2.10.11

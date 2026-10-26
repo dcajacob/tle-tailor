@@ -1,0 +1,47 @@
+site_name: TLE Tailor
+site_url: !ENV [READTHEDOCS_CANONICAL_URL, 'https://tle-tailor.readthedocs.io/en/latest/']
+site_description: Fit SGP4 TLEs to predicted trajectories and supplied ephemerides
+docs_dir: docs
+strict: true
+theme:
+  name: readthedocs
+  highlightjs: false
+plugins:
+  - search
+hooks:
+  - docs/_site.py
+validation:
+  nav:
+    omitted_files: warn
+    not_found: warn
+    absolute_links: warn
+  links:
+    not_found: warn
+    absolute_links: warn
+    unrecognized_links: warn
+    anchors: warn
+nav:
+  - Home: index.md
+  - Quickstart: quickstart.md
+  - Installation: installation.md
+  - Walkthroughs:
+      - Deployment prediction: walkthrough-deployment.md
+      - GPS ephemeris: walkthrough-gps.md
+      - NovAtel EDIE logs: walkthrough-edie.md
+  - Inputs and examples:
+      - Deployment inputs: deployment.md
+      - Supplied ephemerides: ephemerides.md
+      - Scripts and notebooks: workflows.md
+      - Optional Space-Track: spacetrack.md
+  - Reference:
+      - Propagation API and frames: propagators.md
+      - GMAT Py models and data: gmatpy.md
+      - Advanced external GMAT: local_gmat.md
+      - Theory and validation method: theory.md
+  - Results and limits:
+      - Measured validation results: validation-results.md
+      - Accuracy and forecasting limits: accuracy.md
+      - Support: support.md
+  - Project:
+      - Changes: release-notes.md
+      - Redistribution and notices: redistribution.md

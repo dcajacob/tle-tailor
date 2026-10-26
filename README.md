@@ -1,72 +1,36 @@
+> **Documentation preview only:** This branch is based on the public 2022 source and carries upcoming-release documentation and example downloads. It is not an installable copy of the upcoming release. Commands below require the matching unreleased 0.1.0rc1 source; neither this documentation branch, public `main` nor PyPI provides those APIs.
+
 # TLE Tailor
 
-## TLE Tailor is a set of pure-python tools to generate Two Line Element Sets (TLEs) for Earth-orbiting satellites.
+Turn a predicted deployment orbit or supplied ephemeris into a **Two-Line Element set (TLE)** for SGP4 tracking software.
 
-Generating TLEs is more difficult than it seems. TLEs are mean to be used with the SGP4 orbit propagation model. SGP4 uses mean orbital elements, which are not the same as classical / keplerian / osculating orbital elements. This causes a lot of confusion for folks. There is no direct conversion from a state vector to a TLE. Rather, we must perform trajectory sampling and find a set of TLE elements that best fit the trajectory. To do this, we use non-linear leastsquares in a process called differential correction. Sounds scary right? Well, that's what this projectis meant to solve.
+For a launch-provider orbit, TLE Tailor uses the bundled **gmatpy** numerical propagator to generate a reference trajectory, then fits an **SGP4** model to it. You do not need to build or install GMAT separately.
 
-### Currently supported methods:
+## Get your first TLE
 
- * Generate a TLE from ephemeris (e.g. GPS data from a satellite)
- * Generate a TLE from a pre-launch or post-launch state vector
- * Shift the epoch time of a TLE
- * Match a TLE to a SpaceTrack TLE
+With [uv](https://docs.astral.sh/uv/getting-started/installation/) installed, open the downloaded project folder and run:
 
-### Why do I need this?
-
- * Confidently identify and contact your satellite after launch
-
-### How do I use this?
-
- * Before launch or shortly after, if you're given a predicted or measured state vector by your launch provider, you can make a TLE to simplify your LEOP tracking
- * If you make contact with your satellite and download some GPS data, you can use it to generate a TLE. This will allow you to confidently identify your satellite for 18 SDS
- * You can continue to make supplemental TLEs using your GPS data
-
-### Caveats:
-
- * This is a brand new project and although it works, there may be significant changes as time goes on
-
-### Future Work:
-
- * Additional ephemeris type supported, e.g. Range, Rate, Az, El, etc.
-   * This could potentially use measurements from operators' ground stations / strf https://github.com/cbassa/strf to generate a TLE
-
-### Notes:
-
- * Differential correction usually uses finite differencing to calculate the Jacobian of complex or black-box models. We might call SGP4 a gre-box, since we have the code (although the AFSPC version may be different). Finite differencing is a numerical method to dodge this complication and works great. But I have also implemented a neat way to automatically derive the analytical Jacobian using JAX's autograd capability. This can significantly speed up the calculations, although it incurs an upfront JIT compiling penalty, so it's best for cases where you're processing a lot of data or TLEs.
-
-### Instructions:
-
- * Some scripts use the SpaceTrack API. If you want to use that capability, you'll need an account with SpaceTrack. You will also need to set two environment variables, SPACETRACK_USER and SPACETRACK_PWD with your user name and password, respectively. I suggest creating a shell script that sets the values and then calling it with `source` to load the variables before running any of the scripts or notebooks.
-
-### Scripts and Notebooks:
-#### TLE -> TLE Proof of Concept
+```bash
+uv run tle-tailor example --output deployment.tle
 ```
-TLEFit - COE - FD.ipynb
-TLEFit - COE - JAX.ipynb
-TLEFit - EQN - FD.ipynb
-TLEFit - EQN - JAX.ipynb
-```
-    
-These notebooks are proofs of concept that recreate a TLE from an existing TLE after propagating it using the SGP4 algorithm. The COE-based examples us the Classical Orbital Elements (Keplerian) as the state to solve for. With the methods I use, this still works fairly well, but COEs have singularities which can complicate things. So, the EQN (Equinoctial) versions are also provided, which resolves the singularity problem. All other notebooks proceed with the Equinoctial versions. FD and JAX refere to Finite Difference, which calculates the Jacobian numerically and JAX, a library that can compute the Jacobian analytically using AutoDifferentiation. JAX can be significantly faster, but because it relies on a JIT, there is an upfront JIT cost, so it's best applied when working with many objects.
 
-#### Ephemeris (e.g. GPS) -> TLE
-```
-TLEFit - EQN - GPS FD - Icesat.ipynb
-TLEFit - EQN - GPS JAX - Icesat.ipynb
-TLEFit - EQN - GPS FD - GPS Sat.ipynb
-TLEFit - EQN - GPS JAX - GPS Sat.ipynb
-```
-        
-These notebooks extend the process further, by taking precision ephemeris and fitting a TLE to it. In general, the ephemeris will come from an on-board GPS receiver. However, other forms exist, but are not yet implemented, like Angles, Range, and Range Rates obtained from RADAR ranging. Two satellite examples are provided, including ICESat and a Geosynchronous satellite, both with ephemerides from Valldo's paper. We also check the fit of the solved TLE to published TLEs from SpaceTrack. If you have GPS data from your satellite after launch, this process can be used to help identify your satellite to 18 SDS.
+This offline demonstration uses editable **osculating Keplerian elements**, a declared UTC epoch and EarthMJ2000Eq frame. It fits a 12,000-second arc, prints position/velocity fit errors, and saves two TLE lines. Existing output files are never overwritten. The demo values are synthetic; use the [short quickstart](QUICKSTART.md) to substitute your provider's inputs.
 
-#### Pre orPost-Launch OPM -> TLE
-```
-GMAT OPM Prop FD Example.ipynb
-GMAT OPM Prop JAX Example.ipynb
-```
-    
-These notebooks demonstrate the case where you have OPMs from your launch provider prior to or just after launch. We take the state vector from the OPM, propagate it using a high precision orbit propagator (GMAT) to obtain an ephemeris. At this point, the process is similar to the the ICESat scripts, which fit a TLE to ephemeris. Once we have a TLE, if 18 SDS is already tracking objects from your launch, you can find which objects best fit your TLE. This can be used to help identify your stellite to 18 SDS. However, this really depends on the quality of the OPM vectors. Ideally, you would download some GPS data from your satellite and use the previous notebooks to get a better identification.
-    
-### References:
+Requires standard **CPython 3.14** and a compatible gmatpy wheel. TLE Tailor is currently tested on **Linux x86_64**; see [installation and platform support](docs/installation.md) before using another platform. This candidate is installed from its source folder, not a newly published TLE Tailor release.
 
- * This work relies heavily on previous work from David Vallado and Paul Crawford in their 2008 AIAA paper titled "SGP4 Orbit Determination" as well as their released C++ code. Dr. Vallado's textbook "Fundamentals of Astrodynamics and Applications" is also an excellent reference to further understand the Differential Corrector model. https://celestrak.org/publications/AIAA/2008-6770/AIAA-2008-6770.pdf
+## Use your own inputs
+
+- **Deployment prediction:** check the provider's epoch/time scale, reference frame, units and element/anomaly conventions. See [deployment inputs](docs/deployment.md). Osculating elements are not TLE mean elements.
+- **Already have ephemerides?** [Fit them directly](docs/ephemerides.md), without unnecessary propagation.
+- **Prefer notebooks?** [Examples](docs/workflows.md) separates Python implementations in `examples/scripts` from notebook companions in `examples/notebooks`, inside `tle_tailor/`.
+- **Optional online comparison:** [Space-Track](docs/spacetrack.md) uses a hidden password prompt and does not save credentials by default.
+
+A prelaunch TLE describes your supplied prediction and model assumptions. Fit residuals are not a guarantee of the actual or future orbit. Choose an appropriate interval, coordinate placeholder identifiers with your tracking partner, and update the TLE when measured orbit data become available. See [fit errors and limitations](docs/accuracy.md).
+
+Worked guides: [deployment prediction](docs/walkthrough-deployment.md), [GPS ephemeris](docs/walkthrough-gps.md), and [optional NovAtel EDIE logs](docs/walkthrough-edie.md).
+
+## More detail
+
+[Theory](docs/theory.md) · [Measured validation results](docs/validation-results.md) · [Propagation API and frames](docs/propagators.md) · [Advanced external GMAT](docs/local_gmat.md) · [Changes](docs/release-notes.md)
+
+The methods build on David Vallado and Paul Crawford's [SGP4 Orbit Determination](https://celestrak.org/publications/AIAA/2008-6770/AIAA-2008-6770.pdf). Project and upstream notices are in [LICENSE](LICENSE) and [NOTICE](NOTICE).

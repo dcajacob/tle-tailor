@@ -1,0 +1,2592 @@
+{
+  "schema_version": 1,
+  "updated_date_utc": "2026-10-26",
+  "units": {
+    "metric_name_suffix_km": "km",
+    "metric_name_suffix_km_s": "km/s",
+    "worker_elapsed_seconds": "s",
+    "time_scale": "UTC",
+    "comparison_frame": "TEME"
+  },
+  "scope": "Public aggregate measurements only; no raw observation states, credentials, host paths, full TLE catalogue or proprietary orbit inputs.",
+  "catalog_identification": {
+    "fitting_reference": "Vallado and Crawford 2008, AIAA 2008-6770, Section VI / Appendix C",
+    "fitting_catalog": {
+      "file": "TWOLINE.TXT",
+      "bytes": 12419,
+      "sha256": "1c25a9aea1ad06e1f230403c1eeb38970d7783797be0f2cd3725aa4dfb579ef3",
+      "lines": 211,
+      "tle_entries": 67,
+      "line2_entries": 67,
+      "unique_satellite_ids": 67,
+      "earliest_epoch_utc": "1968-11-28T17:13:59.993472+00:00",
+      "latest_epoch_utc": "2008-05-30T03:08:21.258240+00:00"
+    },
+    "appendix_c_identity": {
+      "paper_sha256": "7ace4cb49b894f80ba3022e42a7af97f027ff14241c8e1a68dc947e1d620f535",
+      "method": "pdftotext -layout; AppendixC only; whitespace-collapse each TLE line only",
+      "pdf_tle_lines": 134,
+      "catalog_tle_lines": 134,
+      "all_tle_lines_equal_after_whitespace_normalization": true,
+      "normalized_tle_sha256": "13f233f07991707995909fdcce879decefcd5adbab2db4f51d19c4e8cdaf301f"
+    },
+    "propagator_reference": "Vallado, Crawford, Hujsak and Kelso 2006, AIAA 2006-6753",
+    "propagation_catalog": {
+      "file": "SGP4-VER.TLE",
+      "bytes": 8616,
+      "sha256": "d246d1d9d768ace445a38a965713fa9ba52d80fd8a41a0502ff83d7acffe2881",
+      "lines": 110,
+      "tle_entries": 33,
+      "line2_entries": 33,
+      "unique_satellite_ids": 32,
+      "earliest_epoch_utc": "1980-08-17T07:06:40.136832+00:00",
+      "latest_epoch_utc": "2006-06-26T19:27:32.414976+00:00"
+    },
+    "general_2022_catalog": {
+      "file": "22335.txt",
+      "bytes": 7405466,
+      "sha256": "adc02ee3b2122248b6539434cee0c853acb5f6bd86d4c4685171b353760da441",
+      "lines": 143085,
+      "tle_entries": 47695,
+      "line2_entries": 47695,
+      "unique_satellite_ids": 22131,
+      "earliest_epoch_utc": "2022-11-07T08:42:32.850144+00:00",
+      "latest_epoch_utc": "2022-12-04T13:37:24.768192+00:00"
+    }
+  },
+  "appendix_c_subset": {
+    "measured_date_utc": "2026-10-26",
+    "protocol": {
+      "recorded_date_utc": "2026-10-26",
+      "dataset": "Vallado and Crawford 2008 Appendix C; TWOLINE.TXT verified against the paper after whitespace normalization",
+      "catalog_sha256": "1c25a9aea1ad06e1f230403c1eeb38970d7783797be0f2cd3725aa4dfb579ef3",
+      "catalog_case_count": 67,
+      "selected_case_count": 4,
+      "selected_ids": [
+        "06251",
+        "08195",
+        "24208",
+        "28129"
+      ],
+      "reference_model": "SGP4 2.27, WGS72, improved operation mode i",
+      "frame": "TEME",
+      "time_scale": "UTC",
+      "position_unit": "km",
+      "velocity_unit": "km/s",
+      "fit_count": 61,
+      "holdout_count": 31,
+      "sampling": "61 inclusive samples over one original TLE mean period P; 31 strictly future samples P + P/62 through 1.5P. Fit cadence P/60; hold-out cadence P/62. UTC datetimes are rounded to representable microseconds; reference states are generated at those actual epochs.",
+      "fit_options": {
+        "epoch_obs": 0,
+        "max_iter": 35,
+        "rms_epsilon": 0.002,
+        "lamda": 1.0,
+        "bstar": 1e-06,
+        "debug": false
+      },
+      "derivatives": "Central finite differences or JAX automatic differentiation in the existing ephemeris fitters",
+      "acceptance": "Existing solver criteria and maximum 35 iterations retained; every failure/nonconvergence reported. Physical errors are measurements, with no new error allowance. This candidate subset is not a full public/current relative gate.",
+      "execution_bounds": {
+        "worker_timeout_seconds": 45,
+        "overall_timeout_seconds": 165
+      },
+      "no_gmat": true,
+      "scope": "Four of 67 catalogue cases: SGP4 self-consistency fitting, separate from GMAT-generated and real-ephemeris fitting"
+    },
+    "versions": {
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "sgp4": "2.27",
+      "skyfield": "1.55",
+      "jax": "0.11.2",
+      "jaxlib": "0.11.2"
+    },
+    "python": "3.14.4",
+    "case_protocols": [
+      {
+        "catalog_id": "06251",
+        "description": "near-Earth moderate drag",
+        "epoch_utc": "2006-06-25T19:46:43.980096+00:00",
+        "source_tle_sha256": "63aba50db815f50b03045fdc980b5209c6f268edc3db0237ea2914b7e5f1d437",
+        "period_seconds": 5551.317496590891,
+        "fit_start_utc": "2006-06-25T19:46:43.980096+00:00",
+        "fit_end_utc": "2006-06-25T21:19:15.297593+00:00",
+        "holdout_start_utc": "2006-06-25T21:20:44.834972+00:00",
+        "holdout_end_utc": "2006-06-25T22:05:30.956341+00:00",
+        "fit_cadence_seconds": 92.52195827651485,
+        "holdout_cadence_seconds": 89.53737897727244,
+        "states_sha256": "6d8969921a1000771acf8afb3554aba17b0a975ef82e623e6af77ebcf70f61fe",
+        "fit_count": 61,
+        "holdout_count": 31
+      },
+      {
+        "catalog_id": "08195",
+        "description": "eccentric 12-hour resonant Molniya",
+        "epoch_utc": "2006-06-25T07:58:18.143616+00:00",
+        "source_tle_sha256": "ec998c978b4a0dc17d69edc46d77a0a176d6885c17fb2ec4fafa57404172d72d",
+        "period_seconds": 43094.12140670405,
+        "fit_start_utc": "2006-06-25T07:58:18.143616+00:00",
+        "fit_end_utc": "2006-06-25T19:56:32.265023+00:00",
+        "holdout_start_utc": "2006-06-25T20:08:07.331497+00:00",
+        "holdout_end_utc": "2006-06-26T01:55:39.325726+00:00",
+        "fit_cadence_seconds": 718.2353567784008,
+        "holdout_cadence_seconds": 695.0664743016782,
+        "states_sha256": "21c440def7d5acb26a198ca851f15c137b040ff90d9eeb7464e90de59c8b750c",
+        "fit_count": 61,
+        "holdout_count": 31
+      },
+      {
+        "catalog_id": "24208",
+        "description": "near-geosynchronous deep-space",
+        "epoch_utc": "2006-06-26T00:58:29.343360+00:00",
+        "source_tle_sha256": "efef0f3704f23d9ee8924bee9dd1dbe5e66aa2723a940350772af20299d2f8b8",
+        "period_seconds": 85732.95134275961,
+        "fit_start_utc": "2006-06-26T00:58:29.343360+00:00",
+        "fit_end_utc": "2006-06-27T00:47:22.294703+00:00",
+        "holdout_start_utc": "2006-06-27T01:10:25.084241+00:00",
+        "holdout_end_utc": "2006-06-27T12:41:48.770374+00:00",
+        "fit_cadence_seconds": 1428.882522379327,
+        "holdout_cadence_seconds": 1382.7895377864454,
+        "states_sha256": "2bd600c17d0e3f6e0f13237af773a0fd4e591f8b24f1529074a22426a874bd85",
+        "fit_count": 61,
+        "holdout_count": 31
+      },
+      {
+        "catalog_id": "28129",
+        "description": "GPS-like 12-hour non-resonant",
+        "epoch_utc": "2006-06-24T13:41:49.461503+00:00",
+        "source_tle_sha256": "9205839a00ca5e2638ae2628df78055d1744edb8a7dc96491c56fa2856351d29",
+        "period_seconds": 43078.78319668982,
+        "fit_start_utc": "2006-06-24T13:41:49.461503+00:00",
+        "fit_end_utc": "2006-06-25T01:39:48.244700+00:00",
+        "holdout_start_utc": "2006-06-25T01:51:23.063784+00:00",
+        "holdout_end_utc": "2006-06-25T07:38:47.636298+00:00",
+        "fit_cadence_seconds": 717.9797199448304,
+        "holdout_cadence_seconds": 694.8190838175777,
+        "states_sha256": "81490fe4aea802143c62076efb0279eb8884eed6b6ebd000e4bb6629805e7557",
+        "fit_count": 61,
+        "holdout_count": 31
+      }
+    ],
+    "results": [
+      {
+        "method": "fd",
+        "status": "converged",
+        "iterations": 4,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9999930936632321,
+          "residual_test": 0.9988229102739302
+        },
+        "weighted_sigma_diagnostic": 4.609423536529437e-08,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 1.0912903197644393e-11,
+            "position_max_km": 2.4370385302926046e-11,
+            "velocity_rms_km_s": 9.398716382303394e-15,
+            "velocity_max_km_s": 2.0591569550578068e-14,
+            "radial_position_rms_km": 4.301088192239676e-12,
+            "transverse_position_rms_km": 1.0016286092535415e-11,
+            "normal_position_rms_km": 5.158580000496869e-13
+          },
+          "holdout": {
+            "position_rms_km": 4.981848019829191e-11,
+            "position_max_km": 8.477503693291083e-11,
+            "velocity_rms_km_s": 5.4714320633263014e-14,
+            "velocity_max_km_s": 9.158794918365423e-14,
+            "radial_position_rms_km": 1.6144742616409583e-11,
+            "transverse_position_rms_km": 4.712635611924661e-11,
+            "normal_position_rms_km": 5.78631177382492e-13
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 0.0,
+            "position_max_km": 0.0,
+            "velocity_rms_km_s": 0.0,
+            "velocity_max_km_s": 0.0,
+            "radial_position_rms_km": 0.0,
+            "transverse_position_rms_km": 0.0,
+            "normal_position_rms_km": 0.0
+          },
+          "holdout": {
+            "position_rms_km": 0.0,
+            "position_max_km": 0.0,
+            "velocity_rms_km_s": 0.0,
+            "velocity_max_km_s": 0.0,
+            "radial_position_rms_km": 0.0,
+            "transverse_position_rms_km": 0.0,
+            "normal_position_rms_km": 0.0
+          }
+        },
+        "exported_tle_sha256": "07bf12ee2260c19427e92163eae77eb46750dcee879cebcef4e59e05e592acf4",
+        "input_id": "06251",
+        "module_source_sha256": "115e3b5710b366ab872da1a3f37160385c1fc63f89aeb6147bac6bef288cdadd",
+        "all_metrics_finite": true,
+        "gmatpy_imported": false,
+        "worker_elapsed_seconds": 0.34558178098814096,
+        "process_returncode": 0
+      },
+      {
+        "method": "jax",
+        "status": "converged",
+        "iterations": 4,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9999992299804668,
+          "residual_test": 0.9038135430988063
+        },
+        "weighted_sigma_diagnostic": 5.174725944417117e-09,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 1.2026169757982146e-11,
+            "position_max_km": 2.6020133192869193e-11,
+            "velocity_rms_km_s": 1.0976919270024748e-14,
+            "velocity_max_km_s": 2.8340688750136504e-14,
+            "radial_position_rms_km": 4.751481850948106e-12,
+            "transverse_position_rms_km": 1.1039681671106811e-11,
+            "normal_position_rms_km": 4.214354856243095e-13
+          },
+          "holdout": {
+            "position_rms_km": 5.26547572818469e-11,
+            "position_max_km": 1.068521414133258e-10,
+            "velocity_rms_km_s": 5.762650070179086e-14,
+            "velocity_max_km_s": 1.155556049981248e-13,
+            "radial_position_rms_km": 1.6691511726321898e-11,
+            "transverse_position_rms_km": 4.993612885255932e-11,
+            "normal_position_rms_km": 5.47664058397277e-13
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 0.0,
+            "position_max_km": 0.0,
+            "velocity_rms_km_s": 0.0,
+            "velocity_max_km_s": 0.0,
+            "radial_position_rms_km": 0.0,
+            "transverse_position_rms_km": 0.0,
+            "normal_position_rms_km": 0.0
+          },
+          "holdout": {
+            "position_rms_km": 0.0,
+            "position_max_km": 0.0,
+            "velocity_rms_km_s": 0.0,
+            "velocity_max_km_s": 0.0,
+            "radial_position_rms_km": 0.0,
+            "transverse_position_rms_km": 0.0,
+            "normal_position_rms_km": 0.0
+          }
+        },
+        "exported_tle_sha256": "07bf12ee2260c19427e92163eae77eb46750dcee879cebcef4e59e05e592acf4",
+        "input_id": "06251",
+        "module_source_sha256": "4bebffff27a09cd23c73a7c599e8430eaa6ffb4cb7e03803ae4bdcc7c67df76f",
+        "all_metrics_finite": true,
+        "gmatpy_imported": false,
+        "worker_elapsed_seconds": 5.779633290003403,
+        "process_returncode": 0
+      },
+      {
+        "method": "fd",
+        "status": "converged",
+        "iterations": 5,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9858088222691426,
+          "residual_test": 0.998618788112423
+        },
+        "weighted_sigma_diagnostic": 5.256953114602979e-08,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 4.553788334996742e-11,
+            "position_max_km": 1.575227035187237e-10,
+            "velocity_rms_km_s": 1.9566004200869715e-14,
+            "velocity_max_km_s": 6.726888855610763e-14,
+            "radial_position_rms_km": 2.1601178313445226e-11,
+            "transverse_position_rms_km": 3.84856815366127e-11,
+            "normal_position_rms_km": 1.1222309571938048e-11
+          },
+          "holdout": {
+            "position_rms_km": 5.174719004325322e-10,
+            "position_max_km": 9.538584491654306e-10,
+            "velocity_rms_km_s": 4.438409373696734e-14,
+            "velocity_max_km_s": 7.317113072226343e-14,
+            "radial_position_rms_km": 3.5991267467914137e-10,
+            "transverse_position_rms_km": 3.678140597109404e-10,
+            "normal_position_rms_km": 5.434014925926963e-11
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 2.2297277105062654e-09,
+            "position_max_km": 6.08934403078959e-09,
+            "velocity_rms_km_s": 9.135317753760661e-13,
+            "velocity_max_km_s": 3.820387616023261e-12,
+            "radial_position_rms_km": 1.201943690349797e-09,
+            "transverse_position_rms_km": 1.8780343689633857e-09,
+            "normal_position_rms_km": 1.984242958997272e-12
+          },
+          "holdout": {
+            "position_rms_km": 2.6130285149840682e-09,
+            "position_max_km": 3.92391093888935e-09,
+            "velocity_rms_km_s": 3.886101165410978e-13,
+            "velocity_max_km_s": 9.260004403984053e-13,
+            "radial_position_rms_km": 1.3738951697281508e-09,
+            "transverse_position_rms_km": 2.2226800508159227e-09,
+            "normal_position_rms_km": 4.845041013919333e-12
+          }
+        },
+        "exported_tle_sha256": "f07d77dbdd3ef019febff5dff7ee0d98b76cb3a7b5cf15298f9260d87c259cc4",
+        "input_id": "08195",
+        "module_source_sha256": "115e3b5710b366ab872da1a3f37160385c1fc63f89aeb6147bac6bef288cdadd",
+        "all_metrics_finite": true,
+        "gmatpy_imported": false,
+        "worker_elapsed_seconds": 0.3917555719963275,
+        "process_returncode": 0
+      },
+      {
+        "method": "jax",
+        "status": "not_converged",
+        "iterations": 35,
+        "termination": {
+          "solution": false,
+          "dx_test": false,
+          "convergence_test": 0.30988836480199305,
+          "residual_test": 0.4899868001108064
+        },
+        "weighted_sigma_diagnostic": 6.002999725576769e-07,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 1.523840349958871e-08,
+            "position_max_km": 3.459983091191817e-08,
+            "velocity_rms_km_s": 9.016035516667331e-12,
+            "velocity_max_km_s": 1.4851323282067407e-11,
+            "radial_position_rms_km": 9.628165724689857e-09,
+            "transverse_position_rms_km": 1.181119116921801e-08,
+            "normal_position_rms_km": 5.593888067700537e-11
+          },
+          "holdout": {
+            "position_rms_km": 3.5732794581097427e-07,
+            "position_max_km": 6.778726563577503e-07,
+            "velocity_rms_km_s": 2.979780767177919e-11,
+            "velocity_max_km_s": 4.9556886886729196e-11,
+            "radial_position_rms_km": 2.5169593733335526e-07,
+            "transverse_position_rms_km": 2.536383532915624e-07,
+            "normal_position_rms_km": 4.1556213206913435e-11
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 6.98326074229735e-07,
+            "position_max_km": 1.8940629428642839e-06,
+            "velocity_rms_km_s": 2.8512359953051064e-10,
+            "velocity_max_km_s": 1.188591050237017e-09,
+            "radial_position_rms_km": 3.7744310725827085e-07,
+            "transverse_position_rms_km": 5.875338333750046e-07,
+            "normal_position_rms_km": 3.704061631905141e-11
+          },
+          "holdout": {
+            "position_rms_km": 8.215323101395419e-07,
+            "position_max_km": 1.2272115679440432e-06,
+            "velocity_rms_km_s": 1.220939795581856e-10,
+            "velocity_max_km_s": 2.8840266092959397e-10,
+            "radial_position_rms_km": 4.322966093499072e-07,
+            "transverse_position_rms_km": 6.985949980212587e-07,
+            "normal_position_rms_km": 8.299074433678547e-11
+          }
+        },
+        "exported_tle_sha256": "d40e69784e8f1f247f8431104f350811ed655fc913f9b4a8e1b3b7c1e021aa13",
+        "input_id": "08195",
+        "module_source_sha256": "4bebffff27a09cd23c73a7c599e8430eaa6ffb4cb7e03803ae4bdcc7c67df76f",
+        "all_metrics_finite": true,
+        "gmatpy_imported": false,
+        "worker_elapsed_seconds": 6.17127918600454,
+        "process_returncode": 1
+      },
+      {
+        "method": "fd",
+        "status": "converged",
+        "iterations": 3,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.99999833281139,
+          "residual_test": 0.9989418451359767
+        },
+        "weighted_sigma_diagnostic": 1.9085702519364432e-07,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 1.5971502038161077e-10,
+            "position_max_km": 3.9139388469034516e-10,
+            "velocity_rms_km_s": 1.1874685414619331e-14,
+            "velocity_max_km_s": 2.7656644965743596e-14,
+            "radial_position_rms_km": 1.2909990292302997e-10,
+            "transverse_position_rms_km": 9.237165764102605e-11,
+            "normal_position_rms_km": 1.7594876112426765e-11
+          },
+          "holdout": {
+            "position_rms_km": 1.9185891473236607e-09,
+            "position_max_km": 3.148075751184572e-09,
+            "velocity_rms_km_s": 1.3130974825761283e-13,
+            "velocity_max_km_s": 2.139788358032016e-13,
+            "radial_position_rms_km": 6.152398976469453e-10,
+            "transverse_position_rms_km": 1.8166642916913365e-09,
+            "normal_position_rms_km": 4.685120985762236e-11
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 1.4846215391301092e-09,
+            "position_max_km": 3.201227790241892e-09,
+            "velocity_rms_km_s": 1.0616796827703374e-13,
+            "velocity_max_km_s": 2.317866241813419e-13,
+            "radial_position_rms_km": 3.8705665687960297e-10,
+            "transverse_position_rms_km": 1.4332788102123415e-09,
+            "normal_position_rms_km": 3.331824348226015e-13
+          },
+          "holdout": {
+            "position_rms_km": 5.24507206748541e-09,
+            "position_max_km": 7.13875859928221e-09,
+            "velocity_rms_km_s": 3.800094515704105e-13,
+            "velocity_max_km_s": 5.181462358409053e-13,
+            "radial_position_rms_km": 8.478100120894603e-10,
+            "transverse_position_rms_km": 5.176098819130218e-09,
+            "normal_position_rms_km": 4.371673722445779e-13
+          }
+        },
+        "exported_tle_sha256": "e55d03de7c6023f12c7ef7d9a259668e116e9ac73af3acb3609affb80b70f163",
+        "input_id": "24208",
+        "module_source_sha256": "115e3b5710b366ab872da1a3f37160385c1fc63f89aeb6147bac6bef288cdadd",
+        "all_metrics_finite": true,
+        "gmatpy_imported": false,
+        "worker_elapsed_seconds": 0.29381208200356923,
+        "process_returncode": 0
+      },
+      {
+        "method": "jax",
+        "status": "converged",
+        "iterations": 4,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9947816563285797,
+          "residual_test": 0.9999742541311554
+        },
+        "weighted_sigma_diagnostic": 2.0172764291664583e-05,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 2.500956477234587e-09,
+            "position_max_km": 3.2048725984615933e-09,
+            "velocity_rms_km_s": 1.1852559309634645e-13,
+            "velocity_max_km_s": 1.3114403448720093e-13,
+            "radial_position_rms_km": 1.1321275508335306e-09,
+            "transverse_position_rms_km": 2.2299215240697264e-09,
+            "normal_position_rms_km": 2.2814604003927038e-11
+          },
+          "holdout": {
+            "position_rms_km": 1.40687448198709e-09,
+            "position_max_km": 2.4637613945357663e-09,
+            "velocity_rms_km_s": 9.998182121828633e-14,
+            "velocity_max_km_s": 1.9770046152031053e-13,
+            "radial_position_rms_km": 1.0726530870809558e-09,
+            "transverse_position_rms_km": 9.095450636975208e-10,
+            "normal_position_rms_km": 3.79333619075859e-11
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 1.4297753829274165e-09,
+            "position_max_km": 3.0531035139873305e-09,
+            "velocity_rms_km_s": 1.0223132800753761e-13,
+            "velocity_max_km_s": 2.207045902404954e-13,
+            "radial_position_rms_km": 3.738657737284524e-10,
+            "transverse_position_rms_km": 1.3800296728949018e-09,
+            "normal_position_rms_km": 3.616479730881377e-13
+          },
+          "holdout": {
+            "position_rms_km": 5.0476242477401576e-09,
+            "position_max_km": 6.875843414860871e-09,
+            "velocity_rms_km_s": 3.6567253009444297e-13,
+            "velocity_max_km_s": 4.988581314120651e-13,
+            "radial_position_rms_km": 8.207283615978136e-10,
+            "transverse_position_rms_km": 4.98045332458979e-09,
+            "normal_position_rms_km": 4.2944833094319107e-13
+          }
+        },
+        "exported_tle_sha256": "a23838260935d18f27e84ac9097bb5f9c07f0ffa3c2edf9bb3d5967a7b1a737b",
+        "input_id": "24208",
+        "module_source_sha256": "4bebffff27a09cd23c73a7c599e8430eaa6ffb4cb7e03803ae4bdcc7c67df76f",
+        "all_metrics_finite": true,
+        "gmatpy_imported": false,
+        "worker_elapsed_seconds": 5.804256383999018,
+        "process_returncode": 0
+      },
+      {
+        "method": "fd",
+        "status": "converged",
+        "iterations": 3,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9999985208083467,
+          "residual_test": 0.968360497023923
+        },
+        "weighted_sigma_diagnostic": 1.2938861360694354e-07,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 5.939061485645554e-10,
+            "position_max_km": 1.5801557673669834e-09,
+            "velocity_rms_km_s": 8.90581042631431e-14,
+            "velocity_max_km_s": 2.369465643533128e-13,
+            "radial_position_rms_km": 5.170935090644676e-10,
+            "transverse_position_rms_km": 2.919782847102003e-10,
+            "normal_position_rms_km": 9.354006834955085e-12
+          },
+          "holdout": {
+            "position_rms_km": 7.720183920256864e-09,
+            "position_max_km": 1.3029312092864241e-08,
+            "velocity_rms_km_s": 1.0501846147178177e-12,
+            "velocity_max_km_s": 1.7683530848951592e-12,
+            "radial_position_rms_km": 2.4782950295903016e-09,
+            "transverse_position_rms_km": 7.311572381992204e-09,
+            "normal_position_rms_km": 1.4241200423253219e-11
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 5.790910460531452e-09,
+            "position_max_km": 1.263599584574134e-08,
+            "velocity_rms_km_s": 8.261362425942618e-13,
+            "velocity_max_km_s": 1.8191209938247556e-12,
+            "radial_position_rms_km": 1.4963069351511952e-09,
+            "transverse_position_rms_km": 5.59425630006108e-09,
+            "normal_position_rms_km": 2.4427316555229397e-12
+          },
+          "holdout": {
+            "position_rms_km": 2.057406231441942e-08,
+            "position_max_km": 2.8266099266664542e-08,
+            "velocity_rms_km_s": 2.9602737131745185e-12,
+            "velocity_max_km_s": 4.083624768032039e-12,
+            "radial_position_rms_km": 3.3881346799842415e-09,
+            "transverse_position_rms_km": 2.0293165617354446e-08,
+            "normal_position_rms_km": 3.5685466062017534e-12
+          }
+        },
+        "exported_tle_sha256": "b1e919c24b07035def0520e199a4887408a808b76078c875a93ddd6ebc19f1cd",
+        "input_id": "28129",
+        "module_source_sha256": "115e3b5710b366ab872da1a3f37160385c1fc63f89aeb6147bac6bef288cdadd",
+        "all_metrics_finite": true,
+        "gmatpy_imported": false,
+        "worker_elapsed_seconds": 0.29119869400165044,
+        "process_returncode": 0
+      },
+      {
+        "method": "jax",
+        "status": "converged",
+        "iterations": 4,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.998026351711868,
+          "residual_test": 0.95833079366271
+        },
+        "weighted_sigma_diagnostic": 4.213982186695743e-06,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 2.226696814913392e-08,
+            "position_max_km": 6.004968979697049e-08,
+            "velocity_rms_km_s": 3.3184283417704272e-12,
+            "velocity_max_km_s": 8.988891195384606e-12,
+            "radial_position_rms_km": 1.9554438262281166e-08,
+            "transverse_position_rms_km": 1.065089391876507e-08,
+            "normal_position_rms_km": 1.6538814714136742e-11
+          },
+          "holdout": {
+            "position_rms_km": 2.9127125278945157e-07,
+            "position_max_km": 4.911459004991753e-07,
+            "velocity_rms_km_s": 3.958273225545969e-11,
+            "velocity_max_km_s": 6.658798293427842e-11,
+            "radial_position_rms_km": 9.434056135303448e-08,
+            "transverse_position_rms_km": 2.755699560881815e-07,
+            "normal_position_rms_km": 2.2061020560153886e-11
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 2.1997612763543834e-07,
+            "position_max_km": 4.7637674968161445e-07,
+            "velocity_rms_km_s": 3.1379925203048705e-11,
+            "velocity_max_km_s": 6.857036522517486e-11,
+            "radial_position_rms_km": 5.691180477653275e-08,
+            "transverse_position_rms_km": 2.1248657148282712e-07,
+            "normal_position_rms_km": 1.2084447412200061e-11
+          },
+          "holdout": {
+            "position_rms_km": 7.817744815202416e-07,
+            "position_max_km": 1.072470298688357e-06,
+            "velocity_rms_km_s": 1.1248350998731582e-10,
+            "velocity_max_km_s": 1.5494156620403348e-10,
+            "radial_position_rms_km": 1.2882712600277845e-07,
+            "transverse_position_rms_km": 7.710868370082635e-07,
+            "normal_position_rms_km": 3.680623164460659e-11
+          }
+        },
+        "exported_tle_sha256": "5de97f89637a9e065c6a0432220a593dc0712100063ae429e0c994d128027962",
+        "input_id": "28129",
+        "module_source_sha256": "4bebffff27a09cd23c73a7c599e8430eaa6ffb4cb7e03803ae4bdcc7c67df76f",
+        "all_metrics_finite": true,
+        "gmatpy_imported": false,
+        "worker_elapsed_seconds": 5.687199658990721,
+        "process_returncode": 0
+      }
+    ],
+    "status_counts": {
+      "converged": 7,
+      "not_converged": 1
+    },
+    "overall_elapsed_seconds": 26.47106824700313,
+    "complete_67_case_campaign": false,
+    "coverage": "Four of 67 cases, eight candidate fits; remaining 63 not measured in this bounded campaign",
+    "public_08195_jax_context": {
+      "public_revision": "b9c5de8e7cb5ee4a941c6fbbcb24f4d59c3e8c8f",
+      "same_payload": true,
+      "same_unchanged_options": true,
+      "public_status": "not_converged",
+      "candidate_status": "not_converged",
+      "same_iterations": true,
+      "public_iterations": 35,
+      "all_full_precision_and_exported_metrics_identical": true,
+      "same_termination": true,
+      "wall_elapsed_seconds": 8.284794944993337
+    },
+    "public_08195_jax_worker_elapsed_seconds": 8.019723562014406,
+    "runtime_scope": "Worker wall time includes imports/JIT, fit, full-precision and exported metric evaluation. It excludes reference generation and is not a performance benchmark."
+  },
+  "prior_measured_comparisons": {
+    "measured_date_utc": "2026-10-25",
+    "public_revision": "b9c5de8e7cb5ee4a941c6fbbcb24f4d59c3e8c8f",
+    "python": "3.14.4 (main, Aug 20 2026, 10:41:58) [GCC 15.2.0]",
+    "versions": {
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "sgp4": "2.27",
+      "skyfield": "1.55",
+      "jax": "0.11.2",
+      "jaxlib": "0.11.2",
+      "astropy": "8.0.1",
+      "gmatpy": "0.2.1"
+    },
+    "authored_case_manifest_sha256": "51b0730aca8a56cfca219ef33e2f006765e6e0bada68b32b28ac1bb27a53a8a7",
+    "authored_eqn": {
+      "epoch_utc": "2020-01-01T00:00:00+00:00",
+      "fit_options": {
+        "epoch_obs": 0,
+        "lamda": 1.0,
+        "max_iter": 35,
+        "rms_epsilon": 0.002,
+        "bstar": 1e-06,
+        "debug": false
+      },
+      "cases": [
+        {
+          "id": "leo",
+          "description": "Low Earth, near-circular, inclined",
+          "a_km": 7000.0,
+          "eccentricity": 0.001,
+          "inclination_deg": 51.6,
+          "raan_deg": 40.0,
+          "argp_deg": 30.0,
+          "mean_anomaly_deg": 20.0,
+          "bstar": 1e-05,
+          "fit_seconds": 12000,
+          "holdout_seconds": 6000,
+          "cadence_seconds": 240
+        },
+        {
+          "id": "sso",
+          "description": "Sun-synchronous-like retrograde low Earth",
+          "a_km": 7200.0,
+          "eccentricity": 0.008,
+          "inclination_deg": 98.0,
+          "raan_deg": 65.0,
+          "argp_deg": 45.0,
+          "mean_anomaly_deg": 25.0,
+          "bstar": 1e-05,
+          "fit_seconds": 12000,
+          "holdout_seconds": 6000,
+          "cadence_seconds": 240
+        },
+        {
+          "id": "gps",
+          "description": "GPS-like medium Earth",
+          "a_km": 26560.0,
+          "eccentricity": 0.01,
+          "inclination_deg": 55.0,
+          "raan_deg": 60.0,
+          "argp_deg": 40.0,
+          "mean_anomaly_deg": 25.0,
+          "bstar": 0.0,
+          "fit_seconds": 86400,
+          "holdout_seconds": 43200,
+          "cadence_seconds": 1800
+        },
+        {
+          "id": "geo",
+          "description": "Near-geosynchronous, slightly inclined/eccentric",
+          "a_km": 42164.0,
+          "eccentricity": 0.001,
+          "inclination_deg": 0.1,
+          "raan_deg": 50.0,
+          "argp_deg": 35.0,
+          "mean_anomaly_deg": 20.0,
+          "bstar": 0.0,
+          "fit_seconds": 172800,
+          "holdout_seconds": 86400,
+          "cadence_seconds": 3600
+        },
+        {
+          "id": "heo",
+          "description": "Molniya-like eccentric high Earth",
+          "a_km": 26600.0,
+          "eccentricity": 0.7,
+          "inclination_deg": 63.4,
+          "raan_deg": 55.0,
+          "argp_deg": 270.0,
+          "mean_anomaly_deg": 15.0,
+          "bstar": 0.0,
+          "fit_seconds": 86400,
+          "holdout_seconds": 43200,
+          "cadence_seconds": 1800
+        }
+      ],
+      "gmatpy_forces": {
+        "degree": 8,
+        "order": 8,
+        "sun": true,
+        "moon": true,
+        "srp": false,
+        "drag": false
+      },
+      "comparisons": [
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 1.0601911767914993e-11,
+              "position_max_km": 3.1522225664272577e-11,
+              "velocity_rms_km_s": 1.1306616057211687e-14,
+              "velocity_max_km_s": 3.296465111135848e-14,
+              "radial_position_rms_km": 2.125290394369775e-12,
+              "transverse_position_rms_km": 1.0360047321636699e-11,
+              "normal_position_rms_km": 7.437024725669652e-13
+            },
+            "holdout": {
+              "position_rms_km": 2.5332836416882414e-11,
+              "position_max_km": 4.988352511313375e-11,
+              "velocity_rms_km_s": 2.7477400819055545e-14,
+              "velocity_max_km_s": 5.463030610960401e-14,
+              "radial_position_rms_km": 1.7522640404461984e-12,
+              "transverse_position_rms_km": 2.5257523901385916e-11,
+              "normal_position_rms_km": 8.600337365488382e-13
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 2.6239177151068866e-06,
+              "position_max_km": 4.515374725157624e-06,
+              "velocity_rms_km_s": 2.8212088901883997e-09,
+              "velocity_max_km_s": 4.8682778846679925e-09,
+              "radial_position_rms_km": 2.3259731700748646e-07,
+              "transverse_position_rms_km": 2.613587567206999e-06,
+              "normal_position_rms_km": 1.6408271283855685e-09
+            },
+            "holdout": {
+              "position_rms_km": 5.717050636527317e-06,
+              "position_max_km": 6.767158963606888e-06,
+              "velocity_rms_km_s": 6.160674976671012e-09,
+              "velocity_max_km_s": 7.298448986595509e-09,
+              "radial_position_rms_km": 2.3254942134142659e-07,
+              "transverse_position_rms_km": 5.712317965272317e-06,
+              "normal_position_rms_km": 3.4944067155139104e-09
+            }
+          },
+          "case": "leo",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.1982501859893091,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 1.5705239119404628e-11,
+              "position_max_km": 3.735594488262918e-11,
+              "velocity_rms_km_s": 1.6754161210194165e-14,
+              "velocity_max_km_s": 4.0933367350969665e-14,
+              "radial_position_rms_km": 2.7319473289779636e-12,
+              "transverse_position_rms_km": 1.544007056664902e-11,
+              "normal_position_rms_km": 8.9175135899324e-13
+            },
+            "holdout": {
+              "position_rms_km": 3.0995170871655607e-11,
+              "position_max_km": 7.244768996870845e-11,
+              "velocity_rms_km_s": 3.346644168585641e-14,
+              "velocity_max_km_s": 7.954838157179904e-14,
+              "radial_position_rms_km": 2.4676544748938834e-12,
+              "transverse_position_rms_km": 3.0888393433112776e-11,
+              "normal_position_rms_km": 7.200346359029488e-13
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 2.6239177151068866e-06,
+              "position_max_km": 4.515374725157624e-06,
+              "velocity_rms_km_s": 2.8212088901883997e-09,
+              "velocity_max_km_s": 4.8682778846679925e-09,
+              "radial_position_rms_km": 2.3259731700748646e-07,
+              "transverse_position_rms_km": 2.613587567206999e-06,
+              "normal_position_rms_km": 1.6408271283855685e-09
+            },
+            "holdout": {
+              "position_rms_km": 5.717050636527317e-06,
+              "position_max_km": 6.767158963606888e-06,
+              "velocity_rms_km_s": 6.160674976671012e-09,
+              "velocity_max_km_s": 7.298448986595509e-09,
+              "radial_position_rms_km": 2.3254942134142659e-07,
+              "transverse_position_rms_km": 5.712317965272317e-06,
+              "normal_position_rms_km": 3.4944067155139104e-09
+            }
+          },
+          "case": "leo",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.717746395996073,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.15957114650900237,
+              "position_max_km": 0.2788684939634721,
+              "velocity_rms_km_s": 0.00014418962012354924,
+              "velocity_max_km_s": 0.00027306327468177606,
+              "radial_position_rms_km": 0.05442966306468152,
+              "transverse_position_rms_km": 0.10120071459339622,
+              "normal_position_rms_km": 0.11071936570739874
+            },
+            "holdout": {
+              "position_rms_km": 0.9801201831224773,
+              "position_max_km": 1.2986363290366207,
+              "velocity_rms_km_s": 0.001040366804218696,
+              "velocity_max_km_s": 0.001406293852346722,
+              "radial_position_rms_km": 0.20060887209184666,
+              "transverse_position_rms_km": 0.9454018807757135,
+              "normal_position_rms_km": 0.16311633157908756
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.1596234947712659,
+              "position_max_km": 0.27533618320631553,
+              "velocity_rms_km_s": 0.00014471547269803958,
+              "velocity_max_km_s": 0.0002685985876056091,
+              "radial_position_rms_km": 0.054451848891919744,
+              "transverse_position_rms_km": 0.10121971542101019,
+              "normal_position_rms_km": 0.11076653576479494
+            },
+            "holdout": {
+              "position_rms_km": 0.9814739450685896,
+              "position_max_km": 1.299797587383763,
+              "velocity_rms_km_s": 0.00104172233310411,
+              "velocity_max_km_s": 0.001407954981603253,
+              "radial_position_rms_km": 0.2006529584774023,
+              "transverse_position_rms_km": 0.9463804634322461,
+              "normal_position_rms_km": 0.16550985933331475
+            }
+          },
+          "case": "leo",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.3122752260096604,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.15957112285139755,
+              "position_max_km": 0.2788681991826528,
+              "velocity_rms_km_s": 0.00014418960388233525,
+              "velocity_max_km_s": 0.00027306284160960527,
+              "radial_position_rms_km": 0.05442960623299712,
+              "transverse_position_rms_km": 0.10120070779160815,
+              "normal_position_rms_km": 0.11071936576703388
+            },
+            "holdout": {
+              "position_rms_km": 0.9801181867221376,
+              "position_max_km": 1.298634315621264,
+              "velocity_rms_km_s": 0.0010403645373594705,
+              "velocity_max_km_s": 0.001406289988446947,
+              "radial_position_rms_km": 0.20060863846541413,
+              "transverse_position_rms_km": 0.9453998609131036,
+              "normal_position_rms_km": 0.16311632996738257
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.1596234947712659,
+              "position_max_km": 0.27533618320631553,
+              "velocity_rms_km_s": 0.00014471547269803958,
+              "velocity_max_km_s": 0.0002685985876056091,
+              "radial_position_rms_km": 0.054451848891919744,
+              "transverse_position_rms_km": 0.10121971542101019,
+              "normal_position_rms_km": 0.11076653576479494
+            },
+            "holdout": {
+              "position_rms_km": 0.9814739450685896,
+              "position_max_km": 1.299797587383763,
+              "velocity_rms_km_s": 0.00104172233310411,
+              "velocity_max_km_s": 0.001407954981603253,
+              "radial_position_rms_km": 0.2006529584774023,
+              "transverse_position_rms_km": 0.9463804634322461,
+              "normal_position_rms_km": 0.16550985933331475
+            }
+          },
+          "case": "leo",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.6217920490016695,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 4,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 1.5046990297745762e-11,
+              "position_max_km": 2.72983380268979e-11,
+              "velocity_rms_km_s": 1.5447476581938105e-14,
+              "velocity_max_km_s": 2.8508313657667433e-14,
+              "radial_position_rms_km": 2.3783380104153956e-12,
+              "transverse_position_rms_km": 1.4804664128385867e-11,
+              "normal_position_rms_km": 1.25592411170146e-12
+            },
+            "holdout": {
+              "position_rms_km": 3.770680974966691e-11,
+              "position_max_km": 7.612910719201157e-11,
+              "velocity_rms_km_s": 3.9078002548358195e-14,
+              "velocity_max_km_s": 7.857242165199975e-14,
+              "radial_position_rms_km": 3.058778454500356e-12,
+              "transverse_position_rms_km": 3.756413548628253e-11,
+              "normal_position_rms_km": 1.17605315869196e-12
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 1.3132956375701697e-05,
+              "position_max_km": 2.273231097161192e-05,
+              "velocity_rms_km_s": 1.3535401082027727e-08,
+              "velocity_max_km_s": 2.3646175782899614e-08,
+              "radial_position_rms_km": 1.2291918207010466e-06,
+              "transverse_position_rms_km": 1.3075305949416505e-05,
+              "normal_position_rms_km": 2.2278148150421043e-09
+            },
+            "holdout": {
+              "position_rms_km": 2.8585828942028593e-05,
+              "position_max_km": 3.407982229973654e-05,
+              "velocity_rms_km_s": 2.9515525999177282e-08,
+              "velocity_max_km_s": 3.547889706592336e-08,
+              "radial_position_rms_km": 1.2404072437134738e-06,
+              "transverse_position_rms_km": 2.8558903738797068e-05,
+              "normal_position_rms_km": 4.838469374838073e-09
+            }
+          },
+          "case": "sso",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.21854019600141328,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 4,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 1.0356149918565942e-11,
+              "position_max_km": 2.7426817063550788e-11,
+              "velocity_rms_km_s": 1.0416238040068333e-14,
+              "velocity_max_km_s": 2.7103998191910123e-14,
+              "radial_position_rms_km": 2.090042505447201e-12,
+              "transverse_position_rms_km": 1.013895340649558e-11,
+              "normal_position_rms_km": 2.8842205558702284e-13
+            },
+            "holdout": {
+              "position_rms_km": 3.030483790385671e-11,
+              "position_max_km": 5.906616160130593e-11,
+              "velocity_rms_km_s": 3.09887589770239e-14,
+              "velocity_max_km_s": 5.9137277651842e-14,
+              "radial_position_rms_km": 2.982422415833273e-12,
+              "transverse_position_rms_km": 3.015584940992577e-11,
+              "normal_position_rms_km": 3.363083086173463e-13
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 1.3132956375701697e-05,
+              "position_max_km": 2.273231097161192e-05,
+              "velocity_rms_km_s": 1.3535401082027727e-08,
+              "velocity_max_km_s": 2.3646175782899614e-08,
+              "radial_position_rms_km": 1.2291918207010466e-06,
+              "transverse_position_rms_km": 1.3075305949416505e-05,
+              "normal_position_rms_km": 2.2278148150421043e-09
+            },
+            "holdout": {
+              "position_rms_km": 2.8585828942028593e-05,
+              "position_max_km": 3.407982229973654e-05,
+              "velocity_rms_km_s": 2.9515525999177282e-08,
+              "velocity_max_km_s": 3.547889706592336e-08,
+              "radial_position_rms_km": 1.2404072437134738e-06,
+              "transverse_position_rms_km": 2.8558903738797068e-05,
+              "normal_position_rms_km": 4.838469374838073e-09
+            }
+          },
+          "case": "sso",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.782292320000124,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.131697427512912,
+              "position_max_km": 0.3479558276148642,
+              "velocity_rms_km_s": 0.00014364006768232405,
+              "velocity_max_km_s": 0.00027915304340517266,
+              "radial_position_rms_km": 0.06460692392451725,
+              "transverse_position_rms_km": 0.09136027012036078,
+              "normal_position_rms_km": 0.0694511255349045
+            },
+            "holdout": {
+              "position_rms_km": 0.5664131848422941,
+              "position_max_km": 0.8151895607046933,
+              "velocity_rms_km_s": 0.0005107449922775402,
+              "velocity_max_km_s": 0.000674557696080873,
+              "radial_position_rms_km": 0.14568526261747322,
+              "transverse_position_rms_km": 0.5148457633988492,
+              "normal_position_rms_km": 0.18583202127062173
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.1319773520092345,
+              "position_max_km": 0.3512163385355406,
+              "velocity_rms_km_s": 0.00014333367157481184,
+              "velocity_max_km_s": 0.0002826342024419649,
+              "radial_position_rms_km": 0.06462624873005934,
+              "transverse_position_rms_km": 0.091592219760331,
+              "normal_position_rms_km": 0.06965870152267507
+            },
+            "holdout": {
+              "position_rms_km": 0.5688344040303057,
+              "position_max_km": 0.8179310402693116,
+              "velocity_rms_km_s": 0.0005131185738938684,
+              "velocity_max_km_s": 0.0006768777271370053,
+              "radial_position_rms_km": 0.14571823731868105,
+              "transverse_position_rms_km": 0.517319593883838,
+              "normal_position_rms_km": 0.18633092149482497
+            }
+          },
+          "case": "sso",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.19224653799028601,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.1316974414807315,
+              "position_max_km": 0.3479560972811308,
+              "velocity_rms_km_s": 0.00014364009418504426,
+              "velocity_max_km_s": 0.00027915335132775815,
+              "radial_position_rms_km": 0.06460694055191622,
+              "transverse_position_rms_km": 0.09136027856197347,
+              "normal_position_rms_km": 0.06945112544927173
+            },
+            "holdout": {
+              "position_rms_km": 0.5664137121307196,
+              "position_max_km": 0.8151902941959555,
+              "velocity_rms_km_s": 0.0005107455428057942,
+              "velocity_max_km_s": 0.0006745584184448954,
+              "radial_position_rms_km": 0.1456852945286137,
+              "transverse_position_rms_km": 0.5148463340965606,
+              "normal_position_rms_km": 0.18583202230817333
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.1319773670871916,
+              "position_max_km": 0.3512163385355406,
+              "velocity_rms_km_s": 0.0001433336180727893,
+              "velocity_max_km_s": 0.0002826342024419649,
+              "radial_position_rms_km": 0.06462622668328463,
+              "transverse_position_rms_km": 0.0915922570754562,
+              "normal_position_rms_km": 0.06965870147922355
+            },
+            "holdout": {
+              "position_rms_km": 0.568836937463096,
+              "position_max_km": 0.8179345530662028,
+              "velocity_rms_km_s": 0.0005131213437576802,
+              "velocity_max_km_s": 0.0006768811376584745,
+              "radial_position_rms_km": 0.14571828986772015,
+              "transverse_position_rms_km": 0.5173223649397239,
+              "normal_position_rms_km": 0.1863309210882413
+            }
+          },
+          "case": "sso",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.691420226008631,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 6.493787182681719e-11,
+              "position_max_km": 1.468664987261761e-10,
+              "velocity_rms_km_s": 9.277279913283523e-15,
+              "velocity_max_km_s": 2.1182869108103055e-14,
+              "radial_position_rms_km": 1.522956061726598e-11,
+              "transverse_position_rms_km": 6.306300529810393e-11,
+              "normal_position_rms_km": 2.8363786017514007e-12
+            },
+            "holdout": {
+              "position_rms_km": 2.8510529837115907e-10,
+              "position_max_km": 4.775358206365978e-10,
+              "velocity_rms_km_s": 4.120488999913436e-14,
+              "velocity_max_km_s": 7.039794546456081e-14,
+              "radial_position_rms_km": 4.1280606008260277e-11,
+              "transverse_position_rms_km": 2.8209096259994503e-10,
+              "normal_position_rms_km": 2.3730879323864025e-12
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.00013111733843856223,
+              "position_max_km": 0.0002269094479223372,
+              "velocity_rms_km_s": 1.909898473318857e-08,
+              "velocity_max_km_s": 3.337144080012622e-08,
+              "radial_position_rms_km": 1.205966102056082e-05,
+              "transverse_position_rms_km": 0.000130561559984236,
+              "normal_position_rms_km": 8.35250748992364e-09
+            },
+            "holdout": {
+              "position_rms_km": 0.00028542270631285566,
+              "position_max_km": 0.00034010405141815536,
+              "velocity_rms_km_s": 4.16435684494763e-08,
+              "velocity_max_km_s": 5.004068426928116e-08,
+              "radial_position_rms_km": 1.2189926923704567e-05,
+              "transverse_position_rms_km": 0.00028516228142030225,
+              "normal_position_rms_km": 1.4687332599246559e-08
+            }
+          },
+          "case": "gps",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.17690023999603,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 4.881714936159395e-07,
+              "position_max_km": 9.573793297347875e-07,
+              "velocity_rms_km_s": 6.863336363103625e-11,
+              "velocity_max_km_s": 1.4731707573875463e-10,
+              "radial_position_rms_km": 1.7567937737342507e-07,
+              "transverse_position_rms_km": 4.55464567763136e-07,
+              "normal_position_rms_km": 4.3710095238413766e-10
+            },
+            "holdout": {
+              "position_rms_km": 3.3272362314888175e-06,
+              "position_max_km": 5.251358095259036e-06,
+              "velocity_rms_km_s": 4.823735830155375e-10,
+              "velocity_max_km_s": 7.846421227184518e-10,
+              "radial_position_rms_km": 4.856832621483255e-07,
+              "transverse_position_rms_km": 3.291597237957995e-06,
+              "normal_position_rms_km": 5.762535589138736e-10
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.0001337954240394853,
+              "position_max_km": 0.00023298324689030966,
+              "velocity_rms_km_s": 1.9488538440227373e-08,
+              "velocity_max_km_s": 3.426439744631275e-08,
+              "radial_position_rms_km": 1.2385411980566221e-05,
+              "transverse_position_rms_km": 0.0001332209330115643,
+              "normal_position_rms_km": 8.456099972795451e-09
+            },
+            "holdout": {
+              "position_rms_km": 0.0002953412397211,
+              "position_max_km": 0.00035375414566473826,
+              "velocity_rms_km_s": 4.308982320728152e-08,
+              "velocity_max_km_s": 5.2049539320022535e-08,
+              "radial_position_rms_km": 1.300979642835312e-05,
+              "transverse_position_rms_km": 0.00029505455910542423,
+              "normal_position_rms_km": 1.509942910656514e-08
+            }
+          },
+          "case": "gps",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.481712900000275,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.038418068637204095,
+              "position_max_km": 0.06090032031732603,
+              "velocity_rms_km_s": 1.0353741518084129e-05,
+              "velocity_max_km_s": 1.5921555312519098e-05,
+              "radial_position_rms_km": 0.023955061616889203,
+              "transverse_position_rms_km": 0.023097717021006124,
+              "normal_position_rms_km": 0.019198918958146842
+            },
+            "holdout": {
+              "position_rms_km": 0.0869962717374203,
+              "position_max_km": 0.11178919512621796,
+              "velocity_rms_km_s": 1.2015145678014427e-05,
+              "velocity_max_km_s": 1.7517441222479826e-05,
+              "radial_position_rms_km": 0.040145429007698866,
+              "transverse_position_rms_km": 0.06943495788884399,
+              "normal_position_rms_km": 0.03369692046720812
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.04300471165618819,
+              "position_max_km": 0.07122094883525813,
+              "velocity_rms_km_s": 1.1396917412809651e-05,
+              "velocity_max_km_s": 1.7330711200189762e-05,
+              "radial_position_rms_km": 0.023921844821966257,
+              "transverse_position_rms_km": 0.029045071685414044,
+              "normal_position_rms_km": 0.02082148831699631
+            },
+            "holdout": {
+              "position_rms_km": 0.09086464683100495,
+              "position_max_km": 0.13119891945891637,
+              "velocity_rms_km_s": 1.2970881565283978e-05,
+              "velocity_max_km_s": 1.7282977712382126e-05,
+              "radial_position_rms_km": 0.04072992154370442,
+              "transverse_position_rms_km": 0.0761779953126925,
+              "normal_position_rms_km": 0.028184580268408112
+            }
+          },
+          "case": "gps",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.19087710599706043,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.0384181442532349,
+              "position_max_km": 0.060903891974469465,
+              "velocity_rms_km_s": 1.0353630588471584e-05,
+              "velocity_max_km_s": 1.592182078952671e-05,
+              "radial_position_rms_km": 0.023955492776344702,
+              "transverse_position_rms_km": 0.023097268898855577,
+              "normal_position_rms_km": 0.01919907141293092
+            },
+            "holdout": {
+              "position_rms_km": 0.0869939593859999,
+              "position_max_km": 0.11178919667238346,
+              "velocity_rms_km_s": 1.2014648103403058e-05,
+              "velocity_max_km_s": 1.7516440909059933e-05,
+              "radial_position_rms_km": 0.04014510719598467,
+              "transverse_position_rms_km": 0.06943422553706381,
+              "normal_position_rms_km": 0.03369284288901807
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.04300458694059642,
+              "position_max_km": 0.07122086834032496,
+              "velocity_rms_km_s": 1.1396901962585137e-05,
+              "velocity_max_km_s": 1.7330707228241568e-05,
+              "radial_position_rms_km": 0.023921879012785315,
+              "transverse_position_rms_km": 0.02904485886557906,
+              "normal_position_rms_km": 0.020821488321144836
+            },
+            "holdout": {
+              "position_rms_km": 0.09086436261577158,
+              "position_max_km": 0.13119779430465503,
+              "velocity_rms_km_s": 1.297081275254847e-05,
+              "velocity_max_km_s": 1.728296939399722e-05,
+              "radial_position_rms_km": 0.040729988333774274,
+              "transverse_position_rms_km": 0.0761776205762791,
+              "normal_position_rms_km": 0.028184580309763268
+            }
+          },
+          "case": "gps",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.681934528009151,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 4.588171073862385e-11,
+              "position_max_km": 1.288405243995589e-10,
+              "velocity_rms_km_s": 3.3800785451575313e-15,
+              "velocity_max_km_s": 9.060413645625908e-15,
+              "radial_position_rms_km": 7.759901452773926e-12,
+              "transverse_position_rms_km": 4.5220736191954956e-11,
+              "normal_position_rms_km": 1.811086976478009e-14
+            },
+            "holdout": {
+              "position_rms_km": 1.1651046895601914e-10,
+              "position_max_km": 1.712654218339754e-10,
+              "velocity_rms_km_s": 8.419436067045799e-15,
+              "velocity_max_km_s": 1.2932095797777712e-14,
+              "radial_position_rms_km": 1.9012587494645374e-11,
+              "transverse_position_rms_km": 1.149487294544353e-10,
+              "normal_position_rms_km": 2.2134158927534027e-14
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.0003806390215162144,
+              "position_max_km": 0.0006545872597294364,
+              "velocity_rms_km_s": 2.7676060982274914e-08,
+              "velocity_max_km_s": 4.7730758681801543e-08,
+              "radial_position_rms_km": 3.459428657899526e-05,
+              "transverse_position_rms_km": 0.00037906371478789664,
+              "normal_position_rms_km": 1.296578467445767e-08
+            },
+            "holdout": {
+              "position_rms_km": 0.0008293285476021948,
+              "position_max_km": 0.000981170114704631,
+              "velocity_rms_km_s": 6.04435808329194e-08,
+              "velocity_max_km_s": 7.158525294019833e-08,
+              "radial_position_rms_km": 3.460310485678226e-05,
+              "transverse_position_rms_km": 0.0008286063388696077,
+              "normal_position_rms_km": 1.3687263938746907e-08
+            }
+          },
+          "case": "geo",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.20661568699870259,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 5,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 2.327583131862991e-07,
+              "position_max_km": 3.306114738321274e-07,
+              "velocity_rms_km_s": 1.6931153728831458e-11,
+              "velocity_max_km_s": 2.4072078245892977e-11,
+              "radial_position_rms_km": 8.912942649828489e-11,
+              "transverse_position_rms_km": 8.900946681161735e-09,
+              "normal_position_rms_km": 2.3258804260205584e-07
+            },
+            "holdout": {
+              "position_rms_km": 2.3542722611936707e-07,
+              "position_max_km": 3.3339151163857753e-07,
+              "velocity_rms_km_s": 1.7175207997771354e-11,
+              "velocity_max_km_s": 2.4275831165656133e-11,
+              "radial_position_rms_km": 1.5172690521979796e-10,
+              "transverse_position_rms_km": 1.0290010194063278e-08,
+              "normal_position_rms_km": 2.352021927351271e-07
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.00038063861909030006,
+              "position_max_km": 0.0006545863404457378,
+              "velocity_rms_km_s": 2.7676031765180414e-08,
+              "velocity_max_km_s": 4.773069159840235e-08,
+              "radial_position_rms_km": 3.459424029497313e-05,
+              "transverse_position_rms_km": 0.0003790633149135809,
+              "normal_position_rms_km": 1.2965784400716027e-08
+            },
+            "holdout": {
+              "position_rms_km": 0.0008293270508550355,
+              "position_max_km": 0.0009811680416725117,
+              "velocity_rms_km_s": 6.044347174850135e-08,
+              "velocity_max_km_s": 7.158510188826225e-08,
+              "radial_position_rms_km": 3.460298722759979e-05,
+              "transverse_position_rms_km": 0.0008286048457301562,
+              "normal_position_rms_km": 1.3687265731863137e-08
+            }
+          },
+          "case": "geo",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.615553914991324,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.9544215017984554,
+              "position_max_km": 1.5363687414544944,
+              "velocity_rms_km_s": 6.724091706765967e-05,
+              "velocity_max_km_s": 0.00012053102199975384,
+              "radial_position_rms_km": 0.6188506448667283,
+              "transverse_position_rms_km": 0.5151024128749999,
+              "normal_position_rms_km": 0.5124585707094834
+            },
+            "holdout": {
+              "position_rms_km": 1.7027288167516077,
+              "position_max_km": 2.689502212011066,
+              "velocity_rms_km_s": 0.00011204497495469137,
+              "velocity_max_km_s": 0.0001906610287630932,
+              "radial_position_rms_km": 0.6884185899398597,
+              "transverse_position_rms_km": 0.8980560825048347,
+              "normal_position_rms_km": 1.2723445056656688
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.9545423941453055,
+              "position_max_km": 1.5361461811767,
+              "velocity_rms_km_s": 6.736239326688853e-05,
+              "velocity_max_km_s": 0.0001203754535983963,
+              "radial_position_rms_km": 0.6188054906074159,
+              "transverse_position_rms_km": 0.5156467117298499,
+              "normal_position_rms_km": 0.5121908000901231
+            },
+            "holdout": {
+              "position_rms_km": 1.7023408796426849,
+              "position_max_km": 2.6857849100621474,
+              "velocity_rms_km_s": 0.00011204202358152143,
+              "velocity_max_km_s": 0.000190421269874071,
+              "radial_position_rms_km": 0.6883886878880421,
+              "transverse_position_rms_km": 0.8961628609785167,
+              "normal_position_rms_km": 1.2731761902789454
+            }
+          },
+          "case": "geo",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.17465326200181153,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.9543831248427633,
+              "position_max_km": 1.5383914428399577,
+              "velocity_rms_km_s": 6.721791039389836e-05,
+              "velocity_max_km_s": 0.00012066097952759607,
+              "radial_position_rms_km": 0.6188564479887393,
+              "transverse_position_rms_km": 0.5150962312956348,
+              "normal_position_rms_km": 0.5123862978968428
+            },
+            "holdout": {
+              "position_rms_km": 1.7047287742965116,
+              "position_max_km": 2.6923263405119,
+              "velocity_rms_km_s": 0.00011220704075906963,
+              "velocity_max_km_s": 0.00019084406166393382,
+              "radial_position_rms_km": 0.6884103011010638,
+              "transverse_position_rms_km": 0.8979740527018059,
+              "normal_position_rms_km": 1.275081978512254
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.9545017560027683,
+              "position_max_km": 1.538311987667759,
+              "velocity_rms_km_s": 6.73404076987795e-05,
+              "velocity_max_km_s": 0.0001205017714208505,
+              "radial_position_rms_km": 0.6188060205529841,
+              "transverse_position_rms_km": 0.5156501190939352,
+              "normal_position_rms_km": 0.5121109897455421
+            },
+            "holdout": {
+              "position_rms_km": 1.7044231017389317,
+              "position_max_km": 2.6887787853843266,
+              "velocity_rms_km_s": 0.0001122092594193693,
+              "velocity_max_km_s": 0.0001905995854496149,
+              "radial_position_rms_km": 0.6883836935620771,
+              "transverse_position_rms_km": 0.8961437970453011,
+              "normal_position_rms_km": 1.2759750370584935
+            }
+          },
+          "case": "geo",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.552074988998356,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 19,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 1.803479219514011e-09,
+              "position_max_km": 5.790070823739302e-09,
+              "velocity_rms_km_s": 5.56420335870924e-13,
+              "velocity_max_km_s": 2.2558633658078096e-12,
+              "radial_position_rms_km": 1.2157618584084668e-09,
+              "transverse_position_rms_km": 1.3320667211424243e-09,
+              "normal_position_rms_km": 7.658281982828606e-12
+            },
+            "holdout": {
+              "position_rms_km": 8.861233929742193e-09,
+              "position_max_km": 2.3771955540297176e-08,
+              "velocity_rms_km_s": 3.857768332008672e-12,
+              "velocity_max_km_s": 1.6117142027446802e-11,
+              "radial_position_rms_km": 4.692684071061169e-09,
+              "transverse_position_rms_km": 7.516656333166869e-09,
+              "normal_position_rms_km": 7.780481054685974e-12
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.0002385935000746605,
+              "position_max_km": 0.0008186176379047517,
+              "velocity_rms_km_s": 1.0369831132286196e-07,
+              "velocity_max_km_s": 5.55042043897816e-07,
+              "radial_position_rms_km": 0.00012201379844053079,
+              "transverse_position_rms_km": 0.00020503533841078136,
+              "normal_position_rms_km": 3.564781781611768e-08
+            },
+            "holdout": {
+              "position_rms_km": 0.00048271596472323423,
+              "position_max_km": 0.0012360469339932952,
+              "velocity_rms_km_s": 2.0211388760725623e-07,
+              "velocity_max_km_s": 8.369957173326499e-07,
+              "radial_position_rms_km": 0.0002474540283774206,
+              "transverse_position_rms_km": 0.0004144649590200492,
+              "normal_position_rms_km": 6.467594834342355e-08
+            }
+          },
+          "case": "heo",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.7517225219926331,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 10,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 7.37821132946119e-11,
+              "position_max_km": 2.6997529106122293e-10,
+              "velocity_rms_km_s": 1.9535863873356817e-14,
+              "velocity_max_km_s": 9.40756636738457e-14,
+              "radial_position_rms_km": 5.163967886829989e-11,
+              "transverse_position_rms_km": 5.265439602091301e-11,
+              "normal_position_rms_km": 2.1583299726106607e-12
+            },
+            "holdout": {
+              "position_rms_km": 3.401257331339177e-10,
+              "position_max_km": 9.597755265441779e-10,
+              "velocity_rms_km_s": 1.5182902454527832e-13,
+              "velocity_max_km_s": 6.498767100159315e-13,
+              "radial_position_rms_km": 1.7692806055406304e-10,
+              "transverse_position_rms_km": 2.9047849360735017e-10,
+              "normal_position_rms_km": 2.0543807016793693e-12
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.00023858506672531912,
+              "position_max_km": 0.0008185847093413109,
+              "velocity_rms_km_s": 1.0369456632545805e-07,
+              "velocity_max_km_s": 5.550197118645781e-07,
+              "radial_position_rms_km": 0.00012200944855068991,
+              "transverse_position_rms_km": 0.000205028113335579,
+              "normal_position_rms_km": 3.5647363314648806e-08
+            },
+            "holdout": {
+              "position_rms_km": 0.0004826878154132871,
+              "position_max_km": 0.0012359715824813398,
+              "velocity_rms_km_s": 2.0210164247542053e-07,
+              "velocity_max_km_s": 8.369446825602946e-07,
+              "radial_position_rms_km": 0.0002474397004136659,
+              "transverse_position_rms_km": 0.000414440728723402,
+              "normal_position_rms_km": 6.467505180675547e-08
+            }
+          },
+          "case": "heo",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.706361142991227,
+          "all_metrics_equal_to_public": true,
+          "input_family": "sgp4"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 3.4134437438693728,
+              "position_max_km": 5.199774210476549,
+              "velocity_rms_km_s": 0.0004985922454568767,
+              "velocity_max_km_s": 0.0010369663293892468,
+              "radial_position_rms_km": 1.1805827705282848,
+              "transverse_position_rms_km": 1.185231237142095,
+              "normal_position_rms_km": 2.975407439157759
+            },
+            "holdout": {
+              "position_rms_km": 3.450088468361471,
+              "position_max_km": 5.1088755861834505,
+              "velocity_rms_km_s": 0.0004895061130664373,
+              "velocity_max_km_s": 0.0009584425617750325,
+              "radial_position_rms_km": 1.2514169435701201,
+              "transverse_position_rms_km": 1.2608363200054693,
+              "normal_position_rms_km": 2.957593252464153
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 3.4135151008938736,
+              "position_max_km": 5.2070661367917905,
+              "velocity_rms_km_s": 0.0004988667439507218,
+              "velocity_max_km_s": 0.0010394575935540483,
+              "radial_position_rms_km": 1.181402938141383,
+              "transverse_position_rms_km": 1.1848868287100294,
+              "normal_position_rms_km": 2.975300933507552
+            },
+            "holdout": {
+              "position_rms_km": 3.454641715338423,
+              "position_max_km": 5.094802036066196,
+              "velocity_rms_km_s": 0.0004897490221788348,
+              "velocity_max_km_s": 0.000959760511846194,
+              "radial_position_rms_km": 1.2513107805865338,
+              "transverse_position_rms_km": 1.2703863195705256,
+              "normal_position_rms_km": 2.9588662204960157
+            }
+          },
+          "case": "heo",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.17535888799466193,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 3.413507290422379,
+              "position_max_km": 5.196509086401444,
+              "velocity_rms_km_s": 0.00049866659139437,
+              "velocity_max_km_s": 0.0010387338992009,
+              "radial_position_rms_km": 1.1804344133490914,
+              "transverse_position_rms_km": 1.185389427615412,
+              "normal_position_rms_km": 2.975476184150282
+            },
+            "holdout": {
+              "position_rms_km": 3.4499770822971474,
+              "position_max_km": 5.112223669231708,
+              "velocity_rms_km_s": 0.0004893792721108085,
+              "velocity_max_km_s": 0.0009599532966804155,
+              "radial_position_rms_km": 1.2527511892964311,
+              "transverse_position_rms_km": 1.2594068278511332,
+              "normal_position_rms_km": 2.9575075262886252
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 3.413516237928429,
+              "position_max_km": 5.20662816549412,
+              "velocity_rms_km_s": 0.0004988301786377015,
+              "velocity_max_km_s": 0.001039478469176933,
+              "radial_position_rms_km": 1.1815047013786573,
+              "transverse_position_rms_km": 1.1847887554352214,
+              "normal_position_rms_km": 2.975300884316651
+            },
+            "holdout": {
+              "position_rms_km": 3.4546354544372844,
+              "position_max_km": 5.094897382152357,
+              "velocity_rms_km_s": 0.0004896250531897986,
+              "velocity_max_km_s": 0.0009609014639770028,
+              "radial_position_rms_km": 1.2530070440449281,
+              "transverse_position_rms_km": 1.2686962454696344,
+              "normal_position_rms_km": 2.958866219916025
+            }
+          },
+          "case": "heo",
+          "method": "jax",
+          "worker_elapsed_seconds": 4.5106630439986475,
+          "all_metrics_equal_to_public": true,
+          "input_family": "gmatpy"
+        }
+      ]
+    },
+    "authored_coe": {
+      "epoch_utc": "2020-01-01T00:00:00+00:00",
+      "fit_options": {
+        "fit_span": 1,
+        "max_iter": 35,
+        "lamda": 0.001,
+        "rms_epsilon": 0.0001,
+        "debug": false
+      },
+      "protocols": [
+        {
+          "case": "leo",
+          "fit_count": 100,
+          "holdout_count": 100,
+          "fit_interval_minutes": [
+            -97.13133671980538,
+            -1.0
+          ],
+          "holdout_interval_minutes": [
+            0.9713133671980537,
+            194.26267343961075
+          ],
+          "fit_cadence_seconds": 58.261416193821844,
+          "holdout_cadence_seconds": 117.14627883176526
+        },
+        {
+          "case": "sso",
+          "fit_count": 100,
+          "holdout_count": 100,
+          "fit_interval_minutes": [
+            -101.12529481834159,
+            -1.0
+          ],
+          "holdout_interval_minutes": [
+            1.0112529481834158,
+            202.25058963668317
+          ],
+          "fit_cadence_seconds": 60.68199685960053,
+          "holdout_cadence_seconds": 121.96323435666649
+        },
+        {
+          "case": "gps",
+          "fit_count": 100,
+          "holdout_count": 100,
+          "fit_interval_minutes": [
+            -717.9168513017646,
+            -1.0
+          ],
+          "holdout_interval_minutes": [
+            7.179168513017646,
+            1435.8337026035292
+          ],
+          "fit_cadence_seconds": 434.4950613950118,
+          "holdout_cadence_seconds": 865.8512327821282
+        },
+        {
+          "case": "geo",
+          "fit_count": 100,
+          "holdout_count": 100,
+          "fit_interval_minutes": [
+            -1436.1122249631735,
+            -1.0
+          ],
+          "holdout_interval_minutes": [
+            14.361122249631736,
+            2872.224449926347
+          ],
+          "fit_cadence_seconds": 869.7649848261699,
+          "holdout_cadence_seconds": 1732.0383804101307
+        }
+      ],
+      "comparisons": [
+        {
+          "status": "passed",
+          "iterations": 6,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 6.268142247572667e-11,
+              "position_max_km": 1.007098559269099e-10,
+              "velocity_rms_km_s": 4.814596605573617e-14,
+              "velocity_max_km_s": 7.212451749754487e-14,
+              "radial_position_rms_km": 2.602956906979683e-11,
+              "transverse_position_rms_km": 5.701901745521958e-11,
+              "normal_position_rms_km": 5.038909232885169e-13
+            },
+            "holdout": {
+              "position_rms_km": 7.19299244262478e-11,
+              "position_max_km": 1.4344449983324456e-10,
+              "velocity_rms_km_s": 6.329462057074778e-14,
+              "velocity_max_km_s": 1.1793746132872056e-13,
+              "radial_position_rms_km": 2.6109945001030607e-11,
+              "transverse_position_rms_km": 6.70212085695846e-11,
+              "normal_position_rms_km": 5.851511609108842e-13
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 1.2938047696968492e-06,
+              "position_max_km": 2.202897162633743e-06,
+              "velocity_rms_km_s": 1.3782028823039988e-09,
+              "velocity_max_km_s": 2.368486837047702e-09,
+              "radial_position_rms_km": 2.3261152645325751e-07,
+              "transverse_position_rms_km": 1.2727223493002643e-06,
+              "normal_position_rms_km": 6.938609507164989e-10
+            },
+            "holdout": {
+              "position_rms_km": 2.548961908761463e-06,
+              "position_max_km": 4.3871616671273515e-06,
+              "velocity_rms_km_s": 2.739862351677724e-09,
+              "velocity_max_km_s": 4.73196205221999e-09,
+              "radial_position_rms_km": 2.3263692785350213e-07,
+              "transverse_position_rms_km": 2.538323094783414e-06,
+              "normal_position_rms_km": 1.6548730813354626e-09
+            }
+          },
+          "case": "leo",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.2428405999962706,
+          "all_metrics_equal_to_public": true
+        },
+        {
+          "status": "passed",
+          "iterations": 6,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 5.7793876427636767e-11,
+              "position_max_km": 7.994375652756024e-11,
+              "velocity_rms_km_s": 3.968186210250146e-14,
+              "velocity_max_km_s": 4.758183264633997e-14,
+              "radial_position_rms_km": 2.6316041647365727e-11,
+              "transverse_position_rms_km": 5.145217400700305e-11,
+              "normal_position_rms_km": 5.214350392335116e-13
+            },
+            "holdout": {
+              "position_rms_km": 6.183044788148113e-11,
+              "position_max_km": 1.1939369830487123e-10,
+              "velocity_rms_km_s": 4.737724847567077e-14,
+              "velocity_max_km_s": 9.356697241090356e-14,
+              "radial_position_rms_km": 2.6185209657304113e-11,
+              "transverse_position_rms_km": 5.600912096072817e-11,
+              "normal_position_rms_km": 5.634266891995883e-13
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 1.2938047696968492e-06,
+              "position_max_km": 2.202897162633743e-06,
+              "velocity_rms_km_s": 1.3782028823039988e-09,
+              "velocity_max_km_s": 2.368486837047702e-09,
+              "radial_position_rms_km": 2.3261152645325751e-07,
+              "transverse_position_rms_km": 1.2727223493002643e-06,
+              "normal_position_rms_km": 6.938609507164989e-10
+            },
+            "holdout": {
+              "position_rms_km": 2.548961908761463e-06,
+              "position_max_km": 4.3871616671273515e-06,
+              "velocity_rms_km_s": 2.739862351677724e-09,
+              "velocity_max_km_s": 4.73196205221999e-09,
+              "radial_position_rms_km": 2.3263692785350213e-07,
+              "transverse_position_rms_km": 2.538323094783414e-06,
+              "normal_position_rms_km": 1.6548730813354626e-09
+            }
+          },
+          "case": "leo",
+          "method": "jax",
+          "worker_elapsed_seconds": 6.251014471999952,
+          "all_metrics_equal_to_public": true
+        },
+        {
+          "status": "passed",
+          "iterations": 5,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 4.997675661239222e-12,
+              "position_max_km": 1.450431984709945e-11,
+              "velocity_rms_km_s": 4.7779406664219056e-15,
+              "velocity_max_km_s": 1.4196970144505077e-14,
+              "radial_position_rms_km": 1.481904444414301e-12,
+              "transverse_position_rms_km": 4.763812601643045e-12,
+              "normal_position_rms_km": 2.946366049813815e-13
+            },
+            "holdout": {
+              "position_rms_km": 9.932452616387361e-12,
+              "position_max_km": 2.7045044955592413e-11,
+              "velocity_rms_km_s": 1.0181002690057109e-14,
+              "velocity_max_km_s": 2.808842311049455e-14,
+              "radial_position_rms_km": 1.3262417590041623e-12,
+              "transverse_position_rms_km": 9.83763514763181e-12,
+              "normal_position_rms_km": 3.4004775478300883e-13
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 6.731697563566658e-06,
+              "position_max_km": 1.1539978777316033e-05,
+              "velocity_rms_km_s": 6.864687701476575e-09,
+              "velocity_max_km_s": 1.1955614879408159e-08,
+              "radial_position_rms_km": 1.2276829862226208e-06,
+              "transverse_position_rms_km": 6.618802428209253e-06,
+              "normal_position_rms_km": 9.944848327883128e-10
+            },
+            "holdout": {
+              "position_rms_km": 1.3281279814221498e-05,
+              "position_max_km": 2.2976848051572524e-05,
+              "velocity_rms_km_s": 1.3690891771437948e-08,
+              "velocity_max_km_s": 2.3888447844513883e-08,
+              "radial_position_rms_km": 1.22887804100793e-06,
+              "transverse_position_rms_km": 1.3224305171526013e-05,
+              "normal_position_rms_km": 2.234798946312499e-09
+            }
+          },
+          "case": "sso",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.20873577799648046,
+          "all_metrics_equal_to_public": true
+        },
+        {
+          "status": "passed",
+          "iterations": 5,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 8.725780280820338e-12,
+              "position_max_km": 2.5128906160132373e-11,
+              "velocity_rms_km_s": 8.981573091858308e-15,
+              "velocity_max_km_s": 2.535687168326765e-14,
+              "radial_position_rms_km": 3.063765379752989e-12,
+              "transverse_position_rms_km": 8.163381665574326e-12,
+              "normal_position_rms_km": 3.3433963143040363e-13
+            },
+            "holdout": {
+              "position_rms_km": 3.884069132571329e-11,
+              "position_max_km": 8.758727929761377e-11,
+              "velocity_rms_km_s": 3.983670079115736e-14,
+              "velocity_max_km_s": 9.272004176605286e-14,
+              "radial_position_rms_km": 4.7215718582901724e-12,
+              "transverse_position_rms_km": 3.8550679068908756e-11,
+              "normal_position_rms_km": 3.888510927616874e-13
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 6.731697563566658e-06,
+              "position_max_km": 1.1539978777316033e-05,
+              "velocity_rms_km_s": 6.864687701476575e-09,
+              "velocity_max_km_s": 1.1955614879408159e-08,
+              "radial_position_rms_km": 1.2276829862226208e-06,
+              "transverse_position_rms_km": 6.618802428209253e-06,
+              "normal_position_rms_km": 9.944848327883128e-10
+            },
+            "holdout": {
+              "position_rms_km": 1.3281279814221498e-05,
+              "position_max_km": 2.2976848051572524e-05,
+              "velocity_rms_km_s": 1.3690891771437948e-08,
+              "velocity_max_km_s": 2.3888447844513883e-08,
+              "radial_position_rms_km": 1.22887804100793e-06,
+              "transverse_position_rms_km": 1.3224305171526013e-05,
+              "normal_position_rms_km": 2.234798946312499e-09
+            }
+          },
+          "case": "sso",
+          "method": "jax",
+          "worker_elapsed_seconds": 6.6400309150049,
+          "all_metrics_equal_to_public": true
+        },
+        {
+          "status": "passed",
+          "iterations": 4,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 6.29942055166974e-09,
+              "position_max_km": 8.159795936525997e-09,
+              "velocity_rms_km_s": 5.825692829936378e-13,
+              "velocity_max_km_s": 6.312919856051244e-13,
+              "radial_position_rms_km": 2.775840460339342e-09,
+              "transverse_position_rms_km": 5.654327718662492e-09,
+              "normal_position_rms_km": 7.737619470596915e-11
+            },
+            "holdout": {
+              "position_rms_km": 6.307676491264633e-09,
+              "position_max_km": 8.786522875449441e-09,
+              "velocity_rms_km_s": 5.900945557378175e-13,
+              "velocity_max_km_s": 7.273027903103163e-13,
+              "radial_position_rms_km": 2.7833498897026774e-09,
+              "transverse_position_rms_km": 5.659841305155534e-09,
+              "normal_position_rms_km": 7.708767994900303e-11
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 6.593152142651972e-05,
+              "position_max_km": 0.00011367165781711739,
+              "velocity_rms_km_s": 9.49375123494991e-09,
+              "velocity_max_km_s": 1.6664331517298935e-08,
+              "radial_position_rms_km": 1.2057554152284573e-05,
+              "transverse_position_rms_km": 6.481960274214175e-05,
+              "normal_position_rms_km": 2.4148053421740984e-09
+            },
+            "holdout": {
+              "position_rms_km": 0.00013069392814332658,
+              "position_max_km": 0.00022629447571265485,
+              "velocity_rms_km_s": 1.9033374486256796e-08,
+              "velocity_max_km_s": 3.328604855820049e-08,
+              "radial_position_rms_km": 1.2073652964205247e-05,
+              "transverse_position_rms_km": 0.00013013504403742047,
+              "normal_position_rms_km": 8.426836985910511e-09
+            }
+          },
+          "case": "gps",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.16547003600862809,
+          "all_metrics_equal_to_public": true
+        },
+        {
+          "status": "passed",
+          "iterations": 4,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 2.2191965289317426e-09,
+              "position_max_km": 2.974763163935736e-09,
+              "velocity_rms_km_s": 2.021421833564764e-13,
+              "velocity_max_km_s": 2.2910667354112837e-13,
+              "radial_position_rms_km": 9.60636944151009e-10,
+              "transverse_position_rms_km": 2.000357085916148e-09,
+              "normal_position_rms_km": 2.411274310320475e-11
+            },
+            "holdout": {
+              "position_rms_km": 5.6251370307144765e-09,
+              "position_max_km": 9.591840206681117e-09,
+              "velocity_rms_km_s": 7.870425715766343e-13,
+              "velocity_max_km_s": 1.406007636261456e-12,
+              "radial_position_rms_km": 1.1238448088251287e-09,
+              "transverse_position_rms_km": 5.511675347680769e-09,
+              "normal_position_rms_km": 2.3965011165437306e-11
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 6.593069408524636e-05,
+              "position_max_km": 0.00011366978254521779,
+              "velocity_rms_km_s": 9.493633351277606e-09,
+              "velocity_max_km_s": 1.6664059124098974e-08,
+              "radial_position_rms_km": 1.2057352162399677e-05,
+              "transverse_position_rms_km": 6.481879878215556e-05,
+              "normal_position_rms_km": 2.415087345215896e-09
+            },
+            "holdout": {
+              "position_rms_km": 0.00013069715753889205,
+              "position_max_km": 0.00022630180480985078,
+              "velocity_rms_km_s": 1.903384408808087e-08,
+              "velocity_max_km_s": 3.328712646360356e-08,
+              "radial_position_rms_km": 1.2074047512912146e-05,
+              "transverse_position_rms_km": 0.00013013825069669213,
+              "normal_position_rms_km": 8.426554566540382e-09
+            }
+          },
+          "case": "gps",
+          "method": "jax",
+          "worker_elapsed_seconds": 6.514223744990886,
+          "all_metrics_equal_to_public": true
+        },
+        {
+          "status": "passed",
+          "iterations": 6,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 2.0672939514326092e-06,
+              "position_max_km": 2.9253089500087742e-06,
+              "velocity_rms_km_s": 1.5040392645108547e-10,
+              "velocity_max_km_s": 2.1300339464166649e-10,
+              "radial_position_rms_km": 1.8202707466257388e-09,
+              "transverse_position_rms_km": 3.840880634338492e-08,
+              "normal_position_rms_km": 2.0669363153806983e-06
+            },
+            "holdout": {
+              "position_rms_km": 2.090762619023532e-06,
+              "position_max_km": 2.9730544774278714e-06,
+              "velocity_rms_km_s": 1.5232070570971317e-10,
+              "velocity_max_km_s": 2.1631404253170655e-10,
+              "radial_position_rms_km": 1.8046852157890747e-09,
+              "transverse_position_rms_km": 2.118349377398501e-08,
+              "normal_position_rms_km": 2.0906545223467547e-06
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.0001917064503224649,
+              "position_max_km": 0.0003278000392546063,
+              "velocity_rms_km_s": 1.3808359113796773e-08,
+              "velocity_max_km_s": 2.382709496128541e-08,
+              "radial_position_rms_km": 3.4597586977924126e-05,
+              "transverse_position_rms_km": 0.00018855866438638032,
+              "normal_position_rms_km": 1.2464713075289882e-08
+            },
+            "holdout": {
+              "position_rms_km": 0.0003795400647396202,
+              "position_max_km": 0.0006528337299424448,
+              "velocity_rms_km_s": 2.759513039963739e-08,
+              "velocity_max_km_s": 4.76031709089135e-08,
+              "radial_position_rms_km": 3.459795245313667e-05,
+              "transverse_position_rms_km": 0.0003779598421303787,
+              "normal_position_rms_km": 1.286020164197904e-08
+            }
+          },
+          "case": "geo",
+          "method": "fd",
+          "worker_elapsed_seconds": 0.22846079099690542,
+          "all_metrics_equal_to_public": true
+        },
+        {
+          "status": "passed",
+          "iterations": 5,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 2.6360704111785175e-07,
+              "position_max_km": 3.710081283828377e-07,
+              "velocity_rms_km_s": 1.9007649482950164e-11,
+              "velocity_max_km_s": 2.7066610459196e-11,
+              "radial_position_rms_km": 2.734693899968862e-10,
+              "transverse_position_rms_km": 1.2807252789837144e-09,
+              "normal_position_rms_km": 2.6360378806868705e-07
+            },
+            "holdout": {
+              "position_rms_km": 2.611035105482213e-07,
+              "position_max_km": 3.6900568216814493e-07,
+              "velocity_rms_km_s": 1.891169460323202e-11,
+              "velocity_max_km_s": 2.688403428551226e-11,
+              "radial_position_rms_km": 2.7431242785397474e-10,
+              "transverse_position_rms_km": 2.028853534524196e-09,
+              "normal_position_rms_km": 2.61095483926154e-07
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.00019170640230591553,
+              "position_max_km": 0.00032779992672101366,
+              "velocity_rms_km_s": 1.3808355711190883e-08,
+              "velocity_max_km_s": 2.3827086852102846e-08,
+              "radial_position_rms_km": 3.4597577309363794e-05,
+              "transverse_position_rms_km": 0.00018855861734227647,
+              "normal_position_rms_km": 1.2464713620181135e-08
+            },
+            "holdout": {
+              "position_rms_km": 0.0003795402523684317,
+              "position_max_km": 0.000652834161244712,
+              "velocity_rms_km_s": 2.7595143980112837e-08,
+              "velocity_max_km_s": 4.760320257873655e-08,
+              "radial_position_rms_km": 3.459797750357928e-05,
+              "transverse_position_rms_km": 0.0003779600282505676,
+              "normal_position_rms_km": 1.2860201665029767e-08
+            }
+          },
+          "case": "geo",
+          "method": "jax",
+          "worker_elapsed_seconds": 6.711319234993425,
+          "all_metrics_equal_to_public": true
+        }
+      ]
+    },
+    "historical_missions": {
+      "protocols": {
+        "gps": {
+          "sha256": "b714531b74b1fc8942f7df263d60e9ab7100716e28521acd1ea39c5309a997f6",
+          "frame": "TEME",
+          "position_unit": "km",
+          "velocity_unit": "km/s",
+          "time_scale": "UTC",
+          "raw_count": 5368,
+          "evaluation_count": 5368,
+          "fit_count": 300,
+          "holdout_count": 5068,
+          "raw_stride": 1,
+          "fit_start": "2006-10-15T23:59:47+00:00",
+          "fit_end": "2006-10-19T02:44:47+00:00",
+          "holdout_start": "2006-10-19T02:59:47+00:00",
+          "holdout_end": "2006-12-10T21:44:47+00:00",
+          "fit_seconds": 269100.0,
+          "holdout_seconds_after_fit_epoch": 4561200.0,
+          "cadence_seconds": [
+            900.0
+          ],
+          "fit_options": {
+            "epoch_obs": -1,
+            "max_iter": 35,
+            "lamda": 1.0,
+            "bstar": 1e-06,
+            "rms_epsilon": 0.0001,
+            "debug": true,
+            "hermitian": true,
+            "dx_limit": false,
+            "coe_limit": true,
+            "lm_reg": false,
+            "last_obs": 300,
+            "obs_stride": 1
+          }
+        },
+        "icesat": {
+          "sha256": "4372f1ccc97bb953de0a8efefd21e65ec107876931ac42d48a3226ccb399b752",
+          "frame": "TEME",
+          "position_unit": "km",
+          "velocity_unit": "km/s",
+          "time_scale": "UTC",
+          "raw_count": 6000,
+          "evaluation_count": 3000,
+          "fit_count": 2500,
+          "holdout_count": 500,
+          "raw_stride": 2,
+          "fit_start": "2003-02-19T20:59:47+00:00",
+          "fit_end": "2003-02-21T14:38:47+00:00",
+          "holdout_start": "2003-02-21T14:39:47+00:00",
+          "holdout_end": "2003-02-21T22:58:47+00:00",
+          "fit_seconds": 149940.0,
+          "holdout_seconds_after_fit_epoch": 30000.0,
+          "cadence_seconds": [
+            60.0
+          ],
+          "fit_options": {
+            "epoch_obs": -1,
+            "max_iter": 35,
+            "lamda": 1.0,
+            "bstar": 1e-06,
+            "rms_epsilon": 0.0001,
+            "debug": true,
+            "hermitian": true,
+            "dx_limit": false,
+            "coe_limit": true,
+            "lm_reg": false,
+            "last_obs": 2500,
+            "obs_stride": 1
+          }
+        }
+      },
+      "comparisons": [
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.1303498218483153,
+              "position_max_km": 0.23721718467993846,
+              "velocity_rms_km_s": 2.0109802036698408e-05,
+              "velocity_max_km_s": 3.313161155654607e-05,
+              "radial_position_rms_km": 0.07499280295769067,
+              "transverse_position_rms_km": 0.09251361765099851,
+              "normal_position_rms_km": 0.052994208264313
+            },
+            "holdout": {
+              "position_rms_km": 18.694063014090478,
+              "position_max_km": 37.52502940057225,
+              "velocity_rms_km_s": 0.002722470387993345,
+              "velocity_max_km_s": 0.005318516406239476,
+              "radial_position_rms_km": 0.5255350889263114,
+              "transverse_position_rms_km": 18.679467612642302,
+              "normal_position_rms_km": 0.5189359819284979
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.1314480943939755,
+              "position_max_km": 0.23261747036654257,
+              "velocity_rms_km_s": 2.017167225911552e-05,
+              "velocity_max_km_s": 3.27658820756313e-05,
+              "radial_position_rms_km": 0.07499946914677935,
+              "transverse_position_rms_km": 0.09403911136595965,
+              "normal_position_rms_km": 0.05301251438112917
+            },
+            "holdout": {
+              "position_rms_km": 18.68438571870566,
+              "position_max_km": 37.51459395703821,
+              "velocity_rms_km_s": 0.002721053423481653,
+              "velocity_max_km_s": 0.0053169873967182195,
+              "radial_position_rms_km": 0.5258304822322841,
+              "transverse_position_rms_km": 18.669794526606278,
+              "normal_position_rms_km": 0.5182126239580944
+            }
+          },
+          "case": "gps",
+          "method": "fd",
+          "worker_elapsed_seconds": 1.5587559429986868,
+          "all_metrics_equal_to_public": true,
+          "termination": {
+            "solution": true,
+            "criterion_sigma_absolute_met": false,
+            "criterion_sigma_relative_met": false,
+            "criterion_cost_relative_met": true
+          }
+        },
+        {
+          "status": "passed",
+          "iterations": 3,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.13034579461049925,
+              "position_max_km": 0.23727371807723321,
+              "velocity_rms_km_s": 2.0109185086818854e-05,
+              "velocity_max_km_s": 3.3131372116465e-05,
+              "radial_position_rms_km": 0.07499150528250131,
+              "transverse_position_rms_km": 0.09250897143564732,
+              "normal_position_rms_km": 0.0529942498015174
+            },
+            "holdout": {
+              "position_rms_km": 18.78277325903503,
+              "position_max_km": 37.72117809039794,
+              "velocity_rms_km_s": 0.002735425722923541,
+              "velocity_max_km_s": 0.0053469754489292075,
+              "radial_position_rms_km": 0.5254016845255901,
+              "transverse_position_rms_km": 18.76825051864974,
+              "normal_position_rms_km": 0.5189381845872012
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.13141778691149275,
+              "position_max_km": 0.23261747036654257,
+              "velocity_rms_km_s": 2.016834542526362e-05,
+              "velocity_max_km_s": 3.276612308251953e-05,
+              "radial_position_rms_km": 0.07499247493221785,
+              "transverse_position_rms_km": 0.09400232501029135,
+              "normal_position_rms_km": 0.0530125109093575
+            },
+            "holdout": {
+              "position_rms_km": 18.76690424843846,
+              "position_max_km": 37.70002421082202,
+              "velocity_rms_km_s": 0.002733104512616877,
+              "velocity_max_km_s": 0.005343890248818948,
+              "radial_position_rms_km": 0.5257093562270925,
+              "transverse_position_rms_km": 18.752380704814577,
+              "normal_position_rms_km": 0.5182110038689176
+            }
+          },
+          "case": "gps",
+          "method": "jax",
+          "worker_elapsed_seconds": 8.271790811995743,
+          "all_metrics_equal_to_public": true,
+          "termination": {
+            "solution": true,
+            "criterion_sigma_absolute_met": false,
+            "criterion_sigma_relative_met": false,
+            "criterion_cost_relative_met": true
+          }
+        },
+        {
+          "status": "passed",
+          "iterations": 4,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.588606338920146,
+              "position_max_km": 1.3553282814048762,
+              "velocity_rms_km_s": 0.0006081585635998662,
+              "velocity_max_km_s": 0.0011885247958431562,
+              "radial_position_rms_km": 0.1011987851380072,
+              "transverse_position_rms_km": 0.5608328780379621,
+              "normal_position_rms_km": 0.1472505042953183
+            },
+            "holdout": {
+              "position_rms_km": 0.917830108857308,
+              "position_max_km": 1.7089812614911488,
+              "velocity_rms_km_s": 0.0009564269529148532,
+              "velocity_max_km_s": 0.0016153841837027191,
+              "radial_position_rms_km": 0.1389352524808191,
+              "transverse_position_rms_km": 0.8947598182214278,
+              "normal_position_rms_km": 0.15004656623684004
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.5886157181592262,
+              "position_max_km": 1.353128108692911,
+              "velocity_rms_km_s": 0.0006081704033212809,
+              "velocity_max_km_s": 0.0011861165057090203,
+              "radial_position_rms_km": 0.10119872179690262,
+              "transverse_position_rms_km": 0.5608370464618396,
+              "normal_position_rms_km": 0.14727216195444104
+            },
+            "holdout": {
+              "position_rms_km": 0.9159548557002196,
+              "position_max_km": 1.7067903121792511,
+              "velocity_rms_km_s": 0.0009542762575554106,
+              "velocity_max_km_s": 0.0016127087146417189,
+              "radial_position_rms_km": 0.13893409339423543,
+              "transverse_position_rms_km": 0.8927822888926027,
+              "normal_position_rms_km": 0.15036754973469862
+            }
+          },
+          "case": "icesat",
+          "method": "fd",
+          "worker_elapsed_seconds": 10.055778350011678,
+          "all_metrics_equal_to_public": true,
+          "termination": {
+            "solution": true,
+            "criterion_sigma_absolute_met": false,
+            "criterion_sigma_relative_met": false,
+            "criterion_cost_relative_met": true
+          }
+        },
+        {
+          "status": "passed",
+          "iterations": 4,
+          "full_precision": {
+            "fit": {
+              "position_rms_km": 0.5886063389917409,
+              "position_max_km": 1.3553260150720852,
+              "velocity_rms_km_s": 0.0006081585667954922,
+              "velocity_max_km_s": 0.0011885222420711546,
+              "radial_position_rms_km": 0.10119877843832473,
+              "transverse_position_rms_km": 0.56083287932188,
+              "normal_position_rms_km": 0.14725050429584471
+            },
+            "holdout": {
+              "position_rms_km": 0.9178163803247451,
+              "position_max_km": 1.7089621919455045,
+              "velocity_rms_km_s": 0.0009564114057840073,
+              "velocity_max_km_s": 0.0016153635752921218,
+              "radial_position_rms_km": 0.13893528433917002,
+              "transverse_position_rms_km": 0.894745731216315,
+              "normal_position_rms_km": 0.150046563533435
+            }
+          },
+          "exported_tle": {
+            "fit": {
+              "position_rms_km": 0.5886157920055074,
+              "position_max_km": 1.3531261417969036,
+              "velocity_rms_km_s": 0.0006081704310535291,
+              "velocity_max_km_s": 0.001186114439463149,
+              "radial_position_rms_km": 0.10119872064769848,
+              "transverse_position_rms_km": 0.5608371240803082,
+              "normal_position_rms_km": 0.1472721623079828
+            },
+            "holdout": {
+              "position_rms_km": 0.9159541757692431,
+              "position_max_km": 1.7067891697037942,
+              "velocity_rms_km_s": 0.0009542754785505495,
+              "velocity_max_km_s": 0.0016127074896682648,
+              "radial_position_rms_km": 0.13893410532345518,
+              "transverse_position_rms_km": 0.8927815894538037,
+              "normal_position_rms_km": 0.15036754975533917
+            }
+          },
+          "case": "icesat",
+          "method": "jax",
+          "worker_elapsed_seconds": 29.912852629000554,
+          "all_metrics_equal_to_public": true,
+          "termination": {
+            "solution": true,
+            "criterion_sigma_absolute_met": false,
+            "criterion_sigma_relative_met": false,
+            "criterion_cost_relative_met": true
+          }
+        }
+      ]
+    },
+    "gps_fixed_bstar": {
+      "case": "historical GPS fixed Bstar",
+      "fixed_bstar": 0.0001,
+      "fit_count": 300,
+      "holdout_count": 5068,
+      "fit_span_seconds": 269100.0,
+      "holdout_span_from_fit_end_seconds": 4561200.0,
+      "iterations": 2,
+      "solver_converged": false,
+      "physical_result_acceptance": "Accepted historical result: approximately 130 m fit RMS; the roughly 53-day forecast limitation remains documented. No new release condition is introduced.",
+      "fit": {
+        "position_rms_km": 0.13034569698773146,
+        "velocity_rms_km_s": 2.0109504772539217e-05,
+        "position_max_km": 0.23727731498912366,
+        "velocity_max_km_s": 3.3132817429028255e-05
+      },
+      "holdout": {
+        "position_rms_km": 18.782980513060487,
+        "velocity_rms_km_s": 0.002735455963022724,
+        "position_max_km": 37.72152066105978,
+        "velocity_max_km_s": 0.005347024714773206
+      },
+      "fit_rtn_rms_km": {
+        "radial": 0.07499168313817854,
+        "transverse": 0.09250871356947617,
+        "normal": 0.052994208146184704
+      },
+      "holdout_rtn": "not recorded in selected fixed-Bstar receipt",
+      "exported_tle_metrics": "not recorded in selected fixed-Bstar receipt",
+      "worker_elapsed_seconds": null
+    },
+    "acceptance": "The 20 EQN, eight COE and four historical-mission matched comparisons have identical public/current full-precision and exported metrics (896 scalar checks), under existing zero-slack rules. This does not establish absolute physical truth or qualify the full 67-case catalogue."
+  },
+  "provenance": [
+    {
+      "receipt_id": "authored_eqn",
+      "basename": "accuracy-report.json",
+      "sha256": "6bbf6198bb98283f999983cfb3b540cc324316808f5c2e2048b546be6f30fcd3"
+    },
+    {
+      "receipt_id": "authored_coe",
+      "basename": "coe-accuracy-report.json",
+      "sha256": "9620694717c12dfb9ce43e27f876ed6b437a0878a4739e15add6b367d61b87e0"
+    },
+    {
+      "receipt_id": "historical_missions",
+      "basename": "mission-regression-report.json",
+      "sha256": "7be9501d54a544d424e857b334aa820dfbaa3ad07cd66f78b174fdfc1d32c171"
+    },
+    {
+      "receipt_id": "mission_protocol",
+      "basename": "input-source-audit.json",
+      "sha256": "673104226d51f027c0881c2e1a10cb7b9dec068254e61b29af7eacaffe96bd42"
+    },
+    {
+      "receipt_id": "fixed_bstar",
+      "basename": "technical-controls.json",
+      "sha256": "54c1884024459649baf7fc013c54c852ad4b132b6291b6d589a33a14097803ac"
+    },
+    {
+      "receipt_id": "fixed_bstar_rtn",
+      "basename": "residual-controls.json",
+      "sha256": "e60fc71bbd877268dfe1096e6bbc2ac7f2feb1307150a115ae30d60cb562d7a1"
+    },
+    {
+      "receipt_id": "appendix_c_subset",
+      "basename": "appendix-c-subset-report.json",
+      "sha256": "b1f2496cdf89ddcad88c62bb0d750793f8e0335215e84021ea3dc6b4b4f917e8"
+    },
+    {
+      "receipt_id": "public_context",
+      "basename": "public-08195-jax-context.json",
+      "sha256": "5dc866208a3a65f3284782a9f1b7f0640cfcf15d6fd0d2ca0f3f35d7d9320d95"
+    },
+    {
+      "receipt_id": "catalog_identity",
+      "basename": "reference-audit.json",
+      "sha256": "f2c1565d34ff85c2fa48160ceea63b1aabf52f1034320b71175e6cded3e3e86e"
+    }
+  ],
+  "limits": [
+    "Synthetic SGP4 self-consistency, numerical GMAT-generated observations and historical mission ephemerides are distinct input families.",
+    "A complete contemporary matched 67-case Appendix C campaign and the 2006 propagator verification campaign are not claimed. Historical exploratory notebook traces are not a complete modern fit/hold-out receipt.",
+    "Unconverged 08195/JAX last-iterate metrics remain unconverged. Matching public behavior provides context, not a waiver.",
+    "GPS/ICESat references are project-retained historical files. Exact identity to an official paper data bundle and physical uncertainties were not established.",
+    "Published errors measure reference agreement, not a general operational accuracy promise."
+  ]
+}
