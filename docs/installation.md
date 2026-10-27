@@ -2,7 +2,7 @@
 
 ## Normal project use
 
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then run commands from an unpacked source folder:
+Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then download and unpack the [v0.1.0rc1 tagged source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip) from the [GitHub prerelease](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1). Run commands from that source folder:
 
 ```bash
 uv run tle-tailor example
@@ -14,7 +14,19 @@ TLE Tailor currently requires standard CPython **>=3.14,<3.15**. It is tested lo
 
 Initial dependency installation needs network access. Example runtime uses bundled/native snapshots and does not download mission data or log in online. Do not mix a separately installed GMAT Python binding with gmatpy in one interpreter.
 
-## Existing Python environment
+## GitHub prerelease wheel
+
+The supported 0.1.0rc1 target is standard **CPython 3.14 on Linux x86_64**. In a new project environment:
+
+```bash
+python3.14 -m venv .venv
+.venv/bin/python -m pip install --only-binary=gmatpy "https://github.com/dcajacob/tle-tailor/releases/download/v0.1.0rc1/tle_tailor-0.1.0rc1-py3-none-any.whl"
+.venv/bin/tle-tailor example
+```
+
+This release candidate is distributed through [GitHub Releases](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1), not PyPI. The `py3-none-any` TLE Tailor wheel still depends on native packages; its tag does not broaden the supported interpreter/platform combination. Source-based walkthroughs and notebooks require the matching tagged source folder.
+
+## Source install in an existing Python environment
 
 From the source folder, in an environment you created for this project:
 
@@ -23,7 +35,7 @@ python -m pip install --only-binary=gmatpy .
 tle-tailor example
 ```
 
-This source-install command is intentional: the current TLE Tailor candidate has not been published as a new package release. To isolate a review or maintain another project environment, use a separate virtual environment rather than replacing that environment's dependencies.
+Use the tagged 0.1.0rc1 source for this prerelease. To isolate a review or maintain another project environment, use a separate virtual environment rather than replacing that environment's dependencies.
 
 ## Notebooks
 

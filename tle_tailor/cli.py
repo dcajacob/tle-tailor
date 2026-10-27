@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import importlib
+import json
 import re
 import sys
 
@@ -116,14 +117,47 @@ def _tle_lines(response, norad_id):
     return lines
 
 
+def _spacetrack_error_message(error):
+    """Classify API failures without exposing exception/request/response contents."""
+    from tle_tailor.spacetrack_auth import SpaceTrackCredentialsError
+    if isinstance(error, SpaceTrackCredentialsError):
+        return ("Space-Track credentials could not be obtained. Use an interactive terminal "
+                "or check the explicitly configured credential source.")
+    try:
+        import httpx2
+        from spacetrack.base import AuthenticationError
+    except ImportError:
+        return "Could not retrieve a TLE from the Space-Track API."
+    if isinstance(error, AuthenticationError):
+        return "Space-Track rejected the API sign-in."
+    if isinstance(error, httpx2.HTTPStatusError):
+        status = error.response.status_code
+        if status == 429:
+            return "Space-Track API rate limit reached (HTTP 429). Wait before retrying."
+        if status >= 500:
+            return f"Space-Track API service error (HTTP {status}). Try again later."
+        login = error.request.url.path.rstrip('/').endswith('/ajaxauth/login')
+        stage = "sign-in request" if login else "query"
+        return f"Space-Track API {stage} failed (HTTP {status})."
+    if isinstance(error, httpx2.TimeoutException):
+        return "Space-Track API request timed out. Check connectivity before retrying."
+    if isinstance(error, httpx2.RequestError):
+        return "Space-Track API transport failed. Check network or proxy settings."
+    if isinstance(error, json.JSONDecodeError):
+        return "Space-Track returned an unexpected API response."
+    if isinstance(error, OSError):
+        return "Space-Track client failed during local input/output."
+    return "Could not retrieve a TLE from the Space-Track API."
+
+
 def _spacetrack(args):
     from tle_tailor import spacetrack_auth
     try:
         client = (spacetrack_auth.get_spacetrack_client(prompt=False) if args.non_interactive
                   else spacetrack_auth.prompt_spacetrack_client())
         response = client.gp(norad_cat_id=args.norad_id, orderby="EPOCH desc", limit=1, format="tle")
-    except Exception:
-        print("Could not retrieve a TLE. Check credentials and the Space-Track connection.", file=sys.stderr)
+    except Exception as error:
+        print(_spacetrack_error_message(error), file=sys.stderr)
         return 1
     try:
         lines = _tle_lines(response, args.norad_id)

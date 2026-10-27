@@ -10,4 +10,4 @@
 - Release validation follows the declared notebook inventory, including the deployment companion. Public-source tests exercise caller-supplied inputs without bundling historical mission data.
 - [Fitting performance](performance.md) reports JAX cold startup separately from repeated fits in one process; warmed JAX is not universally faster than finite differences.
 
-This is a local candidate, not a newly published release. Standard CPython 3.14/Linux x86_64 is the tested target. External GMAT remains an advanced integration; historical research notebooks require their stated prerequisites.
+This is the [0.1.0rc1 GitHub prerelease](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1), a release candidate rather than a stable release. Standard CPython 3.14/Linux x86_64 is the supported target; [installation](installation.md) covers the wheel and tagged source. This version is not distributed through PyPI. External GMAT remains an advanced integration; historical research notebooks require their stated prerequisites.

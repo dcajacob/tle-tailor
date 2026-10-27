@@ -1,5 +1,6 @@
 """CLI dispatch and Space-Track contracts, with no numerical runs or services."""
 import importlib
+import json
 from types import SimpleNamespace
 
 import pytest
@@ -201,3 +202,56 @@ def test_interrupted_request_has_no_traceback(monkeypatch, capsys):
     monkeypatch.setattr(auth, "prompt_spacetrack_client", lambda: FakeClient(error=KeyboardInterrupt()))
     assert cli.main(["spacetrack", "--norad-id", "25544"]) == 130
     assert capsys.readouterr().err == "Cancelled.\n"
+
+
+@pytest.mark.parametrize('path,status,expected', [
+    ('/ajaxauth/login', 401, 'sign-in request failed (HTTP 401)'),
+    ('/ajaxauth/login', 403, 'sign-in request failed (HTTP 403)'),
+    ('/basicspacedata/model/gp', 401, 'query failed (HTTP 401)'),
+    ('/basicspacedata/model/gp', 403, 'query failed (HTTP 403)'),
+    ('/basicspacedata/model/gp', 400, 'query failed (HTTP 400)'),
+    ('/ajaxauth/login', 429, 'rate limit reached (HTTP 429)'),
+    ('/basicspacedata/model/gp', 503, 'service error (HTTP 503)'),
+])
+def test_http_failures_report_only_safe_status_and_stage(path, status, expected, monkeypatch, capsys):
+    import httpx2
+    request = httpx2.Request('POST' if path.endswith('/login') else 'GET',
+                            'https://example.invalid' + path + '?secret=' + SENSITIVE,
+                            headers={'Authorization': SENSITIVE}, content=SENSITIVE.encode())
+    response = httpx2.Response(status, request=request, content=SENSITIVE.encode())
+    error = httpx2.HTTPStatusError(SENSITIVE, request=request, response=response)
+    monkeypatch.setattr(auth, 'prompt_spacetrack_client', lambda: FakeClient(error=error))
+    assert cli.main(['spacetrack', '--norad-id', '25544']) == 1
+    output = capsys.readouterr()
+    assert output.out == '' and expected in output.err
+    assert SENSITIVE not in output.err
+    assert 'example.invalid' not in output.err and path not in output.err
+    assert 'Traceback' not in output.err
+
+
+@pytest.mark.parametrize('kind,expected', [
+    ('rejected', 'rejected the API sign-in'),
+    ('timeout', 'request timed out'),
+    ('transport', 'transport failed'),
+    ('json', 'unexpected API response'),
+    ('input', 'credentials could not be obtained'),
+    ('local', 'failed during local input/output'),
+])
+def test_client_failure_categories_do_not_echo_details(kind, expected, monkeypatch, capsys):
+    import httpx2
+    from spacetrack.base import AuthenticationError
+    request = httpx2.Request('POST', 'https://example.invalid/ajaxauth/login?secret=' + SENSITIVE)
+    errors = {
+        'rejected': AuthenticationError(SENSITIVE),
+        'timeout': httpx2.ReadTimeout(SENSITIVE, request=request),
+        'transport': httpx2.ConnectError(SENSITIVE, request=request),
+        'json': json.JSONDecodeError(SENSITIVE, SENSITIVE, 0),
+        'input': auth.SpaceTrackCredentialsError(SENSITIVE),
+        'local': OSError(SENSITIVE),
+    }
+    monkeypatch.setattr(auth, 'prompt_spacetrack_client', lambda: FakeClient(error=errors[kind]))
+    assert cli.main(['spacetrack', '--norad-id', '25544']) == 1
+    output = capsys.readouterr()
+    assert output.out == '' and expected in output.err
+    assert SENSITIVE not in output.err and 'example.invalid' not in output.err
+    assert 'Traceback' not in output.err
