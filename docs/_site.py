@@ -51,10 +51,11 @@ PUBLIC_NOTEBOOKS = (
     "tle_tailor/examples/notebooks/maintained/icesat_examples/tlefit_eqn_gps_jax_icesat.ipynb",
 )
 PREVIEW_BANNER = (
-    "> **Release candidate:** Install the [0.1.0rc1 GitHub prerelease]"
-    "(https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1) for these commands. "
+    "> **Release candidate:** Install [0.1.0rc1 from PyPI]"
+    "(https://pypi.org/project/tle-tailor/0.1.0rc1/) with the explicit "
+    "`tle-tailor==0.1.0rc1` pin for these commands. "
     "The supported target is standard CPython 3.14 on Linux x86_64. "
-    "Public `main` and PyPI do not provide this prerelease.\n\n"
+    "Public `main` remains the historical source; use the prerelease or its matching tag.\n\n"
 )
 _ORIGINS: dict[str, str] = {}
 _DESTINATIONS: dict[str, str] = {}

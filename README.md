@@ -6,15 +6,18 @@ For a launch-provider orbit, TLE Tailor uses the bundled **gmatpy** numerical pr
 
 ## Get your first TLE
 
-With [uv](https://docs.astral.sh/uv/getting-started/installation/) installed, download and unpack the [v0.1.0rc1 source archive](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip) from the [GitHub prerelease](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1), open that project folder and run:
+On standard **CPython 3.14 / Linux x86_64**, create an isolated environment and install the explicitly pinned [0.1.0rc1 prerelease](https://pypi.org/project/tle-tailor/0.1.0rc1/):
 
 ```bash
-uv run tle-tailor example --output deployment.tle
+python3.14 -m venv .venv
+. .venv/bin/activate
+python -m pip install --only-binary=gmatpy tle-tailor==0.1.0rc1
+tle-tailor example --output deployment.tle
 ```
 
 This offline demonstration uses editable **osculating Keplerian elements**, a declared UTC epoch and EarthMJ2000Eq frame. It fits a 12,000-second arc, prints position/velocity fit errors, and saves two TLE lines. Existing output files are never overwritten. The demo values are synthetic; use the [short quickstart](QUICKSTART.md) to substitute your provider's inputs.
 
-The supported prerelease target is standard **CPython 3.14 on Linux x86_64**, with a compatible gmatpy wheel. This is a release candidate; see [installation and platform support](docs/installation.md) for the [GitHub wheel](https://github.com/dcajacob/tle-tailor/releases/download/v0.1.0rc1/tle_tailor-0.1.0rc1-py3-none-any.whl) and source options. TLE Tailor 0.1.0rc1 is distributed through GitHub, not PyPI.
+The supported prerelease target is standard **CPython 3.14 on Linux x86_64**, with a compatible gmatpy wheel. This is a release candidate; see [installation and platform support](docs/installation.md) for the matching [tagged source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip), notebooks and [GitHub wheel](https://github.com/dcajacob/tle-tailor/releases/download/v0.1.0rc1/tle_tailor-0.1.0rc1-py3-none-any.whl). The explicit version pin selects the prerelease.
 
 ## Use your own inputs
 
