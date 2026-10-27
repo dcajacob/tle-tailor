@@ -1,0 +1,585 @@
+{
+  "schema_version": 1,
+  "recorded_date_utc": "2026-10-27",
+  "measurement": "synchronized whole-fit wall time",
+  "hardware": {
+    "cpu_model": "12th Gen Intel(R) Core(TM) i7-12700H",
+    "logical_cpus": 20,
+    "architecture": "x86_64",
+    "os": "Linux",
+    "python": "3.14.4",
+    "versions": {
+      "numpy": "2.5.3",
+      "scipy": "1.18.1",
+      "sgp4": "2.27",
+      "skyfield": "1.55",
+      "jax": "0.11.2",
+      "jaxlib": "0.11.2"
+    }
+  },
+  "repetitions_after_first_fit": 5,
+  "thread_environment": {
+    "OMP_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "fit_options": {
+    "epoch_obs": 0,
+    "max_iter": 35,
+    "rms_epsilon": 0.002,
+    "lamda": 1.0,
+    "bstar": 1e-06,
+    "debug": false
+  },
+  "frame": "TEME",
+  "time_scale": "UTC",
+  "reference": "Authored native SGP4/WGS72 improved-mode self-consistency inputs; not real observations or GMAT",
+  "sampling": "61 inclusive fit epochs over one mean period; 31 holdouts P+P/62 through 1.5P. UTC datetime microsecond resolution.",
+  "timing_contract": "Separate fresh process for each case/method. Imports/reference setup outside fit timing. First fit and each repeated fit reset identical inputs/options and optimizer state. Jacobians synchronize through numpy.asarray inside the fitter; numerical returns also explicitly awaited/converted. Accuracy audit and convergence profiling outside timed runs. Persistent compilation cache disabled. First call/import timings are wall times, not pure compilation measurements.",
+  "benchmark_script_sha256": "c9b69058c9d6a2944289e8d0e7a08e968732bf223bc60795196cc411fb588a1f",
+  "comparability_failures": [],
+  "results": [
+    {
+      "case": "leo",
+      "method": "fd",
+      "status": "converged",
+      "result": {
+        "status": "converged",
+        "iterations": 3,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9999935600082176,
+          "residual_test": 0.9999999594317037
+        },
+        "weighted_sigma_diagnostic": 1.2432658883216766e-06,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 5.23123816664676e-12,
+            "position_max_km": 1.5006662579253316e-11,
+            "velocity_rms_km_s": 5.293316763635581e-15,
+            "velocity_max_km_s": 1.567735550987224e-14,
+            "radial_position_rms_km": 2.2469943762872344e-12,
+            "transverse_position_rms_km": 4.666146884073416e-12,
+            "normal_position_rms_km": 7.375244303528183e-13
+          },
+          "holdout": {
+            "position_rms_km": 9.479971259755893e-12,
+            "position_max_km": 2.454793425616259e-11,
+            "velocity_rms_km_s": 9.963747848004223e-15,
+            "velocity_max_km_s": 2.6243568241847747e-14,
+            "radial_position_rms_km": 2.1887112009795496e-12,
+            "transverse_position_rms_km": 9.192696849408028e-12,
+            "normal_position_rms_km": 7.574450471077705e-13
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 1.2895497029120738e-06,
+            "position_max_km": 2.202923616977717e-06,
+            "velocity_rms_km_s": 1.3737626079492915e-09,
+            "velocity_max_km_s": 2.368720396448142e-09,
+            "radial_position_rms_km": 2.326127417463764e-07,
+            "transverse_position_rms_km": 1.268396230073087e-06,
+            "normal_position_rms_km": 8.672913190288495e-10
+          },
+          "holdout": {
+            "position_rms_km": 2.779254871626742e-06,
+            "position_max_km": 3.284314219570584e-06,
+            "velocity_rms_km_s": 2.9882533656644257e-09,
+            "velocity_max_km_s": 3.528095502649112e-09,
+            "radial_position_rms_km": 2.2931873664253602e-07,
+            "transverse_position_rms_km": 2.769777474500701e-06,
+            "normal_position_rms_km": 1.816654664017663e-09
+          }
+        },
+        "solution_sha256": "120b2f200a94e414bb8c45a92159bf71cbdcd7519fa0b556d41e924abd6e5caa",
+        "exported_tle_sha256": "e59acf8f56baab8ca7cb462f18de3c98a23468daa23e242247953ce5bd8c69a7"
+      },
+      "first_fit_seconds": 0.07886486900679301,
+      "import_plus_first_fit_seconds": 0.30511053701047786,
+      "process_launch_to_first_fit_seconds": 0.39417296698957216,
+      "warm_seconds": [
+        0.1427597220026655,
+        0.07244757699663751,
+        0.06898272100079339,
+        0.06925564800621942,
+        0.07081763200403657
+      ],
+      "warm_median_seconds": 0.07081763200403657,
+      "warm_min_seconds": 0.06898272100079339,
+      "warm_max_seconds": 0.1427597220026655,
+      "repeats_identical_solution": true,
+      "protocol": {
+        "case": "leo",
+        "elements": {
+          "a_km": 7000.0,
+          "e": 0.001,
+          "i_deg": 51.6,
+          "raan_deg": 40.0,
+          "argp_deg": 30.0,
+          "m_deg": 20.0,
+          "bstar": 1e-05
+        },
+        "epoch_utc": "2020-01-01T00:00:00+00:00",
+        "period_seconds": 5828.514018806263,
+        "fit_count": 61,
+        "holdout_count": 31,
+        "observation_sha256": "8ee2d05bedecc24f0e0b9ae857642cdfcb60ebad502c6e5bb5bdc5b24ad545d4",
+        "states_shape": [
+          92,
+          2,
+          3
+        ],
+        "states_dtype": "float64"
+      },
+      "setup_seconds": 0.03785503101244103,
+      "fitter_import_seconds": 0.22624566800368484,
+      "source_sha256": {
+        "fitter": "115e3b5710b366ab872da1a3f37160385c1fc63f89aeb6147bac6bef288cdadd"
+      },
+      "worker_total_seconds": 0.8792417320073582,
+      "returncode": 0,
+      "fresh_process_wall_seconds": 1.0162881729920628,
+      "worker_setup_plus_import_plus_first_fit_seconds": 0.3429655680229189
+    },
+    {
+      "case": "leo",
+      "method": "jax",
+      "status": "converged",
+      "result": {
+        "status": "converged",
+        "iterations": 3,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9999942030770477,
+          "residual_test": 0.9999999720795897
+        },
+        "weighted_sigma_diagnostic": 1.1188806948246476e-06,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 4.079057296052307e-12,
+            "position_max_km": 8.434306887916777e-12,
+            "velocity_rms_km_s": 4.4539704473361784e-15,
+            "velocity_max_km_s": 8.611209269944328e-15,
+            "radial_position_rms_km": 9.60089946146501e-13,
+            "transverse_position_rms_km": 3.904922278628822e-12,
+            "normal_position_rms_km": 6.844835408205569e-13
+          },
+          "holdout": {
+            "position_rms_km": 9.805579442905587e-12,
+            "position_max_km": 2.513070627109864e-11,
+            "velocity_rms_km_s": 1.0498863732078113e-14,
+            "velocity_max_km_s": 2.7968421920523308e-14,
+            "radial_position_rms_km": 1.5124935082032733e-12,
+            "transverse_position_rms_km": 9.661594398588494e-12,
+            "normal_position_rms_km": 7.178755295586081e-13
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 1.2895497029120738e-06,
+            "position_max_km": 2.202923616977717e-06,
+            "velocity_rms_km_s": 1.3737626079492915e-09,
+            "velocity_max_km_s": 2.368720396448142e-09,
+            "radial_position_rms_km": 2.326127417463764e-07,
+            "transverse_position_rms_km": 1.268396230073087e-06,
+            "normal_position_rms_km": 8.672913190288495e-10
+          },
+          "holdout": {
+            "position_rms_km": 2.779254871626742e-06,
+            "position_max_km": 3.284314219570584e-06,
+            "velocity_rms_km_s": 2.9882533656644257e-09,
+            "velocity_max_km_s": 3.528095502649112e-09,
+            "radial_position_rms_km": 2.2931873664253602e-07,
+            "transverse_position_rms_km": 2.769777474500701e-06,
+            "normal_position_rms_km": 1.816654664017663e-09
+          }
+        },
+        "solution_sha256": "4b063af3c9df6c218c3054756bd5d729feec5c3bbefd733ccd4371c9b55c0cd8",
+        "exported_tle_sha256": "e59acf8f56baab8ca7cb462f18de3c98a23468daa23e242247953ce5bd8c69a7"
+      },
+      "first_fit_seconds": 3.734767005997128,
+      "import_plus_first_fit_seconds": 6.992335771996295,
+      "process_launch_to_first_fit_seconds": 7.084606874996098,
+      "warm_seconds": [
+        0.05686279600195121,
+        0.0651554939977359,
+        0.04417191000538878,
+        0.0481237210042309,
+        0.03826017900428269
+      ],
+      "warm_median_seconds": 0.0481237210042309,
+      "warm_min_seconds": 0.03826017900428269,
+      "warm_max_seconds": 0.0651554939977359,
+      "repeats_identical_solution": true,
+      "protocol": {
+        "case": "leo",
+        "elements": {
+          "a_km": 7000.0,
+          "e": 0.001,
+          "i_deg": 51.6,
+          "raan_deg": 40.0,
+          "argp_deg": 30.0,
+          "m_deg": 20.0,
+          "bstar": 1e-05
+        },
+        "epoch_utc": "2020-01-01T00:00:00+00:00",
+        "period_seconds": 5828.514018806263,
+        "fit_count": 61,
+        "holdout_count": 31,
+        "observation_sha256": "8ee2d05bedecc24f0e0b9ae857642cdfcb60ebad502c6e5bb5bdc5b24ad545d4",
+        "states_shape": [
+          92,
+          2,
+          3
+        ],
+        "states_dtype": "float64"
+      },
+      "setup_seconds": 0.03668412800470833,
+      "fitter_import_seconds": 3.2575687659991672,
+      "source_sha256": {
+        "fitter": "4bebffff27a09cd23c73a7c599e8430eaa6ffb4cb7e03803ae4bdcc7c67df76f",
+        "common_jax": "d61ad4488b8d7ad95a510c5b9c1ccbf4311720993f11e1ed15482c5beb3092a5"
+      },
+      "jax": {
+        "backend": "cpu",
+        "devices": [
+          "cpu:0"
+        ],
+        "x64": true,
+        "persistent_cache_enabled": false
+      },
+      "worker_total_seconds": 7.3365690990031,
+      "returncode": 0,
+      "fresh_process_wall_seconds": 7.582451584006776,
+      "worker_setup_plus_import_plus_first_fit_seconds": 7.029019900001003
+    },
+    {
+      "case": "geo",
+      "method": "fd",
+      "status": "converged",
+      "result": {
+        "status": "converged",
+        "iterations": 3,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9999745483962452,
+          "residual_test": 0.9999999990449769
+        },
+        "weighted_sigma_diagnostic": 3.877495906096381e-05,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 2.4988277292419588e-11,
+            "position_max_km": 1.059395886653836e-10,
+            "velocity_rms_km_s": 1.9162939779936115e-15,
+            "velocity_max_km_s": 7.491343478086895e-15,
+            "radial_position_rms_km": 7.7957253231962e-12,
+            "transverse_position_rms_km": 2.3741113404658058e-11,
+            "normal_position_rms_km": 1.4249045426004532e-14
+          },
+          "holdout": {
+            "position_rms_km": 3.230093249961701e-11,
+            "position_max_km": 7.548814585466303e-11,
+            "velocity_rms_km_s": 2.2853026710815798e-15,
+            "velocity_max_km_s": 5.467215449746978e-15,
+            "radial_position_rms_km": 1.0824045750084173e-11,
+            "transverse_position_rms_km": 3.043337167204341e-11,
+            "normal_position_rms_km": 1.2752104307790816e-14
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 0.00019198728680749533,
+            "position_max_km": 0.0003277520152875474,
+            "velocity_rms_km_s": 1.3833646340207446e-08,
+            "velocity_max_km_s": 2.3824536054125056e-08,
+            "radial_position_rms_km": 3.459555378930368e-05,
+            "transverse_position_rms_km": 0.00018884455457224576,
+            "normal_position_rms_km": 1.2732829914190195e-08
+          },
+          "holdout": {
+            "position_rms_km": 0.0004136224100426424,
+            "position_max_km": 0.0004892347841421024,
+            "velocity_rms_km_s": 3.007309206860009e-08,
+            "velocity_max_km_s": 3.557629989258138e-08,
+            "radial_position_rms_km": 3.433029516103012e-05,
+            "transverse_position_rms_km": 0.00041219525562220544,
+            "normal_position_rms_km": 1.2891278170378148e-08
+          }
+        },
+        "solution_sha256": "239c3b2322722f851c770f1f897f4e68bdd6f2c31e483149ec469bf93605363a",
+        "exported_tle_sha256": "54cbf56f70fae3c4f437d12541789a6a8f8c48fee476e588a3f178f58f68e66f"
+      },
+      "first_fit_seconds": 0.08373840899730567,
+      "import_plus_first_fit_seconds": 0.2809836069936864,
+      "process_launch_to_first_fit_seconds": 0.3638459840003634,
+      "warm_seconds": [
+        0.06884101600735448,
+        0.07165396399796009,
+        0.08202637199428864,
+        0.07557497599918861,
+        0.074593172990717
+      ],
+      "warm_median_seconds": 0.074593172990717,
+      "warm_min_seconds": 0.06884101600735448,
+      "warm_max_seconds": 0.08202637199428864,
+      "repeats_identical_solution": true,
+      "protocol": {
+        "case": "geo",
+        "elements": {
+          "a_km": 42164.0,
+          "e": 0.001,
+          "i_deg": 0.1,
+          "raan_deg": 50.0,
+          "argp_deg": 35.0,
+          "m_deg": 20.0,
+          "bstar": 0.0
+        },
+        "epoch_utc": "2020-01-01T00:00:00+00:00",
+        "period_seconds": 86163.53183540523,
+        "fit_count": 61,
+        "holdout_count": 31,
+        "observation_sha256": "5b628aa414f6ffe0f77618cd6b91578a2e88fabbb7366df95bb292fb698f9a9b",
+        "states_shape": [
+          92,
+          2,
+          3
+        ],
+        "states_dtype": "float64"
+      },
+      "setup_seconds": 0.03281483599857893,
+      "fitter_import_seconds": 0.19724519799638074,
+      "source_sha256": {
+        "fitter": "115e3b5710b366ab872da1a3f37160385c1fc63f89aeb6147bac6bef288cdadd"
+      },
+      "worker_total_seconds": 0.8043458339961944,
+      "returncode": 0,
+      "fresh_process_wall_seconds": 0.9665395720076049,
+      "worker_setup_plus_import_plus_first_fit_seconds": 0.31379844299226534
+    },
+    {
+      "case": "geo",
+      "method": "jax",
+      "status": "converged",
+      "result": {
+        "status": "converged",
+        "iterations": 5,
+        "termination": {
+          "solution": true,
+          "dx_test": true,
+          "convergence_test": 0.9696127666266852,
+          "residual_test": 0.9990781965032521
+        },
+        "weighted_sigma_diagnostic": 0.00020967644287657718,
+        "full_precision": {
+          "fit": {
+            "position_rms_km": 1.5675995490190194e-07,
+            "position_max_km": 2.2042536726528458e-07,
+            "velocity_rms_km_s": 1.1290098787622524e-11,
+            "velocity_max_km_s": 1.606036501584336e-11,
+            "radial_position_rms_km": 9.297474019771358e-11,
+            "transverse_position_rms_km": 5.073118346687581e-09,
+            "normal_position_rms_km": 1.566778168305409e-07
+          },
+          "holdout": {
+            "position_rms_km": 1.5618332218233858e-07,
+            "position_max_km": 2.2047765601655168e-07,
+            "velocity_rms_km_s": 1.1361157033591511e-11,
+            "velocity_max_km_s": 1.6076981333259847e-11,
+            "radial_position_rms_km": 1.1013785960264618e-10,
+            "transverse_position_rms_km": 5.221088686536489e-09,
+            "normal_position_rms_km": 1.5609599043694675e-07
+          }
+        },
+        "exported_tle": {
+          "fit": {
+            "position_rms_km": 0.00019198722900526616,
+            "position_max_km": 0.00032775189944743313,
+            "velocity_rms_km_s": 1.3833642173696775e-08,
+            "velocity_max_km_s": 2.3824527322894215e-08,
+            "radial_position_rms_km": 3.459554201772095e-05,
+            "transverse_position_rms_km": 0.0001888444979645836,
+            "normal_position_rms_km": 1.2732830874456044e-08
+          },
+          "holdout": {
+            "position_rms_km": 0.0004136222205999727,
+            "position_max_km": 0.0004892345555413621,
+            "velocity_rms_km_s": 3.007307825606249e-08,
+            "velocity_max_km_s": 3.557628339892477e-08,
+            "radial_position_rms_km": 3.433027005147329e-05,
+            "transverse_position_rms_km": 0.00041219506761491016,
+            "normal_position_rms_km": 1.2891278130943997e-08
+          }
+        },
+        "solution_sha256": "76b1b4ac0ebec8661e239f1f5db264bb247a10b8395843e462264c715b80c637",
+        "exported_tle_sha256": "0d5a24f108ac25cd2d6fead4de8d3e765734b905b2812a3a454121781a625f76"
+      },
+      "first_fit_seconds": 2.8474084560002666,
+      "import_plus_first_fit_seconds": 5.841787105004187,
+      "process_launch_to_first_fit_seconds": 5.929345598007785,
+      "warm_seconds": [
+        0.09186926500115078,
+        0.0801724900084082,
+        0.07130573999893386,
+        0.07796107500325888,
+        0.060297268006252125
+      ],
+      "warm_median_seconds": 0.07796107500325888,
+      "warm_min_seconds": 0.060297268006252125,
+      "warm_max_seconds": 0.09186926500115078,
+      "repeats_identical_solution": true,
+      "protocol": {
+        "case": "geo",
+        "elements": {
+          "a_km": 42164.0,
+          "e": 0.001,
+          "i_deg": 0.1,
+          "raan_deg": 50.0,
+          "argp_deg": 35.0,
+          "m_deg": 20.0,
+          "bstar": 0.0
+        },
+        "epoch_utc": "2020-01-01T00:00:00+00:00",
+        "period_seconds": 86163.53183540523,
+        "fit_count": 61,
+        "holdout_count": 31,
+        "observation_sha256": "5b628aa414f6ffe0f77618cd6b91578a2e88fabbb7366df95bb292fb698f9a9b",
+        "states_shape": [
+          92,
+          2,
+          3
+        ],
+        "states_dtype": "float64"
+      },
+      "setup_seconds": 0.03562311100540683,
+      "fitter_import_seconds": 2.99437864900392,
+      "source_sha256": {
+        "fitter": "4bebffff27a09cd23c73a7c599e8430eaa6ffb4cb7e03803ae4bdcc7c67df76f",
+        "common_jax": "d61ad4488b8d7ad95a510c5b9c1ccbf4311720993f11e1ed15482c5beb3092a5"
+      },
+      "jax": {
+        "backend": "cpu",
+        "devices": [
+          "cpu:0"
+        ],
+        "x64": true,
+        "persistent_cache_enabled": false
+      },
+      "worker_total_seconds": 6.38065555600042,
+      "returncode": 0,
+      "fresh_process_wall_seconds": 6.633105310000246,
+      "worker_setup_plus_import_plus_first_fit_seconds": 5.877410216009594
+    }
+  ],
+  "scope": "Two authored orbit cases and four fresh-process workers, five same-process warm repetitions each. Not the complete application or Vallado catalogue performance.",
+  "timing_environment": "Other coordinated project CPU test jobs paused. No CPU affinity/frequency lock; medians/ranges describe five observations, not confidence intervals.",
+  "source_provenance": {
+    "measurement_harness_sha256": "c9b69058c9d6a2944289e8d0e7a08e968732bf223bc60795196cc411fb588a1f",
+    "published_harness_sha256": "c9b69058c9d6a2944289e8d0e7a08e968732bf223bc60795196cc411fb588a1f",
+    "diagnostic_harness_sha256": "3959d9fdfa88d0409780f49ecd036151661504e8a6289b777de2c3f4bda242dd",
+    "difference": "Published harness is exactly the final timed harness. Earlier separate cache diagnostics used the preserved diagnostic harness; source inspection confirmed unchanged Jacobian/fitter callables and scientific options."
+  },
+  "cache_diagnostic": {
+    "fit_cache_steps": [
+      {
+        "probe": "first fit",
+        "cache_before": 1,
+        "cache_after": 2,
+        "iterations": 3
+      },
+      {
+        "probe": "identical fit reset",
+        "cache_before": 2,
+        "cache_after": 2,
+        "iterations": 3
+      },
+      {
+        "probe": "changed dynamic Bstar seed",
+        "cache_before": 2,
+        "cache_after": 2,
+        "iterations": 3
+      },
+      {
+        "probe": "changed sample count 61 to 31",
+        "cache_before": 2,
+        "cache_after": 2,
+        "iterations": 3
+      }
+    ],
+    "observed_argument_signatures": [
+      {
+        "arguments": [
+          "~float64[]",
+          "float64[]",
+          "float64[]",
+          "~float64[]",
+          "float64[]",
+          "float64[]",
+          "~float64[]",
+          "~float64[]"
+        ],
+        "call_count": 210
+      },
+      {
+        "arguments": [
+          "float64[]",
+          "float64[]",
+          "float64[]",
+          "float64[]",
+          "float64[]",
+          "float64[]",
+          "float64[]",
+          "~float64[]"
+        ],
+        "call_count": 420
+      }
+    ],
+    "direct_dtype_probes": [
+      {
+        "scalar_dtype": "float64",
+        "cache_before": 2,
+        "cache_after": 3
+      },
+      {
+        "scalar_dtype": "float32",
+        "cache_before": 3,
+        "cache_after": 4
+      },
+      {
+        "scalar_dtype": "float64",
+        "cache_before": 4,
+        "cache_after": 4
+      }
+    ],
+    "vector_shape_probe": {
+      "status": "unsupported_input_shape",
+      "exception_type": "TypeError",
+      "cache_before": 4,
+      "cache_after": 5
+    },
+    "static_arguments": [],
+    "jacobian_object_reused": true,
+    "note": "Separate diagnostic process, logging enabled; not a timing result. Dynamic-value and shape probes do not qualify new scientific workflows.",
+    "observed_compile_stages": {
+      "import_time_demo_jacobian": 1,
+      "first_whole_fit": 1,
+      "identical_whole_fit_repeat": 0,
+      "changed_dynamic_bstar_seed": 0,
+      "changed_fit_sample_count_61_to_31": 0,
+      "direct_strong_float64_scalar_probe": 1,
+      "direct_float32_scalar_probe": 1,
+      "direct_strong_float64_repeat": 0
+    },
+    "dispatch_cache_counts_are_not_executable_counts": true,
+    "interpretation": "The import demo warms the initial weak-type signature. A later optimizer iteration first needs the second scalar signature. Removing eager import warming would move work into the first fit, not establish a reduction in total cold cost. No production core change was made."
+  },
+  "references": [
+    "https://docs.jax.dev/en/latest/201/profiling.html",
+    "https://docs.jax.dev/en/latest/jit-compilation.html",
+    "https://docs.jax.dev/en/latest/async_dispatch.html",
+    "https://docs.jax.dev/en/latest/debugging/slow_tracing_compilation.html"
+  ]
+}

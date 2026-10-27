@@ -20,7 +20,7 @@ PUBLIC_PAGES = (
     "installation.md", "local_gmat.md", "propagators.md", "redistribution.md",
     "release-notes.md", "spacetrack.md", "support.md", "theory.md", "workflows.md",
     "walkthrough-deployment.md", "walkthrough-gps.md", "walkthrough-edie.md",
-    "validation-results.md",
+    "validation-results.md", "performance.md",
 )
 SOURCE_ASSETS = (
     "tle_tailor/examples/scripts/deployment.py",
@@ -32,7 +32,7 @@ OPTIONAL_DRIVERS = (
     "docs/examples/deployment_to_tle.py", "docs/examples/gps_to_tle.py",
     "docs/examples/novatel_edie_to_tle.py", "docs/examples/requirements-edie.txt",
 )
-OPTIONAL_SITE_ASSETS = ("docs/assets/validation-results.json",)
+OPTIONAL_SITE_ASSETS = ("docs/assets/validation-results.json", "docs/assets/fitting-performance.json")
 PUBLIC_NOTEBOOKS = (
     "tle_tailor/examples/notebooks/deployment.ipynb",
     "tle_tailor/examples/notebooks/maintained/basic_examples/tlefit_coe_fd.ipynb",
@@ -51,8 +51,10 @@ PUBLIC_NOTEBOOKS = (
     "tle_tailor/examples/notebooks/maintained/icesat_examples/tlefit_eqn_gps_jax_icesat.ipynb",
 )
 PREVIEW_BANNER = (
-    "> **Upcoming release preview:** Commands on this site require the unreleased "
-    "**0.1.0rc1 source**. Public `main` and PyPI do not provide these unreleased APIs.\n\n"
+    "> **Release candidate:** Install the [0.1.0rc1 GitHub prerelease]"
+    "(https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1) for these commands. "
+    "The supported target is standard CPython 3.14 on Linux x86_64. "
+    "Public `main` and PyPI do not provide this prerelease.\n\n"
 )
 _ORIGINS: dict[str, str] = {}
 _DESTINATIONS: dict[str, str] = {}

@@ -1,4 +1,4 @@
-> **Documentation preview only:** This branch is based on the public 2022 source and carries upcoming-release documentation and example downloads. It is not an installable copy of the upcoming release. Commands below require the matching unreleased 0.1.0rc1 source; neither this documentation branch, public `main` nor PyPI provides those APIs.
+> **Documentation branch:** This branch is not an installable copy of TLE Tailor 0.1.0rc1. Use the [GitHub prerelease](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1) or its [tagged source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip) for the commands below.
 
 # TLE Tailor
 
@@ -8,7 +8,7 @@ For a launch-provider orbit, TLE Tailor uses the bundled **gmatpy** numerical pr
 
 ## Get your first TLE
 
-With [uv](https://docs.astral.sh/uv/getting-started/installation/) installed, open the downloaded project folder and run:
+With [uv](https://docs.astral.sh/uv/getting-started/installation/) installed, download and unpack the [v0.1.0rc1 source archive](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip) from the [GitHub prerelease](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1), open that project folder and run:
 
 ```bash
 uv run tle-tailor example --output deployment.tle
@@ -16,7 +16,7 @@ uv run tle-tailor example --output deployment.tle
 
 This offline demonstration uses editable **osculating Keplerian elements**, a declared UTC epoch and EarthMJ2000Eq frame. It fits a 12,000-second arc, prints position/velocity fit errors, and saves two TLE lines. Existing output files are never overwritten. The demo values are synthetic; use the [short quickstart](QUICKSTART.md) to substitute your provider's inputs.
 
-Requires standard **CPython 3.14** and a compatible gmatpy wheel. TLE Tailor is currently tested on **Linux x86_64**; see [installation and platform support](docs/installation.md) before using another platform. This candidate is installed from its source folder, not a newly published TLE Tailor release.
+The supported prerelease target is standard **CPython 3.14 on Linux x86_64**, with a compatible gmatpy wheel. This is a release candidate; see [installation and platform support](docs/installation.md) for the [GitHub wheel](https://github.com/dcajacob/tle-tailor/releases/download/v0.1.0rc1/tle_tailor-0.1.0rc1-py3-none-any.whl) and source options. TLE Tailor 0.1.0rc1 is distributed through GitHub, not PyPI.
 
 ## Use your own inputs
 
@@ -31,6 +31,6 @@ Worked guides: [deployment prediction](docs/walkthrough-deployment.md), [GPS eph
 
 ## More detail
 
-[Theory](docs/theory.md) · [Measured validation results](docs/validation-results.md) · [Propagation API and frames](docs/propagators.md) · [Advanced external GMAT](docs/local_gmat.md) · [Changes](docs/release-notes.md)
+[Theory](docs/theory.md) · [Measured validation results](docs/validation-results.md) · [Fitting performance](docs/performance.md) · [Propagation API and frames](docs/propagators.md) · [Advanced external GMAT](docs/local_gmat.md) · [Changes](docs/release-notes.md)
 
 The methods build on David Vallado and Paul Crawford's [SGP4 Orbit Determination](https://celestrak.org/publications/AIAA/2008-6770/AIAA-2008-6770.pdf). Project and upstream notices are in [LICENSE](LICENSE) and [NOTICE](NOTICE).

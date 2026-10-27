@@ -1,3 +1,5 @@
+> **Documentation branch:** This branch is not an installable copy of TLE Tailor 0.1.0rc1. Use the [GitHub prerelease](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1) or its [tagged source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip) for the commands below.
+
 # First TLE in one command
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/), open the downloaded project folder, then run:

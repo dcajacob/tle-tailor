@@ -40,6 +40,7 @@ nav:
       - Theory and validation method: theory.md
   - Results and limits:
       - Measured validation results: validation-results.md
+      - Cold and warm fitting performance: performance.md
       - Accuracy and forecasting limits: accuracy.md
       - Support: support.md
   - Project:
