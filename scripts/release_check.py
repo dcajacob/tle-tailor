@@ -21,6 +21,9 @@ import time
 import tomllib
 import xml.etree.ElementTree as ET
 
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
+
 ROOT = Path(__file__).resolve().parents[1]
 STATUSES = {'passed', 'failed', 'blocked', 'never_run'}
 REQUIRED_CASES = {'leo', 'sso', 'gps', 'geo', 'heo'}
@@ -326,9 +329,27 @@ def conclusions(gates, engineering_only=False):
             'exit_policy': 'engineering-only; release readiness is still reported' if engineering_only else 'all required release gates'}
 
 
-def validate_install_receipt(receipt, wheel_sha256, version):
+def declared_gmatpy_version(project):
+    requirements = project.get('dependencies', [])
+    if not isinstance(requirements, list) or not all(isinstance(item, str) for item in requirements):
+        raise ValueError('project.dependencies must be a list of requirement strings')
+    try:
+        matches = [parsed for text in requirements if canonicalize_name((parsed := Requirement(text)).name) == 'gmatpy']
+    except ValueError as error:
+        raise ValueError('Invalid project dependency requirement: ' + str(error)) from error
+    if len(matches) != 1:
+        raise ValueError('project.dependencies must declare exactly one gmatpy requirement')
+    requirement = matches[0]
+    pins = list(requirement.specifier)
+    if (requirement.marker is not None or requirement.url or requirement.extras or len(pins) != 1
+            or pins[0].operator != '==' or '*' in pins[0].version):
+        raise ValueError('gmatpy dependency must be an unconditional exact == version')
+    return pins[0].version
+
+
+def validate_install_receipt(receipt, wheel_sha256, version, dependency_version):
     expected = {'schema_version': 1, 'status': 'passed', 'outside_checkout': True,
-                'project_version': version, 'gmatpy_version': '0.2.1', 'wheel_sha256': wheel_sha256}
+                'project_version': version, 'gmatpy_version': dependency_version, 'wheel_sha256': wheel_sha256}
     return [f'{key} does not match the qualified artifact/environment' for key, value in expected.items()
             if receipt.get(key) != value]
 
@@ -444,7 +465,8 @@ def run_checks(args):
         except (OSError, ValueError) as error:
             results.append(gate('distribution-artifacts', 'failed', f'Missing/invalid built artifact audit: {error}', scope='release', **artifact_run))
 
-    version = tomllib.loads((root/'pyproject.toml').read_text())['project']['version']
+    project = tomllib.loads((root/'pyproject.toml').read_text())['project']
+    version = project['version']
     if args.external_install_report is None:
         results.append(gate('clean-external-install', 'never_run', 'No clean installation receipt supplied.', scope='release'))
     else:
@@ -453,7 +475,7 @@ def run_checks(args):
                 raise ValueError('The tested wheel is required to bind installation evidence to artifact bytes.')
             digest = hashlib.sha256(args.wheel.read_bytes()).hexdigest()
             receipt = read_json(args.external_install_report)
-            problems = validate_install_receipt(receipt, digest, version)
+            problems = validate_install_receipt(receipt, digest, version, declared_gmatpy_version(project))
             results.append(gate('clean-external-install', 'passed' if not problems else 'failed',
                                 '; '.join(problems) if problems else 'External installation receipt matches this wheel and published GMAT dependency.',
                                 scope='release', report=str(args.external_install_report.resolve())))

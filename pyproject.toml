@@ -1,6 +1,6 @@
 [project]
 name = "tle-tailor"
-version = "0.1.0rc1"
+version = "0.1.0rc2"
 description = "Generate SGP4-compatible TLEs from ephemeris and propagated state vectors"
 authors = [{name = "Dan CaJacob"}]
 readme = "README.md"

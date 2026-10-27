@@ -1,11 +1,11 @@
 # First TLE in one command
 
-On standard **CPython 3.14 / Linux x86_64**, install the [0.1.0rc1 prerelease](https://pypi.org/project/tle-tailor/0.1.0rc1/) in an isolated environment:
+On **Linux x86_64 or macOS 15/Apple Silicon**, use standard CPython **3.12–3.15**. This example uses Python 3.14 and installs the [0.1.0rc2 prerelease](https://pypi.org/project/tle-tailor/0.1.0rc2/) in an isolated environment:
 
 ```bash
 python3.14 -m venv .venv
 . .venv/bin/activate
-python -m pip install --only-binary=gmatpy tle-tailor==0.1.0rc1
+python -m pip install --only-binary=gmatpy tle-tailor==0.1.0rc2
 tle-tailor example --output deployment.tle
 ```
 
@@ -23,7 +23,7 @@ tle-tailor example --epoch 2024-01-01T00:00:00Z --elements 6878.137 0.001 97.5 2
 
 The six values are **SMA (km), eccentricity, inclination, RAAN, argument of periapsis, true anomaly (degrees)** in **EarthMJ2000Eq**. These are osculating elements, not mean/TLE elements. `Z` declares UTC. The historical date is for the demo, not an upcoming launch.
 
-From the matching [v0.1.0rc1 source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip), you can also edit the clearly labelled inputs in [the deployment example](tle_tailor/examples/scripts/deployment.py). `--duration` and `--cadence` select the fit interval and sampling in seconds; `--help` lists options. The TLE identifiers are placeholders to coordinate with your tracking partner.
+From the matching [v0.1.0rc2 source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc2.zip), you can also edit the clearly labelled inputs in [the deployment example](tle_tailor/examples/scripts/deployment.py). `--duration` and `--cadence` select the fit interval and sampling in seconds; `--help` lists options. The TLE identifiers are placeholders to coordinate with your tracking partner.
 
 Fit errors describe agreement with the supplied prediction during that interval. They do not measure the true deployed orbit. Review your model/input assumptions and replace the prediction once actual orbit data are available.
 

@@ -51,12 +51,13 @@ PUBLIC_NOTEBOOKS = (
     "tle_tailor/examples/notebooks/maintained/icesat_examples/tlefit_eqn_gps_jax_icesat.ipynb",
 )
 PREVIEW_BANNER = (
-    "> **Release candidate:** Install [0.1.0rc1 from PyPI]"
-    "(https://pypi.org/project/tle-tailor/0.1.0rc1/) with the explicit "
-    "`tle-tailor==0.1.0rc1` pin for these commands. "
-    "The supported target is standard CPython 3.14 on Linux x86_64. "
-    "Public `main` remains the historical source; use the prerelease or its matching tag.\n\n"
+    "> **Release candidate:** Install [0.1.0rc2 from PyPI]"
+    "(https://pypi.org/project/tle-tailor/0.1.0rc2/) with the explicit "
+    "`tle-tailor==0.1.0rc2` pin. Core workflows are qualified on CPython 3.12–3.15 "
+    "for Linux x86_64 and macOS 15/Apple Silicon; Windows integration was checked "
+    "on CPython 3.14 only. See [installation](installation.md) for the exact scope.\n\n"
 )
+
 _ORIGINS: dict[str, str] = {}
 _DESTINATIONS: dict[str, str] = {}
 _INLINE_LINK = re.compile(r"(?P<before>!?\[[^\]\n]*\]\()(?P<target>[^)\n]+)(?P<after>\))")

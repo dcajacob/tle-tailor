@@ -6,6 +6,7 @@ import importlib.util
 import json
 from pathlib import Path
 from types import SimpleNamespace
+import zipfile
 
 import pytest
 
@@ -13,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('release_check_under_test', ROOT/'scripts/release_check.py')
 RELEASE = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(RELEASE)
+CLEAN_SPEC = importlib.util.spec_from_file_location('verify_clean_install_under_test', ROOT/'scripts/verify_clean_install.py')
+CLEAN = importlib.util.module_from_spec(CLEAN_SPEC)
+CLEAN_SPEC.loader.exec_module(CLEAN)
 
 
 def complete_accuracy():
@@ -136,11 +140,71 @@ def test_optional_skips_remain_visible_without_waiving_required_tests(tmp_path):
 def test_clean_install_is_bound_to_exact_wheel_not_just_version():
     receipt = dict(schema_version=1, status='passed', outside_checkout=True,
                    project_version='0.1.0rc1', gmatpy_version='0.2.1', wheel_sha256='old-artifact')
-    assert RELEASE.validate_install_receipt(receipt, 'new-artifact', '0.1.0rc1')
+    assert RELEASE.validate_install_receipt(receipt, 'new-artifact', '0.1.0rc1', '0.2.1')
     receipt['wheel_sha256'] = 'new-artifact'
-    assert not RELEASE.validate_install_receipt(receipt, 'new-artifact', '0.1.0rc1')
+    assert not RELEASE.validate_install_receipt(receipt, 'new-artifact', '0.1.0rc1', '0.2.1')
     receipt['outside_checkout'] = False
-    assert RELEASE.validate_install_receipt(receipt, 'new-artifact', '0.1.0rc1')
+    assert RELEASE.validate_install_receipt(receipt, 'new-artifact', '0.1.0rc1', '0.2.1')
+
+
+def test_clean_install_receipt_requires_explicit_current_dependency_version():
+    receipt = dict(schema_version=1, status='passed', outside_checkout=True,
+                   project_version='0.1.0rc2', gmatpy_version='0.2.2', wheel_sha256='artifact')
+    assert not RELEASE.validate_install_receipt(receipt, 'artifact', '0.1.0rc2', '0.2.2')
+    assert RELEASE.validate_install_receipt(receipt, 'artifact', '0.1.0rc2', '0.2.1')
+    assert RELEASE.validate_install_receipt(receipt, 'artifact', '0.1.0rc1', '0.2.2')
+
+
+def test_declared_gmatpy_version_comes_from_exact_project_pin():
+    assert RELEASE.declared_gmatpy_version({'dependencies': ['numpy>=1', 'GMATPy == 0.2.2']}) == '0.2.2'
+
+
+@pytest.mark.parametrize('requirements', [None, [], ['gmatpy>=0.2.1'], ['gmatpy==0.2.*'],
+    ['gmatpy==0.2.1', 'gmatpy==0.2.2'], ['gmatpy==0.2.2; sys_platform == "win32"'],
+    ['gmatpy[extra]==0.2.2'], ['gmatpy @ https://example.invalid/gmatpy.whl'], ['not a requirement']])
+def test_declared_gmatpy_version_rejects_ambiguous_or_invalid_requirements(requirements):
+    with pytest.raises(ValueError):
+        RELEASE.declared_gmatpy_version({'dependencies': requirements})
+
+
+def write_metadata_wheel(path, name, version, requirements=()):
+    with zipfile.ZipFile(path, 'w') as archive:
+        archive.writestr('test.dist-info/METADATA',
+            f'Metadata-Version: 2.4\nName: {name}\nVersion: {version}\n' +
+            ''.join('Requires-Dist: ' + item + '\n' for item in requirements))
+    return path
+
+
+def test_clean_install_versions_are_read_from_both_supplied_wheels(tmp_path):
+    app = write_metadata_wheel(tmp_path/'app.whl', 'tle_tailor', '0.1.0rc2',
+                               ['gmatpy==0.2.2', 'gmatpy==0.2.2; extra == "gmat"'])
+    dependency = write_metadata_wheel(tmp_path/'dep.whl', 'gmatpy', '0.2.2')
+    assert CLEAN.expected_wheel_versions(app, dependency) == {'tle-tailor': '0.1.0rc2', 'gmatpy': '0.2.2'}
+    write_metadata_wheel(dependency, 'gmatpy', '0.2.1')
+    with pytest.raises(ValueError, match='differs from the application dependency pin'):
+        CLEAN.expected_wheel_versions(app, dependency)
+
+
+@pytest.mark.parametrize('requirements', [[], ['gmatpy>=0.2.1'], ['gmatpy==0.2.*'],
+    ['gmatpy==0.2.2', 'gmatpy==0.2.2'], ['invalid requirement']])
+def test_clean_install_rejects_missing_unpinned_or_invalid_wheel_dependency(tmp_path, requirements):
+    app = write_metadata_wheel(tmp_path/'app.whl', 'tle-tailor', '0.1.0rc2', requirements)
+    dependency = write_metadata_wheel(tmp_path/'dep.whl', 'gmatpy', '0.2.2')
+    with pytest.raises(ValueError):
+        CLEAN.expected_wheel_versions(app, dependency)
+
+
+def test_clean_install_rejects_mislabeled_or_incomplete_wheel_metadata(tmp_path):
+    wheel = write_metadata_wheel(tmp_path/'app.whl', 'different-project', '0.1.0rc2')
+    with pytest.raises(ValueError, match='project name'):
+        CLEAN.wheel_metadata(wheel, 'tle-tailor')
+    write_metadata_wheel(wheel, 'tle-tailor', '')
+    with pytest.raises(ValueError, match='Missing wheel Version'):
+        CLEAN.wheel_metadata(wheel, 'tle-tailor')
+    with zipfile.ZipFile(wheel, 'a') as archive:
+        archive.writestr('second.dist-info/METADATA', 'Name: tle-tailor\nVersion: 0.1.0rc2\n')
+    with pytest.raises(ValueError, match='exactly one'):
+        CLEAN.wheel_metadata(wheel, 'tle-tailor')
 
 
 @pytest.fixture

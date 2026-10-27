@@ -4,7 +4,7 @@ This walkthrough adds a decoder in front of the [direct ephemeris workflow](walk
 
 **BESTXYZ OEM log → EDIE decode → quality/time checks → UTC/ITRS ephemeris → SGP4 TLE fit.**
 
-It uses the released **`novatel-edie==2.10.11`** Python package, not the archived `novatel_ediepy` project. It is optional: neither ordinary TLE Tailor use nor the documentation build installs EDIE. Run the driver from the matching [TLE Tailor v0.1.0rc1 source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip), following [installation](installation.md); a documentation-preview branch alone is not an installation of those APIs.
+It uses the released **`novatel-edie==2.10.11`** Python package, not the archived `novatel_ediepy` project. It is optional: neither ordinary TLE Tailor use nor the documentation build installs EDIE. Run the driver from the matching [TLE Tailor v0.1.0rc2 source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc2.zip), following [installation](installation.md); a documentation-preview branch alone is not an installation of those APIs.
 
 ## 1. Run the completely synthetic example
 

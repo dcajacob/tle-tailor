@@ -1,9 +1,15 @@
 # Changes
 
-## Unreleased compatibility candidate
+## 0.1.0rc2 — broader native compatibility
 
-- Core workflows qualify on standard CPython 3.12–3.15 for Linux x86_64 and macOS 15/Apple Silicon. Use the matching candidate source; this is not a new PyPI release.
-- JAX/JAXlib remain required dependencies. Both FD and JAX fitting remain available, with the same fitting controls and accuracy criteria. See [platform scope](support.md).
+- Core workflows passed the full native CPython 3.12–3.15 matrix on Linux x86_64 and macOS 15/Apple Silicon. Package metadata now permits Python >=3.12,<3.16.
+- JAX/JAXlib remain required. Both FD and JAX fitting retain the same controls and accuracy criteria; production fitting and propagation numerics are unchanged.
+- Windows x86_64 integration was checked on CPython 3.14. The dependency's 3.12–3.15 wheels are not a claim of full TLE Tailor qualification on every Windows interpreter.
+- The source lock uses PyArrow 26.0.0 for Python 3.15 wheel availability. Python 3.15 checks use official PyYAML 6.0.3 as a pure-Python dependency with optional LibYAML disabled.
+- A timestamp-ownership test now uses a public mutable pandas array, retaining its ownership assertions with pandas 3.1.
+- This is a prerelease, not a new claim of absolute orbit accuracy. Existing GPS-fit results, hold-out limitations, inherited JAX 08195 nonconvergence and the deferred strict old/native-engine comparison remain as documented. See [platform scope](support.md), [accuracy](accuracy.md) and [measured validation](validation-results.md).
+
+The [0.1.0rc2 GitHub prerelease](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc2) and [PyPI package](https://pypi.org/project/tle-tailor/0.1.0rc2/) provide the matching wheel and source. Use the explicit `tle-tailor==0.1.0rc2` pin; [installation](installation.md) describes the qualified targets. The earlier rc1 tag and distributions remain unchanged.
 
 ## Published 0.1.0rc1
 
