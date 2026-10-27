@@ -1,0 +1,118 @@
+# This first version can upload only the two approved 0.1.0rc1 assets.
+name: First PyPI upload of approved TLE Tailor prerelease
+
+on:
+  push:
+    branches: ['release/0.1.0rc1']
+    paths: ['.github/workflows/publish-pypi.yml']
+
+permissions: {}
+
+concurrency:
+  group: pypi-tle-tailor-0.1.0rc1
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: >-
+      github.repository == 'dcajacob/tle-tailor' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/release/0.1.0rc1'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: pypi
+      url: https://pypi.org/project/tle-tailor/0.1.0rc1/
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Download and verify only the approved existing release files
+        env:
+          # GitHub's automatic read-only repository token; no stored PyPI token.
+          GH_READ_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from email.parser import BytesParser
+          from hashlib import sha256
+          import json
+          import os
+          from pathlib import Path
+          import tarfile
+          import urllib.request
+          import zipfile
+
+          repository = 'dcajacob/tle-tailor'
+          tag = 'v0.1.0rc1'
+          expected_commit = 'aba75ad1630e520ad4060c404a470cb792cdd357'
+          approved = {
+              'tle_tailor-0.1.0rc1-py3-none-any.whl':
+                  '36787517f1114e236cc0b6ee3b0a6f4d79b9ec72314a27611d903b7e6de8cd9d',
+              'tle_tailor-0.1.0rc1.tar.gz':
+                  '46800c568c68b17a73054bd659b42f5e0dcef3e0224093d1fa40a4784fa6ba82',
+          }
+
+          def github_json(suffix):
+              request = urllib.request.Request(
+                  f'https://api.github.com/repos/{repository}/{suffix}',
+                  headers={'Accept': 'application/vnd.github+json',
+                           'Authorization': 'Bearer ' + os.environ['GH_READ_TOKEN'],
+                           'User-Agent': 'tle-tailor-approved-publisher'})
+              with urllib.request.urlopen(request, timeout=30) as response:
+                  return json.load(response)
+
+          release = github_json('releases/tags/' + tag)
+          if release['tag_name'] != tag or release['draft'] or not release['prerelease']:
+              raise SystemExit('The expected published prerelease was not found')
+          target = github_json('git/ref/tags/' + tag)['object']
+          for _ in range(3):
+              if target['type'] == 'commit':
+                  break
+              if target['type'] != 'tag':
+                  raise SystemExit('Unexpected release tag type')
+              target = github_json('git/tags/' + target['sha'])['object']
+          if target['type'] != 'commit' or target['sha'] != expected_commit:
+              raise SystemExit('The release tag does not match the approved commit')
+
+          destination = Path('approved-dist')
+          destination.mkdir(exist_ok=False)
+          for name, digest in approved.items():
+              url = f'https://github.com/{repository}/releases/download/{tag}/{name}'
+              # Public download: never forward GH_READ_TOKEN to asset/redirect hosts.
+              request = urllib.request.Request(url, headers={'User-Agent': 'tle-tailor-approved-publisher'})
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  payload = response.read(10 * 1024 * 1024 + 1)
+              if len(payload) > 10 * 1024 * 1024 or sha256(payload).hexdigest() != digest:
+                  raise SystemExit('Approved SHA256 mismatch: ' + name)
+              path = destination / name
+              path.write_bytes(payload)
+              if name.endswith('.whl'):
+                  with zipfile.ZipFile(path) as archive:
+                      members = [n for n in archive.namelist() if n.endswith('.dist-info/METADATA')]
+                      if len(members) != 1:
+                          raise SystemExit('Unexpected wheel metadata')
+                      metadata = archive.read(members[0])
+              else:
+                  with tarfile.open(path, 'r:gz') as archive:
+                      member = archive.getmember('tle_tailor-0.1.0rc1/PKG-INFO')
+                      metadata = archive.extractfile(member).read()
+              info = BytesParser().parsebytes(metadata)
+              if info['Name'].lower().replace('_', '-') != 'tle-tailor' or info['Version'] != '0.1.0rc1':
+                  raise SystemExit('Unexpected project/version metadata: ' + name)
+              print(digest + '  ' + name)
+          if set(p.name for p in destination.iterdir()) != set(approved):
+              raise SystemExit('Unexpected files in publishing directory')
+          print('Verified approved release commit and both original artifacts; no build performed.')
+          PY
+
+      - name: Publish the verified distributions with Trusted Publishing
+        # Full immutable upstream commit, verified on its primary GitHub page.
+        uses: pypa/gh-action-pypi-publish@ed0c53931b1dc9bd32cbe73a98c7f6766f8a527e
+        with:
+          packages-dir: approved-dist/
+          verify-metadata: true
+          skip-existing: false
+          print-hash: true
+          attestations: false
