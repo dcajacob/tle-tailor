@@ -66,8 +66,10 @@ jobs:
           from pathlib import Path
           folder = Path('output/ci/dist')
           files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-                   for p in folder.iterdir() if p.is_file()}
+                   for p in folder.iterdir() if p.is_file()
+                   and p.name.endswith(('.whl', '.tar.gz'))}
           assert len(files) == 2
+          assert {p.name for p in folder.iterdir()} - set(files) <= {'.gitignore'}
           (folder / 'manifest.json').write_text(json.dumps({
               'source_commit': os.environ['GITHUB_SHA'], 'files': files,
           }, indent=2) + '\n')
