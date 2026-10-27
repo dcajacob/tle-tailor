@@ -1,4 +1,4 @@
-name: Candidate engineering checks
+name: Native Python compatibility
 
 on:
   push:
@@ -12,64 +12,164 @@ concurrency:
   group: tle-tailor-engineering-${{ github.ref }}
   cancel-in-progress: true
 
-# This is an engineering target, not a claim that hosted CI or other platforms
-# have already passed. Publication and whole-repository clearance are separate.
+env:
+  MPLBACKEND: Agg
+  PYTHONDONTWRITEBYTECODE: '1'
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  UV_NO_ENV_FILE: 'true'
+  PIP_DISABLE_PIP_VERSION_CHECK: '1'
+
 jobs:
-  linux-python314:
-    name: Linux x86_64 / CPython 3.14
+  build:
+    name: Audit and build one candidate
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
-    env:
-      MPLBACKEND: Agg
-      PYTHONDONTWRITEBYTECODE: '1'
-      OMP_NUM_THREADS: '1'
-      OPENBLAS_NUM_THREADS: '1'
-      MKL_NUM_THREADS: '1'
-      UV_NO_ENV_FILE: 'true'
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           persist-credentials: false
-      - name: Set up pinned uv and standard Python
-        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+      - name: Select stable CPython 3.14
+        id: python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.14'
+          allow-prereleases: false
+          check-latest: true
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
         with:
           version: '0.8.23'
-          python-version: '3.14'
-      - name: Install locked development and bundled-GMAT dependencies
-        run: uv sync --locked --group dev --group notebooks
-      - name: Audit source before building local artifacts
-        run: uv run --locked --offline --group dev --group notebooks python scripts/audit_distribution.py --source-only --json output/ci/source-policy.json
-      - name: Build private candidate artifacts
-        run: uv build --sdist --wheel --out-dir output/ci/dist
-      - name: Execute deployment and seven workflow companions in fresh kernels
-        id: notebooks
-        continue-on-error: true
+      - name: Install locked build and audit dependencies with the selected interpreter
+        run: uv sync --locked --group dev --group notebooks --python '${{ steps.python.outputs.python-path }}'
+      - name: Check qualification controls before dispatching native cells
         run: >-
-          uv run --locked --offline --group dev --group notebooks python scripts/validate_notebooks.py
-          --workers 2 --timeout 300 --startup-timeout 30 --overall-timeout 360
-          --output output/ci/notebooks
-      - name: Run focused offline tests, parity and mandatory accuracy matrix
+          uv run --locked --offline --group dev --group notebooks python -m pytest -q
+          tle_tailor/tests/test_compatibility_qualification.py
+          --junitxml output/ci/qualification-controls.xml
+      - name: Audit source and both archives before retaining them
         shell: bash
         run: |
           set -euo pipefail
+          uv run --locked --offline --group dev --group notebooks python scripts/audit_distribution.py \
+            --source-only --json output/ci/source-policy.json
+          uv build --sdist --wheel --python '${{ steps.python.outputs.python-path }}' --out-dir output/ci/dist
           wheel_files=(output/ci/dist/*.whl)
           sdist_files=(output/ci/dist/*.tar.gz)
           test "${#wheel_files[@]}" -eq 1
           test "${#sdist_files[@]}" -eq 1
-          uv run --locked --offline --group dev --group notebooks python scripts/release_check.py \
-            --engineering-only --output output/ci/checks \
-            --notebook-execution-report output/ci/notebooks/summary.json \
-            --notebook-command-status "${{ steps.notebooks.outcome }}" \
-            --wheel "${wheel_files[0]}" --sdist "${sdist_files[0]}"
-      - name: Retain explicit check results including blocked and never-run gates
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+          uv run --locked --offline --group dev --group notebooks python scripts/audit_distribution.py \
+            --wheel "${wheel_files[0]}" --sdist "${sdist_files[0]}" \
+            --json output/ci/artifact-policy.json
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          folder = Path('output/ci/dist')
+          files = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                   for p in folder.iterdir() if p.is_file()}
+          assert len(files) == 2
+          (folder / 'manifest.json').write_text(json.dumps({
+              'source_commit': os.environ['GITHUB_SHA'], 'files': files,
+          }, indent=2) + '\n')
+          PY
+      - name: Retain only audited candidate inputs
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: linux-python314-engineering-evidence
-          # Do not upload built archives, especially if an artifact audit fails.
+          name: compatibility-inputs
+          path: output/ci/dist/
+          retention-days: 1
+          if-no-files-found: error
+      - name: Retain build and control evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: compatibility-build-evidence
           path: |
             output/ci/source-policy.json
-            output/ci/checks/
-            output/ci/notebooks/summary.json
+            output/ci/artifact-policy.json
+            output/ci/qualification-controls.xml
+          retention-days: 1
           if-no-files-found: warn
-          retention-days: 14
+
+  qualify:
+    name: ${{ matrix.os }} / CPython ${{ matrix.python }}
+    needs: build
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-24.04, macos-15]
+        python: ['3.12', '3.13', '3.14', '3.15']
+        include:
+          - os: ubuntu-24.04
+            architecture: x86_64
+          - os: macos-15
+            architecture: arm64
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Select stable native CPython
+        id: python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ matrix.python }}
+          allow-prereleases: false
+          check-latest: true
+      - name: Download the exact audited candidate inputs
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: compatibility-inputs
+          path: ${{ runner.temp }}/tle-tailor-inputs
+      - name: Verify input hashes and source identity
+        env:
+          INPUTS: ${{ runner.temp }}/tle-tailor-inputs
+        run: |
+          python - <<'PY'
+          import hashlib, json, os
+          from pathlib import Path
+          folder = Path(os.environ['INPUTS'])
+          manifest = json.loads((folder / 'manifest.json').read_text())
+          assert manifest['source_commit'] == os.environ['GITHUB_SHA']
+          assert set(p.name for p in folder.iterdir()) == set(manifest['files']) | {'manifest.json'}
+          for name, expected in manifest['files'].items():
+              assert Path(name).name == name
+              assert hashlib.sha256((folder / name).read_bytes()).hexdigest() == expected
+          PY
+      - name: Qualify default JAX installation and unchanged scientific gates
+        shell: bash
+        run: |
+          set -euo pipefail
+          wheel_files=("$RUNNER_TEMP"/tle-tailor-inputs/*.whl)
+          sdist_files=("$RUNNER_TEMP"/tle-tailor-inputs/*.tar.gz)
+          test "${#wheel_files[@]}" -eq 1
+          test "${#sdist_files[@]}" -eq 1
+          python scripts/qualify_compatibility.py \
+            --wheel "${wheel_files[0]}" --sdist "${sdist_files[0]}" \
+            --output "$RUNNER_TEMP/tle-tailor-qualification" \
+            --expected-python '${{ matrix.python }}' \
+            --expected-architecture '${{ matrix.architecture }}' \
+            --allow-project-metadata-override
+      - name: Retain explicit passed, failed, skipped and unrun evidence
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: compatibility-${{ runner.os }}-${{ runner.arch }}-python-${{ matrix.python }}
+          path: |
+            ${{ runner.temp }}/tle-tailor-qualification/*.json
+            ${{ runner.temp }}/tle-tailor-qualification/*.log
+            ${{ runner.temp }}/tle-tailor-qualification/requirements.txt
+            ${{ runner.temp }}/tle-tailor-qualification/installed-accuracy/*.json
+            ${{ runner.temp }}/tle-tailor-qualification/installed-accuracy/*.log
+            ${{ runner.temp }}/tle-tailor-qualification/notebooks/summary.json
+            ${{ runner.temp }}/tle-tailor-qualification/engineering/*.json
+            ${{ runner.temp }}/tle-tailor-qualification/engineering/*.log
+            ${{ runner.temp }}/tle-tailor-qualification/engineering/*.xml
+            ${{ runner.temp }}/tle-tailor-qualification/engineering/accuracy/*.json
+            ${{ runner.temp }}/tle-tailor-qualification/engineering/accuracy/*.log
+            ${{ runner.temp }}/tle-tailor-qualification/engineering/coe-accuracy/*.json
+            ${{ runner.temp }}/tle-tailor-qualification/engineering/coe-accuracy/*.log
+          retention-days: 1
+          if-no-files-found: warn
