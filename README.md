@@ -19,6 +19,8 @@ This offline demonstration uses editable **osculating Keplerian elements**, a de
 
 The supported prerelease target is standard **CPython 3.14 on Linux x86_64**, with a compatible gmatpy wheel. This is a release candidate; see [installation and platform support](docs/installation.md) for the matching [tagged source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip), notebooks and [GitHub wheel](https://github.com/dcajacob/tle-tailor/releases/download/v0.1.0rc1/tle_tailor-0.1.0rc1-py3-none-any.whl). The explicit version pin selects the prerelease.
 
+> **Unreleased source candidate:** Core workflows are qualified on standard CPython 3.12–3.15 for Linux x86_64 and macOS 15/Apple Silicon. These compatibility changes require the matching candidate checkout; they are **not in published 0.1.0rc1**. See [source-candidate installation](docs/installation.md#unreleased-source-candidate).
+
 ## Use your own inputs
 
 - **Deployment prediction:** check the provider's epoch/time scale, reference frame, units and element/anomaly conventions. See [deployment inputs](docs/deployment.md). Osculating elements are not TLE mean elements.

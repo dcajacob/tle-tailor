@@ -100,7 +100,7 @@ jobs:
     timeout-minutes: 45
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 8
       matrix:
         os: [ubuntu-24.04, macos-15]
         python: ['3.12', '3.13', '3.14', '3.15']
@@ -152,8 +152,7 @@ jobs:
             --wheel "${wheel_files[0]}" --sdist "${sdist_files[0]}" \
             --output "$RUNNER_TEMP/tle-tailor-qualification" \
             --expected-python '${{ matrix.python }}' \
-            --expected-architecture '${{ matrix.architecture }}' \
-            --allow-project-metadata-override
+            --expected-architecture '${{ matrix.architecture }}'
       - name: Retain explicit passed, failed, skipped and unrun evidence
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2

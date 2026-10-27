@@ -1,6 +1,10 @@
 # Supported inputs and limits
 
-The current tested target is standard CPython 3.14 on Linux x86_64 with published gmatpy 0.2.1. Other dependency wheel platforms do not automatically inherit TLE Tailor qualification. See [installation](installation.md).
+Published **0.1.0rc1** remains qualified for standard **CPython 3.14/Linux x86_64**, with gmatpy 0.2.1. The **unreleased source candidate** qualifies core workflows on standard CPython **3.12–3.15**, for **Linux x86_64** and **macOS 15/Apple Silicon ARM64**. It requires the matching candidate checkout; these changes are not available by installing 0.1.0rc1. See [installation](installation.md).
+
+JAX/JAXlib remain required alongside gmatpy. Both FD and JAX fits are covered; Apple Silicon uses CPU JAX. Intel macOS and Windows are unsupported by the current candidate stack. Other macOS versions, PyPy and free-threaded CPython are not qualified. Native dependency wheels alone do not establish application support.
+
+This qualification covers numerical propagation, FD/JAX fitting and TLE export/reparse. It does not extend the separate optional EDIE result, live Space-Track access or all historical notebooks to the new platform/interpreter combinations.
 
 | Workflow | Required inputs |
 | --- | --- |
