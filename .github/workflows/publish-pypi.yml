@@ -1,15 +1,15 @@
-# This first version can upload only the two approved 0.1.0rc1 assets.
-name: First PyPI upload of approved TLE Tailor prerelease
+# Upload only the two reviewed, immutable rc2 release assets.
+name: Publish verified TLE Tailor prerelease
 
 on:
   push:
-    branches: ['release/0.1.0rc1']
+    branches: ['release/0.1.0rc2']
     paths: ['.github/workflows/publish-pypi.yml']
 
 permissions: {}
 
 concurrency:
-  group: pypi-tle-tailor-0.1.0rc1
+  group: pypi-tle-tailor-0.1.0rc2
   cancel-in-progress: false
 
 jobs:
@@ -17,12 +17,12 @@ jobs:
     if: >-
       github.repository == 'dcajacob/tle-tailor' &&
       github.event_name == 'push' &&
-      github.ref == 'refs/heads/release/0.1.0rc1'
+      github.ref == 'refs/heads/release/0.1.0rc2'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     environment:
       name: pypi
-      url: https://pypi.org/project/tle-tailor/0.1.0rc1/
+      url: https://pypi.org/project/tle-tailor/0.1.0rc2/
     permissions:
       contents: read
       id-token: write
@@ -45,13 +45,13 @@ jobs:
           import zipfile
 
           repository = 'dcajacob/tle-tailor'
-          tag = 'v0.1.0rc1'
-          expected_commit = 'aba75ad1630e520ad4060c404a470cb792cdd357'
+          tag = 'v0.1.0rc2'
+          expected_commit = '0891fd26e63ee737fe6c006713e3fbd96d995389'
           approved = {
-              'tle_tailor-0.1.0rc1-py3-none-any.whl':
-                  '36787517f1114e236cc0b6ee3b0a6f4d79b9ec72314a27611d903b7e6de8cd9d',
-              'tle_tailor-0.1.0rc1.tar.gz':
-                  '46800c568c68b17a73054bd659b42f5e0dcef3e0224093d1fa40a4784fa6ba82',
+              'tle_tailor-0.1.0rc2-py3-none-any.whl':
+                  'c5e9878e37c1f8ace7a44759642e98d6c97edeb813d6a0dafea3f57cf6dec701',
+              'tle_tailor-0.1.0rc2.tar.gz':
+                  '780be4fc5e8b018a65ea85b03fb5a317fe6e57782e8c6b75a2d2ab212949797e',
           }
 
           def github_json(suffix):
@@ -96,10 +96,10 @@ jobs:
                       metadata = archive.read(members[0])
               else:
                   with tarfile.open(path, 'r:gz') as archive:
-                      member = archive.getmember('tle_tailor-0.1.0rc1/PKG-INFO')
+                      member = archive.getmember('tle_tailor-0.1.0rc2/PKG-INFO')
                       metadata = archive.extractfile(member).read()
               info = BytesParser().parsebytes(metadata)
-              if info['Name'].lower().replace('_', '-') != 'tle-tailor' or info['Version'] != '0.1.0rc1':
+              if info['Name'].lower().replace('_', '-') != 'tle-tailor' or info['Version'] != '0.1.0rc2':
                   raise SystemExit('Unexpected project/version metadata: ' + name)
               print(digest + '  ' + name)
           if set(p.name for p in destination.iterdir()) != set(approved):
