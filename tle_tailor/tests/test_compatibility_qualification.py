@@ -89,3 +89,39 @@ def test_jaxlib_cannot_masquerade_as_required_jax():
         qualification.base_requirements(metadata)
     metadata['Requires-Dist']='jax>=0.3'
     assert qualification.base_requirements(metadata)==['jaxlib>=0.3','jax>=0.3']
+
+
+@pytest.mark.parametrize('minor',[12,13,14,15])
+def test_pure_pyyaml_exception_is_only_python315(monkeypatch,tmp_path,minor):
+    monkeypatch.setattr(qualification,'sys',SimpleNamespace(version_info=(3,minor,0)))
+    monkeypatch.setenv('PYYAML_FORCE_LIBYAML','1')
+    options=qualification.dependency_binary_options()
+    environment=qualification.environment(tmp_path)
+    assert '--only-binary=:all:' in options
+    if minor==15:
+        assert options==['--only-binary=:all:','--no-binary=pyyaml']
+        assert environment['PYYAML_FORCE_LIBYAML']=='0'
+    else:
+        assert options==['--only-binary=:all:']
+        assert 'PYYAML_FORCE_LIBYAML' not in environment
+
+
+def test_pure_pyyaml_verification_requires_disabled_extension_and_no_native_payload():
+    evidence={'force_libyaml':'0','with_libyaml':False,'root_is_purelib':True,'native_yaml_members':[]}
+    qualification.validate_pure_pyyaml(evidence)
+    for field,value in [('force_libyaml',None),('force_libyaml','1'),('with_libyaml',True),
+                        ('root_is_purelib',False),('native_yaml_members',['yaml/_yaml.so'])]:
+        with pytest.raises(ValueError,match='compiler-free pure-Python'):
+            qualification.validate_pure_pyyaml(dict(evidence,**{field:value}))
+
+
+def test_pure_pyyaml_source_receipt_requires_official_sdist_hash():
+    item={'metadata':{'name':'PyYAML','version':'6.0.3'},'download_info':{
+        'url':'https://files.pythonhosted.org/packages/example/pyyaml-6.0.3.tar.gz',
+        'archive_info':{'hashes':{'sha256':'a'*64}}}}
+    report={'install':[item]}
+    evidence=qualification.pyyaml_source_evidence(report)
+    assert evidence['version']=='6.0.3' and evidence['sdist_sha256']=='a'*64
+    item['download_info']['url']='https://files.pythonhosted.org/example.whl'
+    with pytest.raises(ValueError,match='sdist URL/SHA256'):
+        qualification.pyyaml_source_evidence(report)

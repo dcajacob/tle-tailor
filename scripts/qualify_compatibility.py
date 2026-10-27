@@ -47,12 +47,14 @@ def payload_mismatches(wheel, site):
 
 def environment(output):
     result = {k: v for k, v in os.environ.items() if k not in ('PYTHONPATH', 'PYTHONHOME', 'TLE_TAILOR_DATA_DIR', 'TLE_TAILOR_EPHEMERIS')
-              and not k.startswith(('SPACETRACK_', 'GMAT_', 'PIP_'))}
+              and not k.startswith(('SPACETRACK_', 'GMAT_', 'PIP_', 'PYYAML_'))}
     result.update(PYTHONDONTWRITEBYTECODE='1', PYTHONSAFEPATH='1', PIP_CONFIG_FILE=os.devnull, JAX_PLATFORMS='cpu', MPLBACKEND='Agg',
                   OMP_NUM_THREADS='1', OPENBLAS_NUM_THREADS='1', MKL_NUM_THREADS='1',
                   TLE_TAILOR_ENV_FILE=str(output/'absent.env'),
                   TLE_TAILOR_OUTPUT_DIR=str(output/'generated'),
                   MPLCONFIGDIR=str(output/'cache/matplotlib'), XDG_CACHE_HOME=str(output/'cache'))
+    if needs_pure_pyyaml():
+        result['PYYAML_FORCE_LIBYAML'] = '0'
     return result
 
 
@@ -130,6 +132,18 @@ def runtime_worker(args):
                 raise ValueError('Exported TLE cannot be independently propagated')
         if not jax.config.jax_enable_x64 or jax.default_backend() != 'cpu':
             raise ValueError('Native CPU JAX qualification requires enabled float64 and CPU backend')
+        if needs_pure_pyyaml():
+            import yaml
+            distribution = md.distribution('PyYAML')
+            wheel = BytesParser().parsebytes((distribution.read_text('WHEEL') or '').encode())
+            pure = {'version':distribution.version,
+                    'force_libyaml':os.environ.get('PYYAML_FORCE_LIBYAML'),
+                    'with_libyaml':getattr(yaml,'__with_libyaml__',None),
+                    'root_is_purelib':wheel.get('Root-Is-Purelib','').lower()=='true',
+                    'native_yaml_members':[str(path) for path in distribution.files or []
+                        if str(path).startswith('yaml/') and str(path).endswith(('.so','.pyd','.dll','.dylib'))]}
+            validate_pure_pyyaml(pure)
+            record['pyyaml_pure_python'] = pure
         record.update(status='passed', outside_checkout=True, python=sys.version,
                       interpreter=str(Path(sys.executable).absolute()), prefix=sys.prefix,
                       architecture=platform.machine(), platform=platform.platform(), package=str(package),
@@ -143,6 +157,37 @@ def runtime_worker(args):
         record.update(status='failed', error=f'{type(exc).__name__}: {exc}', traceback=traceback.format_exc())
     args.output.write_text(json.dumps(record, indent=2, allow_nan=False)+'\n')
     return 0 if record['status'] == 'passed' else 1
+
+
+def needs_pure_pyyaml():
+    return sys.version_info[:2] == (3, 15)
+
+
+def dependency_binary_options():
+    # PyYAML6.0.3 lacks cp315 wheels but officially supports a pure-Python build.
+    # All scientific/native dependencies, including gmatpy, remain wheel-only.
+    return ['--only-binary=:all:'] + (['--no-binary=pyyaml'] if needs_pure_pyyaml() else [])
+
+
+def validate_pure_pyyaml(evidence):
+    if (evidence.get('force_libyaml') != '0' or evidence.get('with_libyaml') is not False
+        or evidence.get('root_is_purelib') is not True or evidence.get('native_yaml_members') != []):
+        raise ValueError('Python3.15 PyYAML must use the explicit compiler-free pure-Python path')
+
+
+def pyyaml_source_evidence(report):
+    rows = [item for item in report.get('install', [])
+            if item.get('metadata', {}).get('name', '').lower().replace('_','-') == 'pyyaml']
+    if len(rows) != 1:
+        raise ValueError('Need exactly one PyYAML source-install record')
+    row = rows[0]; download = row.get('download_info', {})
+    digest = download.get('archive_info', {}).get('hashes', {}).get('sha256', '')
+    url = download.get('url', '')
+    if (not url.startswith('https://files.pythonhosted.org/') or not url.endswith('.tar.gz')
+        or len(digest) != 64 or any(c not in '0123456789abcdef' for c in digest)):
+        raise ValueError('Missing official PyYAML sdist URL/SHA256 in pip report')
+    return {'version':row['metadata']['version'], 'sdist_url':url, 'sdist_sha256':digest,
+            'build_classification':'pure-Python wheel assembly, not native compilation'}
 
 
 def pip_prefix(python):
@@ -244,6 +289,7 @@ def main(argv=None):
               'wheel_sha256': sha(args.wheel), 'source_commit': subprocess.check_output(
                   ['git', '-C', str(args.source_root), 'rev-parse', 'HEAD'], text=True).strip(),
               'qualification_only': True, 'harness_sha256': sha(__file__), 'steps': steps,
+              'dependency_source_exception':{'package':'PyYAML','mode':'pure Python; optional LibYAML disabled'} if needs_pure_pyyaml() else None,
               'actual_python':sys.version, 'actual_implementation':sys.implementation.name,
               'actual_releaselevel':sys.version_info.releaselevel, 'actual_architecture':platform.machine(),
               'actual_gil_disabled':bool(sysconfig.get_config_var('Py_GIL_DISABLED')),
@@ -279,8 +325,10 @@ def main(argv=None):
         req_file = args.output/'requirements.txt'
         req_file.write_text('\n'.join(requirements)+'\n')
         for command, name in [(pip_prefix(python) + ['install', '--upgrade', '--only-binary=:all:', '--index-url', 'https://pypi.org/simple', 'pip'], 'pip-bootstrap'),
-              (pip_prefix(python) + ['install', '--only-binary=:all:', '--index-url', 'https://pypi.org/simple', '--report', args.output/'dependency-install.json', '-r', req_file], 'dependency-install')]:
+              (pip_prefix(python) + ['install', *dependency_binary_options(), '--index-url', 'https://pypi.org/simple', '--report', args.output/'dependency-install.json', '-r', req_file], 'dependency-install')]:
             step = run(command, name, args.output, env, args.output); steps.append(step); required_success(step)
+        if needs_pure_pyyaml():
+            report['pyyaml_source'] = pyyaml_source_evidence(json.loads((args.output/'dependency-install.json').read_text()))
         install = project_install_command(python, args.wheel, needed, args.allow_project_metadata_override)
         step = run(install, 'project-wheel-install', args.output, env, args.output);steps.append(step);required_success(step)
         step = run(pip_prefix(python) + ['check'], 'dependency-check', args.output, env, args.output);steps.append(step);required_success(step)
@@ -288,6 +336,11 @@ def main(argv=None):
                     '--output', args.output/'installed-runtime.json', '--source-root', args.source_root,
                     '--expected-python', args.expected_python or '.'.join(map(str,sys.version_info[:2]))],
                    'installed-runtime', args.output, env, args.output, 300);steps.append(step);required_success(step)
+        if needs_pure_pyyaml():
+            installed = json.loads((args.output/'installed-runtime.json').read_text())['pyyaml_pure_python']
+            if installed['version'] != report['pyyaml_source']['version']:
+                raise ValueError('Installed PyYAML version differs from pip source receipt')
+            report['pyyaml_source']['installed_verification'] = installed
         # These numerical comparisons run from outside checkout, importing the
         # packaged immutable reference and application only from the wheel.
         step = run([python, '-I', '-B', '-m', 'tle_tailor.validation.accuracy', '--cases', 'leo,geo',

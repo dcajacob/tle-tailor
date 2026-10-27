@@ -241,11 +241,13 @@ def test_ephemeris_owns_validated_data_and_is_immutable():
 
 
 def test_ephemeris_owns_timestamps_after_caller_datetime_array_mutation():
-    timestamps = pd.date_range(EPOCH, periods=2, freq="s")
-    expected = timestamps.copy(deep=True)
+    # DatetimeIndex.array is a read-only view in pandas 3.1. Use a public,
+    # caller-owned mutable array so this tests ownership rather than that view.
+    timestamps = pd.array(pd.date_range(EPOCH, periods=2, freq="s"))
+    expected = pd.DatetimeIndex(timestamps).copy(deep=True)
     result = Ephemeris(timestamps, np.ones((2, 2, 3)), backend="example")
-    timestamps.array[0] = pd.Timestamp("2025-01-01T00:00:00Z")
-    assert not timestamps.is_monotonic_increasing
+    timestamps[0] = pd.Timestamp("2025-01-01T00:00:00Z")
+    assert not pd.DatetimeIndex(timestamps).is_monotonic_increasing
     assert result.timestamps.equals(expected)
     assert result.timestamps.is_monotonic_increasing
     fitter_times, _ = result.as_fitter_inputs()
