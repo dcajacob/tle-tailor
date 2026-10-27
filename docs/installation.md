@@ -1,6 +1,19 @@
 # Installation and platform support
 
-## Normal project use
+## PyPI prerelease
+
+The supported 0.1.0rc1 target is standard **CPython 3.14 on Linux x86_64**. Create an isolated environment and install the explicitly pinned [prerelease](https://pypi.org/project/tle-tailor/0.1.0rc1/):
+
+```bash
+python3.14 -m venv .venv
+. .venv/bin/activate
+python -m pip install --only-binary=gmatpy tle-tailor==0.1.0rc1
+tle-tailor example --output deployment.tle
+```
+
+The exact version pin selects 0.1.0rc1 without relying on automatic prerelease selection. This remains a release candidate, with the [documented accuracy and forecasting limits](accuracy.md).
+
+## Tagged source with uv
 
 Install [uv](https://docs.astral.sh/uv/getting-started/installation/), then download and unpack the [v0.1.0rc1 tagged source](https://github.com/dcajacob/tle-tailor/archive/refs/tags/v0.1.0rc1.zip) from the [GitHub prerelease](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1). Run commands from that source folder:
 
@@ -24,7 +37,7 @@ python3.14 -m venv .venv
 .venv/bin/tle-tailor example
 ```
 
-This release candidate is distributed through [GitHub Releases](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1), not PyPI. The `py3-none-any` TLE Tailor wheel still depends on native packages; its tag does not broaden the supported interpreter/platform combination. Source-based walkthroughs and notebooks require the matching tagged source folder.
+The matching wheel and source are also available from [GitHub Releases](https://github.com/dcajacob/tle-tailor/releases/tag/v0.1.0rc1). The `py3-none-any` TLE Tailor wheel still depends on native packages; its tag does not broaden the supported interpreter/platform combination. Source-based walkthroughs and notebooks require the matching tagged source folder.
 
 ## Source install in an existing Python environment
 
