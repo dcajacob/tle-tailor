@@ -1,0 +1,189 @@
+[project]
+name = "tle-tailor"
+version = "0.1.0rc1"
+description = "Generate SGP4-compatible TLEs from ephemeris and propagated state vectors"
+authors = [{name = "Dan CaJacob"}]
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE", "NOTICE", "licenses/python-sgp4-MIT.txt"]
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    "gmatpy==0.2.1",
+    "matplotlib>=3.6.1",
+    "numpy>=1.23.4",
+    "scipy>=1.9.3",
+    "sgp4>=2.21",
+    "skyfield>=1.45",
+    "jax>=0.3.23",
+    "jaxlib>=0.3.22",
+    "pandas>=1.5.1",
+    "pyarrow>=11.0.0",
+    "astropy>=5.1.1",
+    "spacetrack>=0.16.0",
+    "pytz>=2023.3",
+    "python-dotenv>=1.1.0,<2",
+]
+
+[project.optional-dependencies]
+gmat = ["gmatpy==0.2.1"]
+
+[project.scripts]
+tle-tailor = "tle_tailor.cli:main"
+tle-tailor-login = "tle_tailor.spacetrack_auth:main"
+
+[dependency-groups]
+dev = ["pytest>=8.4.1"]
+notebooks = ["ipykernel>=7", "jupyterlab>=4", "nbclient>=0.10", "nbformat>=5.10"]
+research = ["torch>=2.9,<3", "pydot>=3"]
+
+[build-system]
+requires = ["uv_build>=0.8.23,<0.9.0"]
+build-backend = "uv_build"
+
+[tool.uv]
+default-groups = []
+no-build-package = ["gmatpy"]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[tool.uv.build-backend]
+module-name = "tle_tailor"
+module-root = ""
+source-include = [
+    "uv.lock", ".python-version", "pytest.ini", "QUICKSTART.md", "NOTICE",
+    "distribution-policy.json", "licenses/**", "docs/*.md", "scripts/*.py",
+    ".github/workflows/ci.yml",
+    ".readthedocs.yaml",
+    "mkdocs.yml",
+    "docs/requirements.txt",
+    "docs/_site.py",
+    "docs/examples/deployment_to_tle.py",
+    "docs/examples/gps_to_tle.py",
+    "docs/examples/novatel_edie_to_tle.py",
+    "docs/examples/requirements-edie.txt",
+    "docs/assets/validation-results.json",
+    "docs/assets/fitting-performance.json",
+]
+source-exclude = [
+    "tle_tailor/data/examples/**",
+    "tle_tailor/examples/scripts/**/*.md",
+    "tle_tailor/examples/scripts/**/*.fth",
+    "tle_tailor/examples/scripts/**/*.e",
+    "tle_tailor/examples/scripts/hawk_examples/**",
+    ".local/**",
+    "tle_tailor/examples/notebooks/hawk_examples/**",
+    "tle_tailor/examples/notebooks/maintained/hawk_examples/**",
+    "tle_tailor/tests/test_hawk_notebook_diagnostics.py",
+    "tle_tailor/examples/scripts/gmat_integration/gmat_opm_prop_2018_jax_script.py",
+    "tle_tailor/examples/notebooks/gmat_integration/GMAT?OPM?Prop?-?2018?-?JAX.ipynb",
+    "tle_tailor/examples/notebooks/maintained/gmat_integration/gmat_opm_prop_2018_jax.ipynb",
+    "tle_tailor/examples/scripts/gmat_integration/gmat_opm_prop_script.py",
+    "tle_tailor/examples/notebooks/gmat_integration/GMAT?OPM?Prop.ipynb",
+    "tle_tailor/examples/notebooks/maintained/gmat_integration/gmat_opm_prop.ipynb",
+    "tle_tailor/examples/scripts/gmat_integration/gmat_opm_prop_jax_script.py",
+    "tle_tailor/examples/notebooks/gmat_integration/GMAT?OPM?Prop?JAX.ipynb",
+    "tle_tailor/examples/notebooks/maintained/gmat_integration/gmat_opm_prop_jax.ipynb",
+    "tle_tailor/examples/notebooks/experiments/GMAT?Experiment-Copy1.ipynb",
+    "tle_tailor/examples/notebooks/experiments/GMAT?Experiment.ipynb",
+    "tle_tailor/examples/notebooks/experiments/Read?STK?Ephemeris.ipynb",
+    "tle_tailor/examples/notebooks/experiments/TLEFit?Test?-?Equinoctial?-?GPS?-?LastObs?Variant.ipynb",
+    "tle_tailor/examples/notebooks/experiments/TLEFit?Test?-?Equinoctial?-?GPS.ipynb",
+    "tle_tailor/examples/notebooks/experiments/TLEFit?-?Equinoctial?-?GPS?-?Hawk4A.ipynb",
+    "**/*.bsp",
+    "**/*.pdf",
+    "**/*.PDF",
+    "**/*.7z",
+    "**/*.whl",
+    "**/*.so",
+    "**/*.pyd",
+    "**/*.dll",
+    "**/*.dylib",
+    "**/.env",
+    "**/.env.*",
+    "**/__pycache__/**",
+    "**/.pytest_cache/**",
+    "**/.ipynb_checkpoints/**",
+    "**/output/**",
+    "tle_tailor/data/ephemeris/**",
+    "tle_tailor/data/opm/**",
+    "tle_tailor/data/tles/**",
+    "tle_tailor/data/spice/**",
+    "tle_tailor/docs/**",
+    "tle_tailor/experiments/**",
+    "tle_tailor/fitting/coarse_fit.py",
+    "tle_tailor/examples/notebooks/*/*.ipynb",
+    "tle_tailor/examples/notebooks/experiments/**",
+    "tle_tailor/examples/notebooks/**/*.fth",
+    "tle_tailor/examples/notebooks/**/*.e",
+    "tle_tailor/gmat/*.script",
+    "tle_tailor/run_tests.py",
+    "tle_tailor/test_imports.py",
+    "tle_tailor/utils/**",
+    "tle_tailor/examples/notebooks/**/*.md",
+    "tle_tailor/*.md",
+]
+wheel-exclude = [
+    "tle_tailor/data/examples/**",
+    "tle_tailor/examples/scripts/**/*.md",
+    "tle_tailor/examples/scripts/**/*.fth",
+    "tle_tailor/examples/scripts/**/*.e",
+    "tle_tailor/examples/scripts/hawk_examples/**",
+    ".local/**",
+    "tle_tailor/examples/notebooks/hawk_examples/**",
+    "tle_tailor/examples/notebooks/maintained/hawk_examples/**",
+    "tle_tailor/tests/test_hawk_notebook_diagnostics.py",
+    "tle_tailor/examples/scripts/gmat_integration/gmat_opm_prop_2018_jax_script.py",
+    "tle_tailor/examples/notebooks/gmat_integration/GMAT?OPM?Prop?-?2018?-?JAX.ipynb",
+    "tle_tailor/examples/notebooks/maintained/gmat_integration/gmat_opm_prop_2018_jax.ipynb",
+    "tle_tailor/examples/scripts/gmat_integration/gmat_opm_prop_script.py",
+    "tle_tailor/examples/notebooks/gmat_integration/GMAT?OPM?Prop.ipynb",
+    "tle_tailor/examples/notebooks/maintained/gmat_integration/gmat_opm_prop.ipynb",
+    "tle_tailor/examples/scripts/gmat_integration/gmat_opm_prop_jax_script.py",
+    "tle_tailor/examples/notebooks/gmat_integration/GMAT?OPM?Prop?JAX.ipynb",
+    "tle_tailor/examples/notebooks/maintained/gmat_integration/gmat_opm_prop_jax.ipynb",
+    "tle_tailor/examples/notebooks/experiments/GMAT?Experiment-Copy1.ipynb",
+    "tle_tailor/examples/notebooks/experiments/GMAT?Experiment.ipynb",
+    "tle_tailor/examples/notebooks/experiments/Read?STK?Ephemeris.ipynb",
+    "tle_tailor/examples/notebooks/experiments/TLEFit?Test?-?Equinoctial?-?GPS?-?LastObs?Variant.ipynb",
+    "tle_tailor/examples/notebooks/experiments/TLEFit?Test?-?Equinoctial?-?GPS.ipynb",
+    "tle_tailor/examples/notebooks/experiments/TLEFit?-?Equinoctial?-?GPS?-?Hawk4A.ipynb",
+    "**/*.bsp",
+    "**/*.pdf",
+    "**/*.PDF",
+    "**/*.7z",
+    "**/*.whl",
+    "**/*.so",
+    "**/*.pyd",
+    "**/*.dll",
+    "**/*.dylib",
+    "**/.env",
+    "**/.env.*",
+    "**/__pycache__/**",
+    "**/.pytest_cache/**",
+    "**/.ipynb_checkpoints/**",
+    "**/output/**",
+    "tle_tailor/data/ephemeris/**",
+    "tle_tailor/data/opm/**",
+    "tle_tailor/data/tles/**",
+    "tle_tailor/data/spice/**",
+    "tle_tailor/docs/**",
+    "tle_tailor/experiments/**",
+    "tle_tailor/fitting/coarse_fit.py",
+    "tle_tailor/examples/notebooks/*/*.ipynb",
+    "tle_tailor/examples/notebooks/experiments/**",
+    "tle_tailor/examples/notebooks/**/*.fth",
+    "tle_tailor/examples/notebooks/**/*.e",
+    "tle_tailor/gmat/*.script",
+    "tle_tailor/run_tests.py",
+    "tle_tailor/test_imports.py",
+    "tle_tailor/utils/**",
+    "tle_tailor/examples/notebooks/**/*.md",
+    "tle_tailor/*.md",
+    "tle_tailor/tests/**",
+]

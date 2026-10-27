@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "provenance": "Synthetic WGS72 mean elements authored for this test suite; no flight/customer ephemeris or catalogue redistribution.",
+  "epoch_utc": "2020-01-01T00:00:00+00:00",
+  "frame": "TEME",
+  "position_unit": "km",
+  "velocity_unit": "km/s",
+  "fit_options": {"epoch_obs": 0, "lamda": 1.0, "max_iter": 35, "rms_epsilon": 0.002, "bstar": 0.000001, "debug": false},
+  "gmatpy_forces": {"degree": 8, "order": 8, "sun": true, "moon": true, "srp": false, "drag": false},
+  "cases": [
+    {"id": "leo", "description": "Low Earth, near-circular, inclined", "a_km": 7000.0, "eccentricity": 0.001, "inclination_deg": 51.6, "raan_deg": 40.0, "argp_deg": 30.0, "mean_anomaly_deg": 20.0, "bstar": 0.00001, "fit_seconds": 12000, "holdout_seconds": 6000, "cadence_seconds": 240},
+    {"id": "sso", "description": "Sun-synchronous-like retrograde low Earth", "a_km": 7200.0, "eccentricity": 0.008, "inclination_deg": 98.0, "raan_deg": 65.0, "argp_deg": 45.0, "mean_anomaly_deg": 25.0, "bstar": 0.00001, "fit_seconds": 12000, "holdout_seconds": 6000, "cadence_seconds": 240},
+    {"id": "gps", "description": "GPS-like medium Earth", "a_km": 26560.0, "eccentricity": 0.01, "inclination_deg": 55.0, "raan_deg": 60.0, "argp_deg": 40.0, "mean_anomaly_deg": 25.0, "bstar": 0.0, "fit_seconds": 86400, "holdout_seconds": 43200, "cadence_seconds": 1800},
+    {"id": "geo", "description": "Near-geosynchronous, slightly inclined/eccentric", "a_km": 42164.0, "eccentricity": 0.001, "inclination_deg": 0.1, "raan_deg": 50.0, "argp_deg": 35.0, "mean_anomaly_deg": 20.0, "bstar": 0.0, "fit_seconds": 172800, "holdout_seconds": 86400, "cadence_seconds": 3600},
+    {"id": "heo", "description": "Molniya-like eccentric high Earth", "a_km": 26600.0, "eccentricity": 0.7, "inclination_deg": 63.4, "raan_deg": 55.0, "argp_deg": 270.0, "mean_anomaly_deg": 15.0, "bstar": 0.0, "fit_seconds": 86400, "holdout_seconds": 43200, "cadence_seconds": 1800}
+  ]
+}

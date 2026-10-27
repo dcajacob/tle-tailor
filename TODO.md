@@ -1,0 +1,7 @@
+# After the first release
+
+These are unmeasured performance opportunities, not first-release gates. Preserve the fitting model, float64 precision, numerical tolerances and reported convergence/accuracy limits.
+
+- [ ] **Reuse unchanged Jacobians during damping retries.** Reuse residuals, Jacobians and normal equations only while the parameter vector and observations are unchanged; invalidate them after an accepted step. Acceptance: equivalent solver decisions, convergence and exported-TLE fit/hold-out errors on representative orbits, plus synchronized cold/warm whole-fit timings with iteration and evaluation counts.
+- [ ] **Batch observations and reduce Python dispatch/synchronization.** Evaluate independent epochs together and assess on-device reductions before considering a solver rewrite. Acceptance: validate epoch/frame and native-versus-JAX semantics first; preserve existing accuracy criteria and record representative sample counts, compile cost, steady-state median/range and end-to-end timing. Do not assume batching or a GPU improves small individual fits.
+- [ ] **Evaluate an optional persistent compilation cache for cold CLI starts.** Keep it opt-in and use a trusted local cache; do not enable it in this release. Acceptance: compare fresh-process empty-cache and cache-hit starts, retain compilation cost in the report, verify numerical equivalence and measure warm fits separately. Document cache invalidation, disk use and supported versions without storing mission inputs or credentials.

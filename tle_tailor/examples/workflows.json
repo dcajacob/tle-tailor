@@ -1,0 +1,506 @@
+{
+  "schema_version": 1,
+  "purpose": "Public script workflows and source-history references; local-only inventories are read separately only in source mode.",
+  "workflows": [
+    {
+      "id": "basic_examples-tlefit_coe_fd",
+      "title": "TLEFit - COE - FD",
+      "script": "tle_tailor/examples/scripts/basic_examples/tlefit_coe_fd_script.py",
+      "module": "tle_tailor.examples.scripts.basic_examples.tlefit_coe_fd_script",
+      "original_notebook": "tle_tailor/examples/notebooks/basic_examples/TLEFit - COE - FD.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/basic_examples/tlefit_coe_fd.ipynb",
+      "status": "maintained",
+      "input_category": "inline-tle",
+      "requirements": [
+        "TLE Tailor and its Python dependencies"
+      ],
+      "input_notes": "The default orbit is defined in the script. Optional catalog studies use source-only TLE catalogs, which are not included in the distribution.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "This companion runs the script single-orbit fit and bounded batch example. Original optional catalog cells remain in the preserved notebook."
+      ]
+    },
+    {
+      "id": "basic_examples-tlefit_coe_jax",
+      "title": "TLEFit - COE - JAX",
+      "script": "tle_tailor/examples/scripts/basic_examples/tlefit_coe_jax_script.py",
+      "module": "tle_tailor.examples.scripts.basic_examples.tlefit_coe_jax_script",
+      "original_notebook": "tle_tailor/examples/notebooks/basic_examples/TLEFit - COE - JAX.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/basic_examples/tlefit_coe_jax.ipynb",
+      "status": "maintained",
+      "input_category": "inline-tle",
+      "requirements": [
+        "TLE Tailor and its Python dependencies"
+      ],
+      "input_notes": "The default orbit is defined in the script. Optional catalog studies use source-only TLE catalogs, which are not included in the distribution.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "This companion runs the script single-orbit fit and bounded batch example. Original optional catalog cells remain in the preserved notebook."
+      ]
+    },
+    {
+      "id": "basic_examples-tlefit_eqn_fd",
+      "title": "TLEFit - EQN - FD",
+      "script": "tle_tailor/examples/scripts/basic_examples/tlefit_eqn_fd_script.py",
+      "module": "tle_tailor.examples.scripts.basic_examples.tlefit_eqn_fd_script",
+      "original_notebook": "tle_tailor/examples/notebooks/basic_examples/TLEFit - EQN - FD.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/basic_examples/tlefit_eqn_fd.ipynb",
+      "status": "maintained",
+      "input_category": "inline-tle",
+      "requirements": [
+        "TLE Tailor and its Python dependencies"
+      ],
+      "input_notes": "The default orbit is defined in the script. Optional catalog studies use source-only TLE catalogs, which are not included in the distribution.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The current notebook source-backend selector and ephemeris fitter have been reconciled into this script; SGP4 is the default and gmatpy/local gmat can be selected.",
+        "The single-orbit fit and four fit-span cases run from the script. Original catalog, damping, and plotting studies remain in the preserved notebook."
+      ]
+    },
+    {
+      "id": "basic_examples-tlefit_eqn_jax",
+      "title": "TLEFit - EQN - JAX",
+      "script": "tle_tailor/examples/scripts/basic_examples/tlefit_eqn_jax_script.py",
+      "module": "tle_tailor.examples.scripts.basic_examples.tlefit_eqn_jax_script",
+      "original_notebook": "tle_tailor/examples/notebooks/basic_examples/TLEFit - EQN - JAX.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/basic_examples/tlefit_eqn_jax.ipynb",
+      "status": "maintained",
+      "input_category": "inline-tle",
+      "requirements": [
+        "TLE Tailor and its Python dependencies"
+      ],
+      "input_notes": "The default orbit is defined in the script. Optional catalog studies use source-only TLE catalogs, which are not included in the distribution.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The current notebook source-backend selector and ephemeris fitter have been reconciled into this script; SGP4 is the default and gmatpy/local gmat can be selected.",
+        "The single-orbit fit and four fit-span cases run from the script. Original catalog, damping, and plotting studies remain in the preserved notebook."
+      ]
+    },
+    {
+      "id": "basic_examples-tlefit_eqn_no_bstar",
+      "title": "TLEFit - EQN - No BStar",
+      "script": "tle_tailor/examples/scripts/basic_examples/tlefit_eqn_no_bstar_script.py",
+      "module": "tle_tailor.examples.scripts.basic_examples.tlefit_eqn_no_bstar_script",
+      "original_notebook": "tle_tailor/examples/notebooks/basic_examples/TLEFit - EQN - No BStar.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/basic_examples/tlefit_eqn_no_bstar.ipynb",
+      "status": "maintained",
+      "input_category": "inline-tle",
+      "requirements": [
+        "TLE Tailor and its Python dependencies"
+      ],
+      "input_notes": "The default orbit is defined in the script. Optional catalog studies use source-only TLE catalogs, which are not included in the distribution.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The former script used a seven-parameter demonstration; the maintained script now delegates true fixed-Bstar fitting to the shared fixed_bstar helper.",
+        "The original inline solver and its catalog/damping experiments remain preserved; this companion runs the maintained single-orbit script."
+      ]
+    },
+    {
+      "id": "gmat_integration-gmat_opm_prop_fd_example",
+      "title": "GMAT OPM Prop FD Example",
+      "script": "tle_tailor/examples/scripts/gmat_integration/gmat_opm_prop_fd_example_script.py",
+      "module": "tle_tailor.examples.scripts.gmat_integration.gmat_opm_prop_fd_example_script",
+      "original_notebook": "tle_tailor/examples/notebooks/gmat_integration/GMAT OPM Prop FD Example.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/gmat_integration/gmat_opm_prop_fd_example.ipynb",
+      "status": "maintained",
+      "input_category": "inline-cartesian-or-tle",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "standalone gmatpy for default OPM propagation; or selected SGP4/local gmat backend"
+      ],
+      "input_notes": "The script defines its ITRS example state and TLE. No historical ephemeris file or Space-Track login is needed for the default fit.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The script and companion share opm_workflow for propagation, fitting, and residual summaries.",
+        "The original optional Feather export and Space-Track epoch-matching/refit study remains preserved and is not run by this compact companion."
+      ]
+    },
+    {
+      "id": "gmat_integration-gmat_opm_prop_jax_example",
+      "title": "GMAT OPM Prop JAX Example",
+      "script": "tle_tailor/examples/scripts/gmat_integration/gmat_opm_prop_jax_example_script.py",
+      "module": "tle_tailor.examples.scripts.gmat_integration.gmat_opm_prop_jax_example_script",
+      "original_notebook": "tle_tailor/examples/notebooks/gmat_integration/GMAT OPM Prop JAX Example.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/gmat_integration/gmat_opm_prop_jax_example.ipynb",
+      "status": "maintained",
+      "input_category": "inline-cartesian-or-tle",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "standalone gmatpy for default OPM propagation; or selected SGP4/local gmat backend"
+      ],
+      "input_notes": "The script defines its ITRS example state and TLE. No historical ephemeris file or Space-Track login is needed for the default fit.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The script and companion share opm_workflow for propagation, fitting, and residual summaries.",
+        "The original optional Feather export and Space-Track epoch-matching/refit study remains preserved and is not run by this compact companion."
+      ]
+    },
+    {
+      "id": "gmat_integration-tle_from_gmat",
+      "title": "TLE from GMAT",
+      "script": "tle_tailor/examples/scripts/gmat_integration/tle_from_gmat_script.py",
+      "module": "tle_tailor.examples.scripts.gmat_integration.tle_from_gmat_script",
+      "original_notebook": "tle_tailor/examples/notebooks/gmat_integration/TLE from GMAT.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/gmat_integration/tle_from_gmat.ipynb",
+      "status": "historical-requires-legacy-api",
+      "input_category": "legacy-native-and-source-data",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "separate legacy GMAT API and compatible Python kernel",
+        "original mission inputs; source-only scientific kernels where used"
+      ],
+      "input_notes": "Requires a separately configured compatible GMAT Python API and the original GMAT mission/data inputs. Standalone gmatpy does not substitute for load_gmat in this historical script. Supply the source-only solar-system BSP with --ephemeris /path/to/kernel.bsp or TLE_TAILOR_EPHEMERIS.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "Retained as an explicitly historical entrypoint requiring the legacy API. Missing legacy API prerequisites now produce an explicit CLI error before propagation; no native success is claimed without that dependency.",
+        "Original native-session, matching, and exploratory notebook cells remain preserved; this companion runs only the named historical script.",
+        "The old script docstring named a nonexistent Test TLE from GMAT notebook; the actual preserved source is TLE from GMAT.ipynb."
+      ]
+    },
+    {
+      "id": "gps_examples-tlefit_eqn_gps_fd",
+      "title": "TLEFit - EQN - GPS FD - GPS Sat",
+      "script": "tle_tailor/examples/scripts/gps_examples/tlefit_eqn_gps_fd_script.py",
+      "module": "tle_tailor.examples.scripts.gps_examples.tlefit_eqn_gps_fd_script",
+      "original_notebook": "tle_tailor/examples/notebooks/gps_examples/TLEFit - EQN - GPS FD - GPS Sat.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/gps_examples/tlefit_eqn_gps_fd.ipynb",
+      "status": "maintained",
+      "input_category": "source-only-ephemeris",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "source ephemeris or user-owned equivalent",
+        "optional Space-Track credentials for live comparison"
+      ],
+      "input_notes": "Requires original-checkout ephemeris fixtures under tle_tailor/data/ephemeris: gpsd6n22short.fth. These historical datasets are not shipped in the distribution. Set TLE_TAILOR_DATA_DIR to an external data directory preserving ephemeris/<filename>, with the original fixtures or equivalent user-owned inputs, before running installed copies.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The script covers its initial fit and diagnostics; the original notebook also contains catalog matching, epoch-aligned refits, or exploratory cells that are not claimed as script-equivalent.",
+        "Timestamp rounding to microseconds has been reconciled with the preserved original."
+      ],
+      "source_fixtures": [
+        "tle_tailor/data/ephemeris/gpsd6n22short.fth"
+      ]
+    },
+    {
+      "id": "gps_examples-tlefit_eqn_gps_jax_match",
+      "title": "TLEFit - EQN - GPS JAX - GPS Sat match - import",
+      "script": "tle_tailor/examples/scripts/gps_examples/tlefit_eqn_gps_jax_match_script.py",
+      "module": "tle_tailor.examples.scripts.gps_examples.tlefit_eqn_gps_jax_match_script",
+      "original_notebook": "tle_tailor/examples/notebooks/gps_examples/TLEFit - EQN - GPS JAX - GPS Sat match - import.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/gps_examples/tlefit_eqn_gps_jax_match.ipynb",
+      "status": "maintained",
+      "input_category": "source-only-ephemeris",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "source ephemeris or user-owned equivalent",
+        "optional Space-Track credentials for live comparison"
+      ],
+      "input_notes": "Requires original-checkout ephemeris fixtures under tle_tailor/data/ephemeris: gpsd6n22short.fth. These historical datasets are not shipped in the distribution. Set TLE_TAILOR_DATA_DIR to an external data directory preserving ephemeris/<filename>, with the original fixtures or equivalent user-owned inputs, before running installed copies.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The script covers its initial fit and diagnostics; the original notebook also contains catalog matching, epoch-aligned refits, or exploratory cells that are not claimed as script-equivalent.",
+        "Timestamp rounding to microseconds has been reconciled with the preserved original."
+      ],
+      "source_fixtures": [
+        "tle_tailor/data/ephemeris/gpsd6n22short.fth"
+      ]
+    },
+    {
+      "id": "gps_examples-tlefit_eqn_gps_jax",
+      "title": "TLEFit - EQN - GPS JAX - GPS Sat",
+      "script": "tle_tailor/examples/scripts/gps_examples/tlefit_eqn_gps_jax_script.py",
+      "module": "tle_tailor.examples.scripts.gps_examples.tlefit_eqn_gps_jax_script",
+      "original_notebook": "tle_tailor/examples/notebooks/gps_examples/TLEFit - EQN - GPS JAX - GPS Sat.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/gps_examples/tlefit_eqn_gps_jax.ipynb",
+      "status": "maintained",
+      "input_category": "source-only-ephemeris",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "source ephemeris or user-owned equivalent",
+        "optional Space-Track credentials for live comparison"
+      ],
+      "input_notes": "Requires original-checkout ephemeris fixtures under tle_tailor/data/ephemeris: gpsd6n22short.fth. These historical datasets are not shipped in the distribution. Set TLE_TAILOR_DATA_DIR to an external data directory preserving ephemeris/<filename>, with the original fixtures or equivalent user-owned inputs, before running installed copies.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The script covers its initial fit and diagnostics; the original notebook also contains catalog matching, epoch-aligned refits, or exploratory cells that are not claimed as script-equivalent.",
+        "Timestamp rounding to microseconds has been reconciled with the preserved original."
+      ],
+      "source_fixtures": [
+        "tle_tailor/data/ephemeris/gpsd6n22short.fth"
+      ]
+    },
+    {
+      "id": "gps_examples-tlefit_eqn_gps_no_bstar",
+      "title": "TLEFit - EQN - GPS - GPS Sat - No BSTAR",
+      "script": "tle_tailor/examples/scripts/gps_examples/tlefit_eqn_gps_no_bstar_script.py",
+      "module": "tle_tailor.examples.scripts.gps_examples.tlefit_eqn_gps_no_bstar_script",
+      "original_notebook": "tle_tailor/examples/notebooks/gps_examples/TLEFit - EQN - GPS - GPS Sat - No BSTAR.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/gps_examples/tlefit_eqn_gps_no_bstar.ipynb",
+      "status": "diagnostic",
+      "input_category": "source-only-ephemeris",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "source ephemeris or user-owned equivalent",
+        "optional Space-Track credentials for live comparison"
+      ],
+      "input_notes": "Requires original-checkout ephemeris fixtures under tle_tailor/data/ephemeris: gpsd6n22short.fth. These historical datasets are not shipped in the distribution. Set TLE_TAILOR_DATA_DIR to an external data directory preserving ephemeris/<filename>, with the original fixtures or equivalent user-owned inputs, before running installed copies. The maintained GPS no-Bstar script accepts --ephemeris /path/to/input.fth.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The maintained script uses the shared fixed-BSTAR solver; the original inline state_size=7 experiment remains preserved source history.",
+        "The approximately 130 m in-sample fit is accepted for this example. The approximately 18.8 km hold-out error after 53 days is separate and has not been accepted. Inspect physical residuals alongside the unchanged historical solver stopping flag."
+      ],
+      "source_fixtures": [
+        "tle_tailor/data/ephemeris/gpsd6n22short.fth"
+      ]
+    },
+    {
+      "id": "icesat_examples-tlefit_eqn_gps_fd_icesat",
+      "title": "TLEFit - EQN - GPS FD - Icesat",
+      "script": "tle_tailor/examples/scripts/icesat_examples/tlefit_eqn_gps_fd_icesat_script.py",
+      "module": "tle_tailor.examples.scripts.icesat_examples.tlefit_eqn_gps_fd_icesat_script",
+      "original_notebook": "tle_tailor/examples/notebooks/icesat_examples/TLEFit - EQN - GPS FD - Icesat.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/icesat_examples/tlefit_eqn_gps_fd_icesat.ipynb",
+      "status": "maintained",
+      "input_category": "source-only-ephemeris",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "source ephemeris or user-owned equivalent",
+        "optional Space-Track credentials for live comparison"
+      ],
+      "input_notes": "Requires original-checkout ephemeris fixtures under tle_tailor/data/ephemeris: icesat.fth. These historical datasets are not shipped in the distribution. Set TLE_TAILOR_DATA_DIR to an external data directory preserving ephemeris/<filename>, with the original fixtures or equivalent user-owned inputs, before running installed copies.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The script covers its initial fit and diagnostics; the original notebook also contains catalog matching, epoch-aligned refits, or exploratory cells that are not claimed as script-equivalent.",
+        "Timestamp rounding to microseconds has been reconciled with the preserved original."
+      ],
+      "source_fixtures": [
+        "tle_tailor/data/ephemeris/icesat.fth"
+      ]
+    },
+    {
+      "id": "icesat_examples-tlefit_eqn_gps_jax_icesat",
+      "title": "TLEFit - EQN - GPS JAX - Icesat",
+      "script": "tle_tailor/examples/scripts/icesat_examples/tlefit_eqn_gps_jax_icesat_script.py",
+      "module": "tle_tailor.examples.scripts.icesat_examples.tlefit_eqn_gps_jax_icesat_script",
+      "original_notebook": "tle_tailor/examples/notebooks/icesat_examples/TLEFit - EQN - GPS JAX - Icesat.ipynb",
+      "companion": "tle_tailor/examples/notebooks/maintained/icesat_examples/tlefit_eqn_gps_jax_icesat.ipynb",
+      "status": "maintained",
+      "input_category": "source-only-ephemeris",
+      "requirements": [
+        "TLE Tailor and its Python dependencies",
+        "source ephemeris or user-owned equivalent",
+        "optional Space-Track credentials for live comparison"
+      ],
+      "input_notes": "Requires original-checkout ephemeris fixtures under tle_tailor/data/ephemeris: icesat.fth. These historical datasets are not shipped in the distribution. Set TLE_TAILOR_DATA_DIR to an external data directory preserving ephemeris/<filename>, with the original fixtures or equivalent user-owned inputs, before running installed copies.",
+      "arguments": [
+        "--no-plots"
+      ],
+      "original_differences": [
+        "The script covers its initial fit and diagnostics; the original notebook also contains catalog matching, epoch-aligned refits, or exploratory cells that are not claimed as script-equivalent.",
+        "Timestamp rounding to microseconds has been reconciled with the preserved original."
+      ],
+      "source_fixtures": [
+        "tle_tailor/data/ephemeris/icesat.fth"
+      ]
+    }
+  ],
+  "preserved_studies": [
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/AutoDiff Comapred to FD.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/AutoDiff-EQN.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/AutoDiff.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/Differential Corrector-Copy1.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/Differential Corrector.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/Ex_R2020a_GMAT_Propagation.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/Ex_R2020a_GMAT_States.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/GMAT OPM Prop JAX - LM alt.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/GMAT OPM Prop JAX - linesearch.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/Spacetrack.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TEME Test.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit - EQN - GPS - Icesat.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit - EQN - GPS JAX - Icesat Decimate - import.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit - Equinoctial - GPS - GPS Sat.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit - Equinoctial - GPS - Icesat backup.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit - Equinoctial - GPS JAX - Icesat.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - COE - JAX.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - COE.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - EQN - JAX - Line Search.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - EQN.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Equinoctial - Ephemeris.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Equinoctial - Fix Scaling Maybe.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Equinoctial - JAX - No Scale.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Equinoctial - JAX - Radical Rescale.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Equinoctial - JAX.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Equinoctial - import - FAAFO.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Fix Norm.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Fix Scaling Maybe.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Scipy CurveFit.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/TLEFit Test - Scipy LeastSquares.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/experiments/Torch AutoGrad.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/gmat_integration/GMAT Overview LEO.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    },
+    {
+      "notebook": "tle_tailor/examples/notebooks/gmat_integration/GMAT Overview Prop JAX.ipynb",
+      "status": "preserved-study",
+      "notes": "Original source retained unchanged; no matching *_script.py entrypoint. Research/inline behavior is outside the generated companion execution scope."
+    }
+  ],
+  "standalone_companions": [
+    {
+      "notebook": "tle_tailor/examples/notebooks/deployment.ipynb",
+      "module": "tle_tailor.examples.scripts.deployment"
+    }
+  ]
+}

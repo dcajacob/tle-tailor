@@ -1,0 +1,75 @@
+name: Candidate engineering checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tle-tailor-engineering-${{ github.ref }}
+  cancel-in-progress: true
+
+# This is an engineering target, not a claim that hosted CI or other platforms
+# have already passed. Publication and whole-repository clearance are separate.
+jobs:
+  linux-python314:
+    name: Linux x86_64 / CPython 3.14
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      MPLBACKEND: Agg
+      PYTHONDONTWRITEBYTECODE: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+      UV_NO_ENV_FILE: 'true'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Set up pinned uv and standard Python
+        uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          version: '0.8.23'
+          python-version: '3.14'
+      - name: Install locked development and bundled-GMAT dependencies
+        run: uv sync --locked --group dev --group notebooks
+      - name: Audit source before building local artifacts
+        run: uv run --locked --offline --group dev --group notebooks python scripts/audit_distribution.py --source-only --json output/ci/source-policy.json
+      - name: Build private candidate artifacts
+        run: uv build --sdist --wheel --out-dir output/ci/dist
+      - name: Execute deployment and seven workflow companions in fresh kernels
+        id: notebooks
+        continue-on-error: true
+        run: >-
+          uv run --locked --offline --group dev --group notebooks python scripts/validate_notebooks.py
+          --workers 2 --timeout 300 --startup-timeout 30 --overall-timeout 360
+          --output output/ci/notebooks
+      - name: Run focused offline tests, parity and mandatory accuracy matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          wheel_files=(output/ci/dist/*.whl)
+          sdist_files=(output/ci/dist/*.tar.gz)
+          test "${#wheel_files[@]}" -eq 1
+          test "${#sdist_files[@]}" -eq 1
+          uv run --locked --offline --group dev --group notebooks python scripts/release_check.py \
+            --engineering-only --output output/ci/checks \
+            --notebook-execution-report output/ci/notebooks/summary.json \
+            --notebook-command-status "${{ steps.notebooks.outcome }}" \
+            --wheel "${wheel_files[0]}" --sdist "${sdist_files[0]}"
+      - name: Retain explicit check results including blocked and never-run gates
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: linux-python314-engineering-evidence
+          # Do not upload built archives, especially if an artifact audit fails.
+          path: |
+            output/ci/source-policy.json
+            output/ci/checks/
+            output/ci/notebooks/summary.json
+          if-no-files-found: warn
+          retention-days: 14

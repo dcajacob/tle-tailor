@@ -1,0 +1,18 @@
+{
+  "revision": "b9c5de8e7cb5ee4a941c6fbbcb24f4d59c3e8c8f",
+  "files": {
+    "common.py": "9e1320584e3f8d319b0d6370dac579a1768462ab20da5fc393dce521f6abf06f",
+    "common_jax.py": "9909ccbbb068130d0844cd749e0be6be6bdba05da8891d6aad13ea6a920d793b",
+    "tlefit_equinoctial_eph_fd.py": "fad5b478b4caab98cfd9df29b711827e1cb7af08a0453df63c4d77216beba035",
+    "tlefit_equinoctial_eph_jax.py": "645edb045412b204d2de6a131892619ab40031fa0486b3c3fdcef6f8e7954809",
+    "sgp4_jax/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sgp4_jax/model.py": "b1fb1b4123cc72dd5cedd571b7f4ea086b792bd3b87190b7a22b4689e037def6",
+    "sgp4_jax/alpha5.py": "81c09e3988721cb58d11234dc37b9d5b49c1db3eee1766b8ea9f1ab26798cb4b",
+    "sgp4_jax/propagation.py": "49c3559cb726c470c6905f64fd4ea0b552bb58bc08901b9f47775747cf5e8ec2",
+    "LICENSE": "310b2136401acf1dab1ed56542fa46277d174c141c62fc4fb2d3a380029bc893",
+    "common_coe_fd.py": "c7c18baeff3ede4640d71e7e4f35407e7ed693393cd09f3ceed041571c3a233d",
+    "common_coe_jax.py": "b0ba344c2086ef5b5a93238cabf63aa1ab2b66360a4bbcb9d55e56e23a58e9c3",
+    "tlefit_coe_fd.py": "da24be1c8c94e30200a4314d3ad33e3ac1defcef43f49f8437176527f39aac55",
+    "tlefit_coe_jax.py": "ccdaf52c7962029a6a9ed792b91f4e139859ed483af962570f6b654284117d44"
+  }
+}

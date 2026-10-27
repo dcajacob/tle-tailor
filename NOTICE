@@ -1,0 +1,36 @@
+TLE Tailor redistribution notices
+================================
+
+Project-authored TLE Tailor code is offered under the MIT License in LICENSE,
+copyright (c) 2022 Dan CaJacob. This statement does not relicense every file in
+the historical research checkout or assert ownership of third-party material.
+
+The bundled tle_tailor/propagation/sgp4_jax implementation adapts Brandon
+Rhodes's python-sgp4 implementation, including its retained David Vallado and
+collaborator algorithm comments. The complete upstream MIT notice, copyright
+2012–2016 Brandon Rhodes, is in licenses/python-sgp4-MIT.txt. The exact upstream
+revision used for the historical adaptation has not been established.
+Upstream: https://github.com/brandon-rhodes/python-sgp4
+The same notice applies to the frozen sgp4_jax reference files under
+tle_tailor/validation/reference_b9/, which also retain the original project
+LICENSE. Their exact public-revision hashes are recorded separately.
+
+The unidentified-origin historical fitting/coarse_fit.py helper is excluded
+from wheel and source distributions. The two classical-element fitters do not
+use this helper; their unused imports have been removed. Its research-checkout
+presence is not an assertion of MIT redistribution permission.
+
+Historical mission data, catalog snapshots, provider ephemerides, DE421 BSP
+copies, papers, original notebooks with research outputs, and experiments are
+excluded. The distribution excludes those whole historical files. Maintained workflows
+still retain inline OPM epoch/state and TLE example literals; their original
+provider/acquisition context and applicable sharing authority are not fully
+recorded. Prior public code presence is not treated as a provider grant.
+See tle_tailor/data/PROVENANCE.json for symbol, location and hash inventories.
+A passing structural archive audit is not completed rights clearance. See docs/redistribution.md and
+distribution-policy.json for the exact distribution boundary.
+
+External Python dependencies are separately installed distributions. Their
+licenses and bundled scientific/native components are not relicensed by this
+notice. In particular, gmatpy is external; no GMAT, CSPICE or f2c code/binary
+is vendored into TLE Tailor by this distribution.

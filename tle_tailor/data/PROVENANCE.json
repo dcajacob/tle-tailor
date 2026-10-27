@@ -1,0 +1,313 @@
+{
+  "schema_version": 1,
+  "scope": "Distributed configuration, retained inline example inputs, validation cases and generated notebook companions; structural inventory, not completed rights clearance.",
+  "configuration": {
+    "path": "default_config.toml",
+    "origin": "project configuration template under project MIT license",
+    "private_machine_paths": "forbidden by distribution gate"
+  },
+  "excluded_historical_inputs": [
+    {
+      "patterns": [
+        "ephemeris/**",
+        "opm/**",
+        "tles/**",
+        "spice/**",
+        "**/*.bsp",
+        "**/*.pdf",
+        "**/*.7z"
+      ],
+      "decision": "excluded from wheel and sdist",
+      "reason": "No supplied per-file redistribution grant or private/public classification; preserved in research checkout only."
+    }
+  ],
+  "notebook_companions": {
+    "paths": "tle_tailor/examples/notebooks/maintained/**/*.ipynb",
+    "origin": "generated from maintained project script entrypoints",
+    "outputs": "none; execution counts must be null"
+  },
+  "limits": "This record is not provider permission, legal clearance, data truth or whole-repository publication approval.",
+  "accuracy_cases": {
+    "path": "tle_tailor/validation/accuracy_cases.json",
+    "origin": "synthetic WGS72 mean-element orbit definitions authored for validation",
+    "private_mission_inputs": false,
+    "scope": "Only the fixed synthetic validation matrix; this does not describe every shipped example input."
+  },
+  "retained_inline_inputs": {
+    "status": "origin_or_authority_unresolved_where_applicable",
+    "opm": {
+      "source_file": "tle_tailor/examples/scripts/gmat_integration/opm_workflow.py",
+      "symbols": [
+        "OPM_EPOCH",
+        "OPM_STATE_ITRS"
+      ],
+      "epoch_utc": "2021-03-05T13:12:29.258000Z",
+      "frame": "ITRS",
+      "position_units": "km",
+      "velocity_units": "km/s",
+      "canonical_identity_sha256": "27427ba82cdbe1c85ab29dcaf95f27491d251590c9abb8bae00b673f8d430a81",
+      "identity_encoding": "SHA256 of UTF-8 json.dumps object with epoch_utc, frame, state from OPM_STATE_ITRS, position_units, velocity_units; sort_keys=True, separators=(comma,colon)",
+      "prior_public_presence": {
+        "revision": "b9c5de8e7cb5ee4a941c6fbbcb24f4d59c3e8c8f",
+        "notebooks": [
+          "GMAT OPM Prop FD Example.ipynb",
+          "GMAT OPM Prop JAX Example.ipynb"
+        ],
+        "all_six_exact_state_literals_and_epoch_observed": true
+      },
+      "origin_and_authority_status": "unresolved_owner_confirmation_pending",
+      "missing_records": [
+        "Whether this exact inline state/epoch was synthetic, public reference data, or launch/provider/customer-derived input.",
+        "The actual origin/provider and acquisition/version context.",
+        "Any applicable public-sharing authorization, owner authority or provider terms for this input."
+      ],
+      "permission_inference": "Prior public repository presence is recorded history, not a provider grant. No restriction or permission is inferred solely from the values.",
+      "owner_context": {
+        "reported_recollection": "Probably made up if already committed; unconfirmed recollection, not a classification as private.",
+        "origin_status": "owner_reported_probably_synthetic_unconfirmed",
+        "exact_public_introduction_commit": "848f0fe5ee5bba626a05d92694ff4359a39f2e63",
+        "public_introduction_date": "2022-12-21",
+        "evidence": "The exact epoch and all six literals are present in both committed public OPM example notebooks."
+      }
+    },
+    "tle_literals": [
+      {
+        "catalog_id": "25544",
+        "line_sha256": [
+          {
+            "line_number": 1,
+            "sha256": "a5641803325c27f90f8a81d466f91e716799ec82ef562162624e58dcfe9f788a"
+          },
+          {
+            "line_number": 2,
+            "sha256": "dafaee077bc5d51dfc798fe9193b7f2d63b39a23d85742cf1368917f7d5f4c91"
+          }
+        ],
+        "source_locations": [
+          {
+            "path": "tle_tailor/core/common.py",
+            "lines": [
+              12,
+              13
+            ]
+          },
+          {
+            "path": "tle_tailor/core/common_coe_fd.py",
+            "lines": [
+              12,
+              13
+            ]
+          },
+          {
+            "path": "tle_tailor/core/common_coe_jax.py",
+            "lines": [
+              23,
+              24
+            ]
+          },
+          {
+            "path": "tle_tailor/core/common_jax.py",
+            "lines": [
+              22,
+              23
+            ]
+          },
+          {
+            "path": "tle_tailor/fitting/tlefit_equinoctial_fd.py",
+            "lines": [
+              16,
+              17
+            ]
+          },
+          {
+            "path": "tle_tailor/fitting/tlefit_equinoctial_jax.py",
+            "lines": [
+              17,
+              18
+            ]
+          },
+          {
+            "path": "tle_tailor/validation/reference_b9/common.py",
+            "lines": [
+              12,
+              13
+            ]
+          },
+          {
+            "path": "tle_tailor/validation/reference_b9/common_coe_fd.py",
+            "lines": [
+              12,
+              13
+            ]
+          },
+          {
+            "path": "tle_tailor/validation/reference_b9/common_coe_jax.py",
+            "lines": [
+              23,
+              24
+            ]
+          },
+          {
+            "path": "tle_tailor/validation/reference_b9/common_jax.py",
+            "lines": [
+              25,
+              26
+            ]
+          }
+        ],
+        "prior_public_presence": {
+          "revision": "b9c5de8e7cb5ee4a941c6fbbcb24f4d59c3e8c8f",
+          "path": "common.py",
+          "all_line_hashes_found": true
+        },
+        "origin_and_applicable_terms": "No separate original acquisition/provider/terms record is stored for these retained TLE literals. Prior public code presence does not by itself establish provider authorization or resolve applicable terms."
+      },
+      {
+        "catalog_id": "40019",
+        "line_sha256": [
+          {
+            "line_number": 1,
+            "sha256": "5db890b6c5ac56fc5eaee254e18195e68d603a39fb3d2016e8b15d595b0aaca1"
+          },
+          {
+            "line_number": 2,
+            "sha256": "8fdf8669d5f4cacce54a26643f5ae02f09f8519ce02eca213b639c9868fd2eba"
+          }
+        ],
+        "source_locations": [
+          {
+            "path": "tle_tailor/core/common.py",
+            "lines": [
+              16,
+              17
+            ]
+          },
+          {
+            "path": "tle_tailor/core/common_coe_fd.py",
+            "lines": [
+              16,
+              17
+            ]
+          },
+          {
+            "path": "tle_tailor/core/common_coe_jax.py",
+            "lines": [
+              27,
+              28
+            ]
+          },
+          {
+            "path": "tle_tailor/core/common_jax.py",
+            "lines": [
+              26,
+              27
+            ]
+          },
+          {
+            "path": "tle_tailor/fitting/tlefit_equinoctial_fd.py",
+            "lines": [
+              20,
+              21
+            ]
+          },
+          {
+            "path": "tle_tailor/fitting/tlefit_equinoctial_jax.py",
+            "lines": [
+              21,
+              22
+            ]
+          },
+          {
+            "path": "tle_tailor/examples/scripts/basic_examples/tlefit_coe_fd_script.py",
+            "lines": [
+              36,
+              37
+            ]
+          },
+          {
+            "path": "tle_tailor/examples/scripts/basic_examples/tlefit_coe_jax_script.py",
+            "lines": [
+              36,
+              37
+            ]
+          },
+          {
+            "path": "tle_tailor/examples/scripts/basic_examples/tlefit_eqn_fd_script.py",
+            "lines": [
+              72,
+              73,
+              127,
+              128
+            ]
+          },
+          {
+            "path": "tle_tailor/examples/scripts/basic_examples/tlefit_eqn_jax_script.py",
+            "lines": [
+              72,
+              73,
+              165,
+              166
+            ]
+          },
+          {
+            "path": "tle_tailor/examples/scripts/basic_examples/tlefit_eqn_no_bstar_script.py",
+            "lines": [
+              35,
+              36
+            ]
+          },
+          {
+            "path": "tle_tailor/examples/scripts/gmat_integration/gmatpy_state_to_tle.py",
+            "lines": [
+              98,
+              99
+            ]
+          },
+          {
+            "path": "tle_tailor/examples/scripts/gmat_integration/opm_workflow.py",
+            "lines": [
+              20,
+              21
+            ]
+          },
+          {
+            "path": "tle_tailor/validation/reference_b9/common.py",
+            "lines": [
+              16,
+              17
+            ]
+          },
+          {
+            "path": "tle_tailor/validation/reference_b9/common_coe_fd.py",
+            "lines": [
+              16,
+              17
+            ]
+          },
+          {
+            "path": "tle_tailor/validation/reference_b9/common_coe_jax.py",
+            "lines": [
+              27,
+              28
+            ]
+          },
+          {
+            "path": "tle_tailor/validation/reference_b9/common_jax.py",
+            "lines": [
+              29,
+              30
+            ]
+          }
+        ],
+        "prior_public_presence": {
+          "revision": "b9c5de8e7cb5ee4a941c6fbbcb24f4d59c3e8c8f",
+          "path": "common.py",
+          "all_line_hashes_found": true
+        },
+        "origin_and_applicable_terms": "No separate original acquisition/provider/terms record is stored for these retained TLE literals. Prior public code presence does not by itself establish provider authorization or resolve applicable terms."
+      }
+    ],
+    "distinction": "Whole historical input files are excluded, but these inline values remain in shipped Python code. They are not all described as synthetic or rights-cleared."
+  },
+  "archive_audit_limit": "A passed wheel/sdist audit confirms declared file membership, notices, source-byte identity and structural quarantine. It does not establish origin, provider authority or redistribution rights for every inline value or document."
+}

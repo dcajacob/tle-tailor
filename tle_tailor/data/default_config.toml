@@ -1,0 +1,3 @@
+[gmat]
+# Optional legacy API: configure GMAT_API_PATH and GMAT_PYTHON explicitly.
+api_path =
