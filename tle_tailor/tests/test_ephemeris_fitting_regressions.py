@@ -282,3 +282,71 @@ def test_tle_fit_prepares_one_grid_for_each_accepted_iterate(monkeypatch, coordi
     assert grids == [100] * len(result[3])  # One grid per accepted parameter step.
     assert result[-1].shape == (6, 7)
     assert result[-1].base is None
+
+
+def test_batched_normal_equations_match_scalar_accumulation():
+    from tle_tailor.fitting._numerics import normal_equations
+
+    rng = np.random.default_rng(27)
+    jacobians = rng.normal(size=(9, 6, 7))
+    residuals = rng.normal(size=(9, 6))
+    transform = rng.normal(size=(6, 6))
+    weights = transform.T @ transform
+    scale = np.linspace(0.2, 0.9, 6)
+    scaled_weights = weights / (scale[:, None] * scale)
+    normal, rhs, costs = normal_equations(jacobians, residuals, weights, scaled_weights, scale)
+    np.testing.assert_allclose(normal, sum(a.T @ scaled_weights @ a for a in jacobians))
+    np.testing.assert_allclose(rhs, sum(a.T @ scaled_weights @ (b * scale)
+                                        for a, b in zip(jacobians, residuals, strict=True)))
+    np.testing.assert_allclose(costs, [b.T @ weights @ b for b in residuals])
+
+
+@pytest.mark.parametrize("requested", ["cpu", "gpu"])
+def test_requested_device_receives_near_earth_batch(monkeypatch, requested):
+    import jax
+    from tle_tailor.fitting._numerics import fit_jacobians
+
+    device = jax.local_devices(backend="cpu")[0]
+    lookups = []
+    def devices(*, backend):
+        lookups.append(backend)
+        return [device]
+    monkeypatch.setattr(jax, "local_devices", devices)
+    def automatic(elements, minutes):
+        assert elements.devices() == minutes.devices() == {device}
+        return np.zeros((len(minutes), 6, len(elements)))
+    sat = model(ELEMENTS, datetime(2006, 6, 25, tzinfo=timezone.utc))
+    assert fit_jacobians(sat, ELEMENTS, [0., 1.], automatic,
+                         equinoctial=False, jax_device=requested).shape == (2, 6, 7)
+    assert lookups == [requested]
+
+
+def test_unavailable_gpu_only_matters_for_near_earth(monkeypatch):
+    import jax
+    from tle_tailor.fitting import JaxDeviceUnavailable
+    from tle_tailor.fitting._numerics import fit_jacobians
+
+    def missing(*, backend):
+        raise RuntimeError("GPU unavailable")
+    monkeypatch.setattr(jax, "local_devices", missing)
+    epoch = datetime(2006, 6, 25, tzinfo=timezone.utc)
+    with pytest.raises(JaxDeviceUnavailable, match="GPU unavailable"):
+        fit_jacobians(model(ELEMENTS, epoch), ELEMENTS, [0.], None,
+                      equinoctial=False, jax_device="gpu")
+    deep = [26560., *ELEMENTS[1:]]
+    grid = fit_jacobians(model(deep, epoch), deep, [75.], None,
+                         equinoctial=False, jax_device="gpu")
+    assert grid.shape == (1, 6, 7) and np.isfinite(grid).all()
+
+
+def test_host_element_conversions_preserve_jax_derivatives():
+    import jax
+    from tle_tailor.core import common_jax
+    from tle_tailor.fitting import tlefit_equinoctial_eph_jax as fit
+
+    eqn = fit.coe2eqn(*ELEMENTS[:6])
+    assert all(isinstance(x, (float, np.floating)) for x in fit.eqn2coe(*eqn))
+    np.testing.assert_allclose(fit.eqn2coe(*eqn), ELEMENTS[:6])
+    # Eccentricity = sqrt(ke**2 + he**2) inside the traced propagator.
+    derivative = jax.grad(lambda k: common_jax.eqn2coe(eqn[0], k, *eqn[2:])[1])
+    np.testing.assert_allclose(derivative(eqn[1]), eqn[1] / ELEMENTS[1])

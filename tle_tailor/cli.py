@@ -7,6 +7,8 @@ import json
 import re
 import sys
 
+from tle_tailor.fitting import JaxDeviceUnavailable
+
 
 _SCRIPTS = "tle_tailor.examples.scripts"
 
@@ -36,7 +38,7 @@ def _parser():
     )
     example.add_argument("--duration", type=float, help="reference arc in seconds (default: 12000)")
     example.add_argument("--cadence", type=float, help="sample spacing in seconds (default: 120)")
-    example.add_argument("--method", choices=("fd", "jax"), default="fd", help="fitting derivative method")
+    example.add_argument("--method", choices=("fd", "jax", "jax-gpu"), default="fd", help="fitting derivative method")
     example.add_argument("--output", help="optional new TLE file; existing files are not overwritten")
 
     ephemeris = commands.add_parser(
@@ -46,14 +48,14 @@ def _parser():
     )
     ephemeris.add_argument("file", metavar="FILE", help="existing Feather ephemeris")
     ephemeris.add_argument("--frame", choices=("TEME", "ITRS"), required=True, help="input state frame")
-    ephemeris.add_argument("--method", choices=("fd", "jax"), default="fd")
+    ephemeris.add_argument("--method", choices=("fd", "jax", "jax-gpu"), default="fd")
     ephemeris.add_argument("--output", help="optional new TLE file; existing files are not overwritten")
 
     reference = commands.add_parser(
         "validate-roundtrip", help="run the SGP4 reference validation control",
         description="Sample an inline TLE with SGP4 and fit it again as a validation control.",
     )
-    reference.add_argument("--method", choices=("fd", "jax"), default="fd")
+    reference.add_argument("--method", choices=("fd", "jax", "jax-gpu"), default="fd")
 
     spacetrack = commands.add_parser(
         "spacetrack", help="retrieve the latest two-line TLE from Space-Track",
@@ -178,6 +180,9 @@ def main(argv=None):
         if args.command == "spacetrack":
             return _spacetrack(args)
         return _run_workflow(args)
+    except JaxDeviceUnavailable as error:
+        print(str(error), file=sys.stderr)
+        return 1
     except KeyboardInterrupt:
         print("Cancelled.", file=sys.stderr)
         return 130

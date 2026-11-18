@@ -1,5 +1,23 @@
 # Fitting performance
 
+## Selecting a fitting device
+
+The CLI defaults to native finite differences. Use `--method jax` for a CPU
+Jacobian or `--method jax-gpu` for a GPU Jacobian. The JAX Python fitters
+accept the corresponding keyword `jax_device="cpu"` (default) or
+`jax_device="gpu"`. GPU use requires a compatible JAX GPU backend with
+float64 support. An unavailable requested device raises an error for a
+near-Earth fit. Native SGP4 selects the orbital regime each iteration.
+Deep-space iterations always use native finite differences on the CPU,
+including when the caller requests a GPU.
+
+The optimizer uses NumPy for scalar conversions between classical and
+equinoctial elements and for batched normal equations across the observations.
+The near-Earth propagator uses JAX operations throughout the differentiated
+calculation.
+
+## Historical CPU benchmark
+
 Measured **27 October 2026**. JAX's cold-start cost explains most of the earlier single-worker timing gap. On these two small CPU workloads, warmed JAX was quicker by median for LEO and slightly slower for GEO. **The GEO ranges overlap**; these measurements do not establish that JAX is always faster than finite differences. [Download the numeric receipt](assets/fitting-performance.json) for every repetition, protocol, convergence flag, physical error metric and source hash.
 
 ## Cold start and repeated whole fits

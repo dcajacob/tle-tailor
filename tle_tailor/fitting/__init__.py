@@ -5,3 +5,7 @@ This module contains the various TLE fitting implementations using different
 coordinate systems (Classical Orbital Elements, Equinoctial Elements) and
 optimization methods (Finite Difference, JAX automatic differentiation).
 """
+
+
+class JaxDeviceUnavailable(RuntimeError):
+    """The requested near-Earth JAX backend has no available local device."""

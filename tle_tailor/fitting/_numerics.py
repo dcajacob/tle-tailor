@@ -104,12 +104,44 @@ def make_batch_jacobian(state):
     return jit(jacfwd(states, argnums=0))
 
 
-def fit_jacobians(model, elements, minutes, automatic, *, equinoctial):
+def fit_jacobians(model, elements, minutes, automatic, *, equinoctial, jax_device="cpu"):
     """Return a writable (observation, state, element) array for this iterate."""
+    if jax_device not in ("cpu", "gpu"):
+        raise ValueError("jax_device must be cpu or gpu")
     if model.method == 'd':
         batch = _deep_space_derivatives(model, elements, equinoctial=equinoctial)
         return batch(minutes)
-    return np.array(automatic(np.asarray(elements, dtype=float), np.asarray(minutes, dtype=float)))
+    import jax
+    from tle_tailor.fitting import JaxDeviceUnavailable
+
+    try:
+        devices = jax.local_devices(backend=jax_device)
+    except RuntimeError as error:
+        raise JaxDeviceUnavailable(
+            f"JAX {jax_device.upper()} unavailable. Check the JAX backend installation "
+            "and visible devices, or select native FD."
+        ) from error
+    if not devices:
+        raise JaxDeviceUnavailable(f"JAX found no local {jax_device.upper()} devices.")
+    device = devices[0]
+    values = jax.device_put(np.asarray(elements, dtype=float), device)
+    times = jax.device_put(np.asarray(minutes, dtype=float), device)
+    return np.array(automatic(values, times))
+
+
+def sampled_states(model, minutes):
+    """Return the native position and velocity at each observation time."""
+    return np.asarray([model.sgp4_tsince(t)[1:] for t in minutes]).reshape(-1, 6)
+
+
+def normal_equations(jacobians, residuals, weights, scaled_weights, residual_scale):
+    """Sum the per-observation normal matrices, RHS vectors and report raw costs."""
+    weighted_transpose = jacobians.swapaxes(1, 2) @ scaled_weights
+    normal = (weighted_transpose @ jacobians).sum(axis=0)
+    scaled_residuals = (residuals * residual_scale)[:, :, None]
+    rhs = (weighted_transpose @ scaled_residuals).sum(axis=0)[:, 0]
+    costs = ((residuals[:, None, :] @ weights) @ residuals[:, :, None]).ravel()
+    return normal, rhs, costs
 
 
 def finite_difference_jacobians(elements, minutes, model, create_sat, *, equinoctial,
@@ -127,14 +159,11 @@ def finite_difference_jacobians(elements, minutes, model, create_sat, *, equinoc
     drag = elements[6]
     widths.append(np.copysign(max(abs(drag * percent_chg), 1e-9), drag))
 
-    def states(sat):
-        return np.asarray([sat.sgp4_tsince(t)[1:] for t in minutes]).reshape(-1, 6)
-
     def sample(values):
         coe = (*eqn2coe(*values[:6]), values[6]) if equinoctial else values
-        return states(create_sat(coe).model)
+        return sampled_states(create_sat(coe).model, minutes)
 
-    nominal = None if central else states(model)
+    nominal = None if central else sampled_states(model, minutes)
     jacobians = np.empty((len(minutes), 6, len(elements)))
     for column, width in enumerate(widths):
         step = np.zeros_like(elements)

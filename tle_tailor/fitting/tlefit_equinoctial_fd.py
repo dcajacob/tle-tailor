@@ -3,7 +3,7 @@
 from functools import partial
 
 import numpy as np
-from tle_tailor.fitting._numerics import finite_difference_jacobians
+from tle_tailor.fitting._numerics import finite_difference_jacobians, normal_equations, sampled_states
 
 from skyfield.api import EarthSatellite, load
 
@@ -134,6 +134,7 @@ def test_tle_fit_normalized_equinoctial(
     bs = []
     lamdas = []
 
+    observations = sampled_states(satellite.model, offsets)
     for x in range(max_iter):
 
         if debug:
@@ -153,26 +154,15 @@ def test_tle_fit_normalized_equinoctial(
             reference_a=orig_elements[0],
         )
 
-        while True: # Try adjusting lamda until we converge
+        residual_grid = observations - sampled_states(calc_sat.model, offsets)
+        ATWA_acc, ATWb_acc, btwbs = normal_equations(
+            jacobians, residual_grid, W, W_scaled, b_scale
+        )
+        position_norms = np.linalg.norm(residual_grid[:, :3], axis=1)
+        b, A = residual_grid[-1], jacobians[-1]
 
-            btwbs = []
-
-            ATWA_acc = np.zeros((7, 7))
-            ATWb_acc = np.zeros(7)
-
-            for offset, A in zip(offsets, jacobians, strict=True):
-
-                # Obs - Nom
-                b = np.ravel(
-                    np.array(satellite.model.sgp4_tsince(offset)[1:])
-                    - np.array(calc_sat.model.sgp4_tsince(offset)[1:])
-                )
-
-                bs.append(np.linalg.norm(b[0:3]))
-                btwbs.append(b.T @ W @ b)
-
-                ATWA_acc += A.T @ W_scaled @ A
-                ATWb_acc += A.T @ W_scaled @ (b * b_scale)
+        while True:  # Retry damping with the same linearization.
+            bs.extend(position_norms)
 
             if debug:
                 print(f"Condition number (A): {np.linalg.cond(A):0.3f}")

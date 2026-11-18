@@ -67,7 +67,7 @@ def main(argv=None):
     parser.add_argument("--propagator", choices=("gmatpy", "sgp4", "gmat"), default="gmatpy")
     parser.add_argument("--input-kind", choices=("state", "tle"), default="state",
                         help="initial condition (SGP4 requires tle)")
-    parser.add_argument("--method", choices=("fd", "jax"), default="fd")
+    parser.add_argument("--method", choices=("fd", "jax", "jax-gpu"), default="fd")
     parser.add_argument("--duration", type=positive_seconds, default=12000.0,
                         help="propagation duration in seconds (default: 12000)")
     parser.add_argument("--cadence", type=positive_seconds, default=120.0,
@@ -113,9 +113,10 @@ def main(argv=None):
 
     # The existing fitters accept arrays of timezone-aware Python datetimes.
     fit_times, ephemeris = samples.as_fitter_inputs()
+    options = {"jax_device": "gpu"} if args.method == "jax-gpu" else {}
     result = fit_tle(
         fit_times, ephemeris, epoch_obs=0, lamda=1.0,
-        max_iter=35, rms_epsilon=0.002, debug=False,
+        max_iter=35, rms_epsilon=0.002, debug=False, **options,
     )
     iterations, satellite, _, weighted_sigma = result[:4]
     position_rms_km, velocity_rms_km_s = state_rms(
@@ -124,7 +125,10 @@ def main(argv=None):
     line1, line2 = export_tle(satellite.model)
 
     print(f"Propagator: {samples.backend}; samples: {len(timestamps)} in TEME (km, km/s)")
-    print(f"Fit method: {args.method}; iterations: {iterations} (limit: 35)")
+    method = args.method
+    if method != "fd" and satellite.model.method == "d":
+        method = "jax (native finite differences for deep space)"
+    print(f"Fit method: {method}; iterations: {iterations} (limit: 35)")
     print(f"Legacy weighted sigma: {weighted_sigma:.6g}")
     print(f"Position RMS vector error: {position_rms_km:.6g} km")
     print(f"Velocity RMS vector error: {velocity_rms_km_s:.6g} km/s")

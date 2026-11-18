@@ -48,7 +48,7 @@ def main(argv=None):
                         help='osculating EarthMJ2000Eq elements; true anomaly, not mean anomaly')
     parser.add_argument('--duration', type=positive_seconds, default=FIT_SECONDS, help='fit interval in seconds (default: 12000)')
     parser.add_argument('--cadence', type=positive_seconds, default=CADENCE_SECONDS, help='sample spacing in seconds (default: 120)')
-    parser.add_argument('--method', choices=('fd', 'jax'), default='fd')
+    parser.add_argument('--method', choices=('fd', 'jax', 'jax-gpu'), default='fd')
     parser.add_argument('--output', type=Path, help='save two TLE lines to a new file; existing files are never overwritten')
     args = parser.parse_args(argv)
     import numpy as np

@@ -12,15 +12,16 @@ def fit_samples(samples, *, method='fd', output=None):
 
     if method == 'fd':
         from tle_tailor.fitting.tlefit_equinoctial_eph_fd import test_tle_fit_normalized_equinoctial as fit_tle
-    elif method == 'jax':
+    elif method in ('jax', 'jax-gpu'):
         from tle_tailor.fitting.tlefit_equinoctial_eph_jax import test_tle_fit_normalized_equinoctial as fit_tle
     else:
-        raise ValueError('method must be fd or jax')
+        raise ValueError('method must be fd, jax, or jax-gpu')
     times, states = samples.as_fitter_inputs()
     if len(times) < 8:
         raise ValueError('at least 8 samples are required')
+    options = {"jax_device": "gpu"} if method == "jax-gpu" else {}
     result = fit_tle(times, states, epoch_obs=0, lamda=1.0,
-                     max_iter=35, rms_epsilon=0.002, debug=False)
+                     max_iter=35, rms_epsilon=0.002, debug=False, **options)
     iterations, satellite, _, weighted_sigma = result[:4]
     lines = export_tle(satellite.model)
     # Report what a tracking partner actually receives, including TLE rounding.
@@ -28,7 +29,7 @@ def fit_samples(samples, *, method='fd', output=None):
     position_rms, velocity_rms = state_rms(exported, samples.timestamps, states)
     print(f'Reference trajectory: {samples.backend}; {len(times)} TEME samples (km, km/s)')
     print(f'Fit interval (UTC): {times[0].isoformat()} to {times[-1].isoformat()}')
-    if method == 'jax' and satellite.model.method == 'd':
+    if method != 'fd' and satellite.model.method == 'd':
         method = 'jax (native finite differences for deep space)'
     print(f'SGP4 fit: {method}; iterations: {iterations}/35; weighted sigma: {weighted_sigma:.6g}')
     if not result.converged:

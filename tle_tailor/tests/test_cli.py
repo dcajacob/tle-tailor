@@ -255,3 +255,12 @@ def test_client_failure_categories_do_not_echo_details(kind, expected, monkeypat
     assert output.out == '' and expected in output.err
     assert SENSITIVE not in output.err and 'example.invalid' not in output.err
     assert 'Traceback' not in output.err
+
+
+@pytest.mark.parametrize("args", [["validate-roundtrip"], ["example"],
+                                  ["fit-ephemeris", "input.fth", "--frame", "TEME"]])
+def test_gpu_option_reaches_workflow(monkeypatch, args):
+    calls = fake_module(monkeypatch)
+    assert cli.main([*args, "--method", "jax-gpu"]) == 0
+    arguments = calls[0][1]
+    assert arguments[arguments.index("--method") + 1] == "jax-gpu"

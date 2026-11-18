@@ -47,7 +47,7 @@ def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('file', type=Path, help='caller-owned Feather ephemeris')
     parser.add_argument('--frame', required=True, choices=('TEME', 'ITRS'), help='frame of the supplied positions AND velocities')
-    parser.add_argument('--method', choices=('fd', 'jax'), default='fd')
+    parser.add_argument('--method', choices=('fd', 'jax', 'jax-gpu'), default='fd')
     parser.add_argument('--output', type=Path, help='save TLE to a new file; never overwrite an existing file')
     args = parser.parse_args(argv)
     from ._fitting import fit_samples
