@@ -116,7 +116,7 @@ def fitted(times, states, **options):
 legacy.test_tle_fit_normalized_equinoctial = fitted
 legacy.sat_epoch_datetime = lambda model: epoch
 legacy.name_sat = lambda satellite, **options: satellite
-legacy.exporter.export_tle = lambda model: ('line 1', 'line 2')
+legacy.export_tle = lambda model: ('line 1', 'line 2')
 
 try:
     result = legacy.fit_tle_from_gmat(7000, 0.001, 98, 20, 30, 40, epoch, object_id=12345)

@@ -77,6 +77,23 @@ def test_deep_space_jacobian_matches_native_directional_derivative(a, e, equinoc
     np.testing.assert_allclose(jacobian(720.) @ direction, expected, rtol=2e-6, atol=1e-7)
 
 
+def test_gps_drag_column_resolves_weak_perturbations():
+    epoch = datetime(2025, 3, 14, tzinfo=timezone.utc)
+    elements = np.array([26560., .01, .95, .9, .35, 1.2, 1.e-6])
+    satellite = model(elements, epoch)
+    jacobian = select_jacobian(satellite, elements, None, equinoctial=False)
+    # Use an independent, symmetric spacing with a resolvable state displacement.
+    perturbation = np.zeros(7)
+    perturbation[-1] = .004
+    for minutes in (-720., 1440.):
+        high = np.array(model(elements + perturbation, epoch).sgp4_tsince(minutes)[1:])
+        low = np.array(model(elements - perturbation, epoch).sgp4_tsince(minutes)[1:])
+        expected = (high - low).ravel() / (2 * perturbation[-1])
+        column = jacobian(minutes)[:, -1]
+        np.testing.assert_allclose(column[:3], expected[:3], atol=2e-7, rtol=0)
+        np.testing.assert_allclose(column[3:], expected[3:], atol=3e-11, rtol=0)
+
+
 def test_capped_fit_returns_accepted_model_and_sigma(fitter, observations):
     times, states = observations
     result = fitter.test_tle_fit_normalized_equinoctial(times, states, epoch_obs=0, max_iter=1, lamda=1.)

@@ -49,8 +49,10 @@ def source_inventory():
         a, b = functions(old), functions(new)
         result.append({"public": public, "candidate": current,
                        "public_sha256": digest(base / public), "candidate_sha256": digest(package / current),
-                       "functions": sorted(a), "same_function_asts_after_runtime_only_adapter": a == b,
-                       "top_level_differences": "import relocation, obsolete JAX config/None-return compatibility, unused warmup-array wrapper and unused coarse_fit imports; no optimizer/math changes"})
+                       "functions": sorted(a),
+                       "changed_functions": sorted(name for name in a.keys() | b.keys() if a.get(name) != b.get(name)),
+                       "same_function_asts_after_runtime_only_adapter": a == b,
+                       "top_level_differences": "import relocation, obsolete JAX config/None-return compatibility, unused warmup-array wrapper and unused coarse_fit imports"})
     return result
 
 

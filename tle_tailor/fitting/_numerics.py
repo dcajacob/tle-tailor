@@ -42,9 +42,7 @@ def select_jacobian(model, elements, automatic, *, equinoctial):
             raise ValueError(f"Native SGP4 derivative failed at {minutes} min (code {error})")
         return np.asarray((*r, *v))
 
-    pairs = []
-    for column, value in enumerate(elements):
-        step = max(abs(value) * 1e-6, 1e-7)
+    def perturb_pair(column, step):
         plus = np.array(elements, dtype=float)
         minus = plus.copy()
         plus[column] += step
@@ -53,9 +51,37 @@ def select_jacobian(model, elements, automatic, *, equinoctial):
             # Use the valid side of the eccentricity boundary.
             minus[column] = max(0., minus[column])
             plus[column] = min(np.nextafter(1., 0.), plus[column])
-        pairs.append((perturbed(plus), perturbed(minus), plus[column] - minus[column]))
+        return perturbed(plus), perturbed(minus), plus[column] - minus[column]
+
+    steps = np.maximum(np.abs(elements) * 1e-6, 1e-7)
+    pairs = [perturb_pair(i, step) for i, step in enumerate(steps)]
+    # At MEO and GEO, changing B* by 1e-7 can move the state by less than
+    # floating-point resolution. Use two larger spacings to check linearity
+    # before substituting their derivative for the local central difference.
+    drag_steps = (1e-3, 5e-4)
+    wide_drag = [perturb_pair(6, h) for h in drag_steps] if steps[6] < drag_steps[1] else []
+
+    def drag_column(minutes, local):
+        derivatives = []
+        for plus, minus, width in wide_drag:
+            try:
+                high, low = state(plus, minutes), state(minus, minutes)
+            except ValueError:
+                return local
+            derivatives.append((high - low) / width)
+        coarse, fine = derivatives
+        # A central subtraction loses precision proportional to the absolute
+        # state magnitude divided by the spacing, even for a linear response.
+        scale = np.repeat([np.linalg.norm(high[:3]), np.linalg.norm(high[3:])], 3)
+        roundoff = 128 * np.finfo(float).eps * scale / width
+        if np.all(np.abs(fine - coarse) <= roundoff + 1e-6 * np.abs(fine)):
+            return coarse
+        return local
 
     def jacobian(minutes):
-        return np.column_stack([(state(p, minutes) - state(m, minutes)) / width
-                                for p, m, width in pairs])
+        columns = [(state(p, minutes) - state(m, minutes)) / width
+                   for p, m, width in pairs]
+        if wide_drag and minutes:
+            columns[6] = drag_column(minutes, columns[6])
+        return np.column_stack(columns)
     return jacobian

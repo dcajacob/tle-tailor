@@ -7,10 +7,17 @@ from tle_tailor.validation.accuracy_coe import make_satellite, propagate_offsets
 from tle_tailor.validation.accuracy import read_manifest
 
 
-def test_coe_public_current_function_math_is_unchanged():
+def test_coe_inventory_identifies_the_reviewed_solver_changes():
     inventory = source_inventory()
     assert len(inventory) == 4
-    assert all(item["same_function_asts_after_runtime_only_adapter"] for item in inventory)
+    assert {item["public"]: item["changed_functions"] for item in inventory} == {
+        "common_coe_fd.py": ["finite_diff"],
+        "common_coe_jax.py": [],
+        "tlefit_coe_fd.py": ["test_tle_fit", "test_tle_fit_normalized"],
+        "tlefit_coe_jax.py": ["test_tle_fit", "test_tle_fit_normalized"],
+    }
+    for item in inventory:
+        assert item["same_function_asts_after_runtime_only_adapter"] == (not item["changed_functions"])
 
 
 def test_periodic_angle_canonicalization_preserves_native_orbit():
