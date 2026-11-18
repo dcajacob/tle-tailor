@@ -48,6 +48,7 @@ def _load_legacy_gmat():
         sys.path[:] = paths
 
 import numpy as np
+from tle_tailor.fitting.export import export_tle
 import matplotlib.pyplot as plt
 
 from collections import namedtuple
@@ -443,5 +444,5 @@ def fit_tle_from_gmat(a, ecc, inc, raan, aop, nu, epoch, object_id=99999):
             intldesg = f'{year}{day_of_year}{string.ascii_uppercase[idx + 1]}'
             solve_sat = name_sat(solve_sat, name=str(object_id), object_id=object_ids[idx], intldesg=intldesg)
 
-            TLE = '\n'.join(exporter.export_tle(solve_sat.model))
+            TLE = '\n'.join(export_tle(solve_sat.model))
             return f"0 {object_id}\n{TLE}"

@@ -16,6 +16,7 @@
     "tle_tailor/data/default_config.toml",
     "tle_tailor/fitting/__init__.py",
     "tle_tailor/fitting/_numerics.py",
+    "tle_tailor/fitting/export.py",
     "tle_tailor/fitting/fixed_bstar.py",
     "tle_tailor/fitting/tlefit_coe_fd.py",
     "tle_tailor/fitting/tlefit_coe_jax.py",

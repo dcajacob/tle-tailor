@@ -100,7 +100,7 @@ def describe_fit(function, fitted, times, states, count, options):
     """Untimed convergence observation and independent physical residuals."""
     import numpy as np
     from sgp4.api import Satrec, WGS72
-    from sgp4.exporter import export_tle
+    from tle_tailor.fitting.export import export_tle
     from tle_tailor.validation.accuracy import evaluate_model
     captured = {}
     previous = sys.getprofile()

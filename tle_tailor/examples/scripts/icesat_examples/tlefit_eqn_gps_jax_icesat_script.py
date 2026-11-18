@@ -238,9 +238,9 @@ def main():
     jd, jdf = solve_sat.model.jdsatepoch, solve_sat.model.jdsatepochF
     print(f"Epoch: {sat_epoch_datetime(solve_sat.model)}")
     
-    from sgp4 import exporter
+    from tle_tailor.fitting.export import export_tle
     print("\nFitted TLE:")
-    print('\n'.join(exporter.export_tle(solve_sat.model)))
+    print('\n'.join(export_tle(solve_sat.model)))
     
     # Step 4: Plot convergence and residuals
     plot_convergence(sigmas, bs, show_plots=not args.no_plots)

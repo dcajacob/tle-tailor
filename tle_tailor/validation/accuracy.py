@@ -321,7 +321,10 @@ def run_worker(payload, implementation, method, baseline_root, destination):
                 converged = fitted.converged
         iterations, satellite, elements, sigma, sigmas = fitted[:5]
         from sgp4.api import Satrec
-        from sgp4.exporter import export_tle
+        if implementation == "public":
+            from sgp4.exporter import export_tle
+        else:
+            from tle_tailor.fitting.export import export_tle
         lines = export_tle(satellite.model)
         if not all(len(line) == 69 for line in lines):
             raise ValueError("Incomplete exported TLE")

@@ -7,7 +7,7 @@ from .gmat_integration.gmatpy_state_to_tle import state_rms
 
 def fit_samples(samples, *, method='fd', output=None):
     """Fit TEME samples, report residuals of the exported TLE, and return its lines."""
-    from sgp4.exporter import export_tle
+    from tle_tailor.fitting.export import export_tle
     from tle_tailor.propagation import TLEOrbit
 
     if method == 'fd':

@@ -79,7 +79,7 @@ def main(argv=None):
         parser.error("--gmat-api-path and --gmat-python require --propagator gmat")
 
     import numpy as np
-    from sgp4.exporter import export_tle
+    from tle_tailor.fitting.export import export_tle
     from tle_tailor.propagation import CartesianState, TLEOrbit, get_propagator, propagate
     if args.propagator == "sgp4" and args.input_kind != "tle":
         parser.error("the SGP4 backend requires --input-kind tle")

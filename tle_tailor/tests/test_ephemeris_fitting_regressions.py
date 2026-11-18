@@ -143,3 +143,15 @@ def test_release_gate_accepts_convergence_on_final_iteration(tmp_path, observati
         record = json.loads(receipt.read_text())
         assert record["status"] == expected, record.get("error")
         assert completed.returncode == int(expected != "passed")
+
+
+@pytest.mark.parametrize("bstar", [-1.2259613279925872e-11, 5.397149059600634e-12, 1e-15, 1e-6])
+def test_export_tiny_drag_in_fixed_width_field(bstar):
+    from sgp4.io import verify_checksum
+    from tle_tailor.fitting.export import export_tle as export_fit
+    sat = model([*ELEMENTS[:6], bstar], datetime(2024, 2, 11, tzinfo=timezone.utc))
+    lines = export_fit(sat)
+    assert all(len(line) == 69 for line in lines)
+    verify_checksum(*lines)
+    assert abs(Satrec.twoline2rv(*lines).bstar - bstar) <= 0.5e-14
+    assert sat.bstar == bstar

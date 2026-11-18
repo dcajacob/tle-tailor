@@ -62,7 +62,7 @@ def run_opm_workflow(method, argv=None):
         parser.error("SGP4 requires --input-kind tle; it cannot propagate an osculating OPM")
 
     import numpy as np
-    from sgp4.exporter import export_tle
+    from tle_tailor.fitting.export import export_tle
     from tle_tailor.propagation import CartesianState, TLEOrbit, get_propagator, propagate
     from .gmatpy_state_to_tle import state_rms, local_gmat_options
 

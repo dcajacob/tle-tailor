@@ -135,7 +135,10 @@ def worker(case_id, method, implementation, destination):
         hold_offsets = np.linspace(captured["period"] / 100., 2. * captured["period"], 100)
         if not (np.all(fit_offsets < 0) and np.all(hold_offsets > 0)):
             raise ValueError("COE fit and holdout intervals overlap")
-        from sgp4.exporter import export_tle
+        if implementation == "public":
+            from sgp4.exporter import export_tle
+        else:
+            from tle_tailor.fitting.export import export_tle
         from sgp4.api import Satrec
         # Historical API exposes an unwrapped periodic accepted vector and no
         # exported TLE. Canonicalize only periodic angles for BOTH export views;
