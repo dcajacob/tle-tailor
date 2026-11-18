@@ -144,7 +144,7 @@ def test_tle_fit(
                 for idx, element in enumerate(elements):
 
                     if idx == 6:  # B* is a snowflake
-                        delta_amt = element * percent_chg
+                        delta_amt = np.copysign(max(abs(element * percent_chg), 1e-9), element)
                     else:
                         delta_amt, _ = finite_diff(
                             element,
@@ -507,7 +507,7 @@ def test_tle_fit_normalized(
                 for idx, element in enumerate(elements):
 
                     if idx == 6:  # B* is a snowflake
-                        delta_amt = element * percent_chg
+                        delta_amt = np.copysign(max(abs(element * percent_chg), 1e-9), element)
                         pert_element = element + delta_amt
                     else:
                         delta_amt, pert_element = finite_diff(

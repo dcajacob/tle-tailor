@@ -156,7 +156,7 @@ def worker(case_id, method, implementation, destination):
                       capture="Read-only Python return-frame observation of final accepted elements, offsets and solution; reconstruct with unchanged existing helper",
                       serialization_adapter="RAAN, argument of perigee and mean anomaly reduced modulo2pi equally for both export views; original raw accepted model retained for fullprecision",
                       canonical_export_elements=canonical_elements.tolist(),
-                      options=OPTIONS, status="passed" if captured["solution"] and iterations < OPTIONS["max_iter"] else "not_converged")
+                      options=OPTIONS, status="passed" if captured["solution"] else "not_converged")
     except Exception as exc:
         record.update(error=f"{type(exc).__name__}: {exc}", traceback=traceback.format_exc())
     record["elapsed_s"] = time.monotonic() - started

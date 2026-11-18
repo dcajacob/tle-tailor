@@ -28,8 +28,10 @@ def fit_samples(samples, *, method='fd', output=None):
     position_rms, velocity_rms = state_rms(exported, samples.timestamps, states)
     print(f'Reference trajectory: {samples.backend}; {len(times)} TEME samples (km, km/s)')
     print(f'Fit interval (UTC): {times[0].isoformat()} to {times[-1].isoformat()}')
+    if method == 'jax' and satellite.model.method == 'd':
+        method = 'jax (native finite differences for deep space)'
     print(f'SGP4 fit: {method}; iterations: {iterations}/35; weighted sigma: {weighted_sigma:.6g}')
-    if iterations >= 35:
+    if not result.converged:
         print('Iteration limit reached: inspect the residuals before using this TLE.')
     print(f'Exported TLE fit position RMS: {position_rms * 1000:.6g} m')
     print(f'Exported TLE fit velocity RMS: {velocity_rms * 1000:.6g} m/s')

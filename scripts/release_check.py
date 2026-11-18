@@ -37,7 +37,7 @@ REQUIRED_NOTEBOOK_IDS = {
 TEST_FILES = (
     'test_core_functions.py', 'test_gmatpy_propagation.py', 'test_propagator_api.py',
     'test_local_gmat_propagation.py', 'test_spacetrack_auth.py',
-    'test_accuracy_regression.py', 'test_accuracy_coe.py', 'test_coordinate_epochs.py',
+    'test_ephemeris_fitting_regressions.py', 'test_accuracy_regression.py', 'test_accuracy_coe.py', 'test_coordinate_epochs.py',
     'test_config_portability.py', 'test_workflow_notebooks.py', 'test_no_bstar_notebook.py',
     'test_fixed_bstar_long_arc.py', 'test_mission_workflow_dispatch.py', 'test_release_check.py',
     'test_cli.py', 'test_first_use.py', 'test_examples_metadata.py', 'test_examples_layout.py',

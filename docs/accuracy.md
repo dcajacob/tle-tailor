@@ -4,6 +4,8 @@ The command prints the fit interval and **physical position/velocity RMS of the 
 
 A reference trajectory can come from a prediction, a numerical model or measured orbit data. Its own uncertainty does not disappear because a TLE fits it well. A prelaunch prediction cannot establish the actual deployed orbit. Update the TLE when measured orbit data become available.
 
+The JAX fitting option uses native SGP4 finite differences for deep-space iterations. The native propagator selects the regime from the corrected mean motion. The fit report flags iteration exhaustion and evaluates the exported TLE from the final accepted elements.
+
 ## Fit interval and forecasting
 
 Use a separate hold-out interval to assess extrapolation; do not supply its samples to the fitter. The default deployment example reports fit errors only and does not claim a hold-out result. Select an interval and error budget appropriate to the mission and tracking partners. Long GEO/HEO arcs, near-singular orbits and unmodelled forces can give poor extrapolation even when a short fit looks good.

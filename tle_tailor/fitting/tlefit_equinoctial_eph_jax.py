@@ -2,6 +2,9 @@
 #!/usr/bin/python3
 
 import numpy as np
+from tle_tailor.fitting._numerics import select_jacobian
+
+from tle_tailor.fitting._numerics import FitResult
 
 from skyfield.api import EarthSatellite, load
 
@@ -24,55 +27,10 @@ import jax.numpy as jnp
 from jax import jacfwd, jacrev, jit
 
 from tle_tailor.core.common_jax import *
+from tle_tailor.fitting.tlefit_equinoctial_eph_fd import create_sgp4_sat
 
 
 ts = load.timescale()
-
-
-def create_sgp4_sat(elements, jd, jdf, ops_mode="i"):
-    """Createa new EarthSatellite object using the provided orbital elements and
-    additional parameters, like epoch from a seed EarthSatellite object
-
-    Args:
-        elements (list): Equinoctial orbital elements set
-        jd (float): Julian Day whole part
-        jdf (float): Julian Day fractional part
-        ops_mode (str, optional): AFSPC OpsMode. Defaults to "i".
-
-    Returns:
-        EarthSatellite: EarthSatellite object
-    """
-
-    a, ecc, incl, omega, argp, m, bstar = elements
-    n = np.sqrt(wgs72.mu / a**3)
-
-    satrec = Satrec()
-    satrec.sgp4init(
-        WGS72,
-        ops_mode,
-        99999,
-        round(jd + jdf - 2433281.5, 8),
-        bstar,
-        0.0,
-        0.0,
-        ecc,
-        argp,
-        incl,
-        m,
-        n * 60,
-        omega,
-    )
-
-    satrec.classification = "U"
-    satrec.intldesg = "1800100"
-    satrec.ephtype = 0
-    satrec.elnum = 999
-    satrec.revnum = 1
-
-    sat = EarthSatellite.from_satrec(satrec, ts)
-    sat.model.jdsatepochF = jdf
-
-    return sat
 
 
 def residuals(jd, jdf, ephemeris, elements, offsets, offset_idxs, W):
@@ -236,6 +194,7 @@ def test_tle_fit_normalized_equinoctial(
         coe_elements = a, ecc, incl, omega, argp, m, bstar
 
         calc_sat = create_sgp4_sat(coe_elements, jd, jdf)
+        jacobian = select_jacobian(calc_sat.model, elements, J, equinoctial=True)
 
         while True:  # Try adjusting lamda until we converge
 
@@ -258,7 +217,7 @@ def test_tle_fit_normalized_equinoctial(
                 btwbs.append(b.T @ W @ b)
 
                 # Build the Jacobian using Jax
-                A = np.asarray(J(*elements, offsets[offset_idx])).T
+                A = jacobian(offsets[offset_idx])
 
                 A[0:3, :] /= wgs72.radiusearthkm
                 A[3:6, :] /= np.sqrt(wgs72.mu / orig_elements[0])
@@ -328,7 +287,6 @@ def test_tle_fit_normalized_equinoctial(
         if debug:
             print("Covariance a: %0.3f m" % (np.sqrt(np.diag(P)[0]) * wgs72.radiusearthkm * 1000))
 
-        old_elements = elements
         x_new = elements + dx
 
         # Limit any variables that need it
@@ -395,12 +353,6 @@ def test_tle_fit_normalized_equinoctial(
 
             solution = True
 
-            # FIXME: Let's take a good look at this
-            if sigma_new > sigma_old:
-                print("%" * 10, "We're switching to the last solution")
-                b = last_b
-                elements = last_elements
-
             if debug:
                 print(
                     f"Solution {elements_coe[0]} {elements_coe[1]:0.7f} {np.degrees(elements_coe[2]):3.4f} {np.degrees(elements_coe[3]):3.4f} {np.degrees(elements_coe[4]):3.4f} {np.degrees(elements_coe[5]):3.4f} {elements_coe[6]:+1.4e}"
@@ -415,9 +367,6 @@ def test_tle_fit_normalized_equinoctial(
 
             break
         else:
-            last_b = b
-            last_elements = elements
-
             sigma_old = sigma_new
 
     if debug:
@@ -441,27 +390,24 @@ def test_tle_fit_normalized_equinoctial(
                 f"Residuals (b) r = {np.linalg.norm(b[0:3]):0.3g}, v = {np.linalg.norm(b[3:6]):0.3g}"
             )
 
-        solve_sat = calc_sat  # FIXME: Prob should be None, but this makes printing easier, as it is
-
-    else:
-        solve_sat = create_sgp4_sat(elements_coe, jd, jdf)
+    solve_sat = create_sgp4_sat(elements_coe, jd, jdf)
 
     b_new_epoch = np.array(ephemeris[epoch_obs]) - np.array(
         solve_sat.model.sgp4_tsince(0)[1:]
     )
-    b_end = np.array(ephemeris[0]) - np.array(
-        solve_sat.model.sgp4_tsince(offsets[min(offset_idxs)])[1:]
-    )  # Min because we're using negative
+    # Report the opposite endpoint when the fit epoch is the first sample.
+    end = -1 if epoch_obs % len(t) == 0 else 0
+    b_end = np.array(ephemeris[end]) - np.array(solve_sat.model.sgp4_tsince(offsets[end])[1:])
 
     if debug:
         print(
             f"Residual at epoch     {np.linalg.norm(b_epoch[0:3]):9.3e} km {np.linalg.norm(b_epoch[3:6]):9.3e} km/s"
         )
         print(
-            f"Residual at new epoch {np.linalg.norm(b_new_epoch[0:3]):9.3e} km {np.linalg.norm(b_new_epoch[3:6]):9.3e} km/s"
+            f"Residual at new epoch {np.linalg.norm(b_new_epoch[0]):9.3e} km {np.linalg.norm(b_new_epoch[1]):9.3e} km/s"
         )
         print(
-            f"Residual at the end   {np.linalg.norm(b[0:3]):9.3e} km {np.linalg.norm(b[3:6]):9.3e} km/s"
+            f"Residual at the end   {np.linalg.norm(b_end[0]):9.3e} km {np.linalg.norm(b_end[1]):9.3e} km/s"
         )
 
     iterations = x + 1
@@ -470,11 +416,14 @@ def test_tle_fit_normalized_equinoctial(
     P[0, 0] *= wgs72.radiusearthkm**2
 
     # return iterations, sigma_new, sigmas, dxs, bs, b_epoch, b_new_epoch, b, P, A
-    return (
+    final_residuals = np.asarray([np.ravel(ephemeris[idx] - np.asarray(
+        solve_sat.model.sgp4_tsince(offsets[idx])[1:])) for idx in offset_idxs])
+    final_sigma = np.sqrt(np.sum(final_residuals**2 * np.diag(W)) / (6 * N))
+    return FitResult((
         iterations,
         solve_sat,
         elements_coe,
-        sigma_new,
+        final_sigma,
         sigmas,
         dxs,
         bs,
@@ -484,7 +433,7 @@ def test_tle_fit_normalized_equinoctial(
         b_end,
         P,
         A,
-    )
+    ), converged=solution)
 
 
 if __name__ == "__main__":

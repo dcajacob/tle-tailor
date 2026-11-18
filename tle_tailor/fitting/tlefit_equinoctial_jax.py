@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import numpy as np
+from tle_tailor.fitting._numerics import select_jacobian
 
 from skyfield.api import EarthSatellite, load
 
@@ -139,6 +140,7 @@ def test_tle_fit_normalized_equinoctial(
         coe_elements = a, ecc, incl, omega, argp, m, bstar
 
         calc_sat = create_sgp4_sat(coe_elements, satellite)
+        jacobian = select_jacobian(calc_sat.model, elements, J, equinoctial=True)
 
         while True: # Try adjusting lamda until we converge
 
@@ -161,7 +163,7 @@ def test_tle_fit_normalized_equinoctial(
                 btwbs.append(b.T @ W @ b) # km
 
                 # Build the Jacobian using Jax
-                A = np.asarray(J(*elements, offset)).T
+                A = jacobian(offset)
 
                 A[0:3, :] /= wgs72.radiusearthkm
                 A[3:6, :] /= np.sqrt(wgs72.mu / orig_elements[0])

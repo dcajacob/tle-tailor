@@ -271,6 +271,7 @@ def finite_diff(
         if debug:
             print(it, element)
 
+    delta_amt = np.copysign(max(abs(delta_amt), delta_amt_chg), delta_amt)
     return delta_amt, element + delta_amt
 
 

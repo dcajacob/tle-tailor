@@ -88,7 +88,9 @@ def test_output_is_exclusive_and_report_uses_reparsed_tle(monkeypatch, tmp_path,
     line1 = '1 40019U 14033K   21064.48089419  .00000027  00000-0  13123-4 0  9994'
     line2 = '2 40019  97.7274 245.3630 0083155 314.3836  45.0579 14.67086574359033'
     model = Satrec.twoline2rv(line1, line2); satellite = SimpleNamespace(model=model)
-    monkeypatch.setattr(fitter, 'test_tle_fit_normalized_equinoctial', lambda *a, **kw: (3, satellite, None, .1))
+    from tle_tailor.fitting._numerics import FitResult
+    monkeypatch.setattr(fitter, 'test_tle_fit_normalized_equinoctial',
+                        lambda *a, **kw: FitResult((35, satellite, None, .1), True))
     def rms(exported, *args):
         assert exported.model is not model
         return .13, .0002
@@ -96,6 +98,8 @@ def test_output_is_exclusive_and_report_uses_reparsed_tle(monkeypatch, tmp_path,
     samples = Ephemeris(pd.date_range('2024-01-01', periods=8, freq='120s', tz='UTC'), np.tile([[7000, 0, 0], [0, 7.5, 0]], (8, 1, 1)), 'fixture')
     output = tmp_path / 'orbit.tle'; lines = _fitting.fit_samples(samples, output=output)
     assert output.read_text() == '\n'.join(lines) + '\n'
-    assert 'position RMS: 130 m' in capsys.readouterr().out
+    report = capsys.readouterr().out
+    assert 'position RMS: 130 m' in report
+    assert 'Iteration limit reached' not in report
     with pytest.raises(FileExistsError): _fitting.fit_samples(samples, output=output)
     assert output.read_text() == '\n'.join(lines) + '\n'

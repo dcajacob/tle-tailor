@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import numpy as np
+from tle_tailor.fitting._numerics import select_jacobian
 
 from skyfield.api import EarthSatellite, load
 from sgp4.api import Satrec, WGS72
@@ -113,6 +114,7 @@ def test_tle_fit(
         n = np.sqrt(wgs72.mu / a**3)
 
         calc_sat = create_sgp4_sat(elements, satellite)
+        jacobian = select_jacobian(calc_sat.model, elements, J, equinoctial=False)
 
         while True:  # Try adjusting lamda until we converge
 
@@ -135,7 +137,7 @@ def test_tle_fit(
                 btwbs.append(b.T @ W @ b)
 
                 # Build the Jacobian using JAX
-                A = np.asarray(J(*elements, offset)).T
+                A = jacobian(offset)
 
                 ATWA_acc += A.T @ W @ A
                 ATWb_acc += A.T @ W @ b
@@ -443,6 +445,7 @@ def test_tle_fit_normalized(
         a, ecc, incl, omega, argp, m, bstar = elements
 
         calc_sat = create_sgp4_sat(elements, satellite)
+        jacobian = select_jacobian(calc_sat.model, elements, J, equinoctial=False)
 
         while True:  # Try adjusting lamda until we converge
 
@@ -466,7 +469,7 @@ def test_tle_fit_normalized(
 
                 # Build the Jacobian using JAX
 
-                A = np.asarray(J(*elements, offset)).T
+                A = jacobian(offset)
 
                 A[0:3, :] /= wgs72.radiusearthkm
                 A[3:6, :] /= np.sqrt(wgs72.mu / orig_elements[0])

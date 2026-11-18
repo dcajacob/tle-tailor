@@ -112,7 +112,7 @@ def fit_fixed_bstar(timestamps, ephemeris, *, bstar, central_diff=True,
         model.sgp4init(WGS72, 'i', satnum, round(jd + fraction - 2433281.5, 8),
                        float(bstar), 0.0, 0.0, ecc, argp, incl, mean,
                        np.sqrt(wgs72.mu / a**3) * 60, node)
-        model.jdsatepochF = fraction
+        model.jdsatepoch, model.jdsatepochF = jd, fraction
         return model
 
     def sample(model):

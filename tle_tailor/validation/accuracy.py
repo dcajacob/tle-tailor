@@ -267,6 +267,25 @@ def make_reference(case, manifest, reference):
     return times, states, offsets, fit_count, source
 
 
+def _historical_fit(function, times, states, options):
+    converged = None
+    previous = sys.getprofile()
+
+    def observe(frame, event, arg):
+        nonlocal converged
+        if event == "return" and frame.f_code is function.__code__:
+            converged = bool(frame.f_locals["solution"])
+
+    try:
+        sys.setprofile(observe)
+        fitted = function(times, states, **options)
+    finally:
+        sys.setprofile(previous)
+    if converged is None:
+        raise ValueError("Missing historical fitter convergence status")
+    return fitted, converged
+
+
 def run_worker(payload, implementation, method, baseline_root, destination):
     """One isolated interpreter per baseline/candidate/method prevents namespace mixing."""
     record = {"implementation": implementation, "method": method, "status": "failed"}
@@ -294,7 +313,12 @@ def run_worker(payload, implementation, method, baseline_root, destination):
         fit_count = metadata["fit_count"]
         options = metadata["fit_options"]
         with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
-            fitted = module.test_tle_fit_normalized_equinoctial(times[:fit_count], states[:fit_count], **options)
+            fit = module.test_tle_fit_normalized_equinoctial
+            if implementation == "public":
+                fitted, converged = _historical_fit(fit, times[:fit_count], states[:fit_count], options)
+            else:
+                fitted = fit(times[:fit_count], states[:fit_count], **options)
+                converged = fitted.converged
         iterations, satellite, elements, sigma, sigmas = fitted[:5]
         from sgp4.api import Satrec
         from sgp4.exporter import export_tle
@@ -311,7 +335,7 @@ def run_worker(payload, implementation, method, baseline_root, destination):
                       sigma_history=[float(x) for x in sigmas], tle_lines=list(lines),
                       full_precision=evaluate_model(satellite.model, times, states, fit_count),
                       exported_tle=evaluate_model(Satrec.twoline2rv(*lines), times, states, fit_count),
-                      status="passed" if iterations < options["max_iter"] else "not_converged")
+                      status="passed" if converged else "not_converged")
     except Exception as exc:
         record.update(error=f"{type(exc).__name__}: {exc}", traceback=traceback.format_exc())
     if adapters is not None:
@@ -358,10 +382,10 @@ def run_suite(args):
                                            and set(references) == {"sgp4", "gmatpy"}
                                            and set(methods) == {"fd", "jax"}),
               "release_gate_passed": False,
-              "baseline_cautions": ["Both legacy ephemeris JAX implementations initialize their Jacobian at a fixed global APRIZESAT epoch; this inherited issue is not corrected in the reference adapter.",
+              "baseline_cautions": ["The historical JAX Jacobian uses a fixed APRIZESAT epoch and near-Earth dynamics. The candidate uses native deep-space derivatives.",
                                     "Exact circular/equatorial cases are not represented: inherited zero-element finite differences can be singular.",
                                     "No returned legacy sigma or endpoint residual is trusted as independent accuracy evidence."],
-              "intentional_baseline_fixes": []}
+              "intentional_baseline_fixes": ["Candidate solver uses native derivatives for deep space and finite perturbations at zero."]}
     environment = os.environ.copy()
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
     environment.setdefault("OMP_NUM_THREADS", "1")
