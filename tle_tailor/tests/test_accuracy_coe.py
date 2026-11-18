@@ -11,8 +11,8 @@ def test_coe_inventory_identifies_the_reviewed_solver_changes():
     inventory = source_inventory()
     assert len(inventory) == 4
     assert {item["public"]: item["changed_functions"] for item in inventory} == {
-        "common_coe_fd.py": ["finite_diff"],
-        "common_coe_jax.py": [],
+        "common_coe_fd.py": ["finite_diff", "residuals"],
+        "common_coe_jax.py": ["residuals"],
         "tlefit_coe_fd.py": ["test_tle_fit", "test_tle_fit_normalized"],
         "tlefit_coe_jax.py": ["test_tle_fit", "test_tle_fit_normalized"],
     }

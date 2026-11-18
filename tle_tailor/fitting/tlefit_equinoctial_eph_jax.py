@@ -2,9 +2,7 @@
 #!/usr/bin/python3
 
 import numpy as np
-from tle_tailor.fitting._numerics import select_jacobian
-
-from tle_tailor.fitting._numerics import FitResult
+from tle_tailor.fitting._numerics import FitResult, fit_jacobians
 
 from skyfield.api import EarthSatellite, load
 
@@ -135,6 +133,7 @@ def test_tle_fit_normalized_equinoctial(
     offset_idxs = np.delete(range(len(t)), epoch_obs)
     N = len(offset_idxs)
     offsets = [_t.total_seconds() / 60 for _t in (t - t[epoch_obs])]
+    selected_minutes = np.asarray(offsets)[offset_idxs]
 
     sigma_old = 50000
 
@@ -194,7 +193,10 @@ def test_tle_fit_normalized_equinoctial(
         coe_elements = a, ecc, incl, omega, argp, m, bstar
 
         calc_sat = create_sgp4_sat(coe_elements, jd, jdf)
-        jacobian = select_jacobian(calc_sat.model, elements, J, equinoctial=True)
+        jacobians = fit_jacobians(calc_sat.model, elements, selected_minutes, batch_jacobian,
+                                  equinoctial=True)
+        jacobians[:, :3, :] /= wgs72.radiusearthkm
+        jacobians[:, 3:, :] /= np.sqrt(wgs72.mu / orig_elements[0])
 
         while True:  # Try adjusting lamda until we converge
 
@@ -203,9 +205,7 @@ def test_tle_fit_normalized_equinoctial(
             ATWA_acc = np.zeros((7, 7))
             ATWb_acc = np.zeros(7)
 
-            for offset_idx in offset_idxs:
-
-                A = np.zeros((6, 7)) # Initialize the Jacobian matrix
+            for offset_idx, A in zip(offset_idxs, jacobians, strict=True):
 
                 # Obs - Nom
                 b = np.ravel(
@@ -215,12 +215,6 @@ def test_tle_fit_normalized_equinoctial(
 
                 bs.append(np.linalg.norm(b[0:3]))
                 btwbs.append(b.T @ W @ b)
-
-                # Build the Jacobian using Jax
-                A = jacobian(offsets[offset_idx])
-
-                A[0:3, :] /= wgs72.radiusearthkm
-                A[3:6, :] /= np.sqrt(wgs72.mu / orig_elements[0])
 
                 ATWA_acc += A.T @ W_scaled @ A
                 ATWb_acc += A.T @ W_scaled @ (b * b_scale)
@@ -432,7 +426,7 @@ def test_tle_fit_normalized_equinoctial(
         b_new_epoch,
         b_end,
         P,
-        A,
+        A.copy(),
     ), converged=solution)
 
 

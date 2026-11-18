@@ -1,10 +1,10 @@
 #!/usr/bin/python3
 
 import datetime as dt
+from functools import partial
 
 import numpy as np
-
-from tle_tailor.fitting._numerics import FitResult
+from tle_tailor.fitting._numerics import FitResult, finite_difference_jacobians
 
 import pandas as pd
 
@@ -280,6 +280,7 @@ def test_tle_fit_normalized_equinoctial(
     offset_idxs = np.delete(range(len(t)), epoch_obs)
     N = len(offset_idxs)
     offsets = [_t.total_seconds() / 60 for _t in (t - t[epoch_obs])]
+    selected_minutes = np.asarray(offsets)[offset_idxs]
 
     sigma_old = 50000
 
@@ -339,6 +340,11 @@ def test_tle_fit_normalized_equinoctial(
         coe_elements = a, ecc, incl, omega, argp, m, bstar
 
         calc_sat = create_sgp4_sat(coe_elements, jd, jdf)
+        jacobians = finite_difference_jacobians(
+            elements, selected_minutes, calc_sat.model, partial(create_sgp4_sat, jd=jd, jdf=jdf),
+            equinoctial=True, central=central_diff, percent_chg=percent_chg,
+            delta_amt_chg=delta_amt_chg, reference_a=orig_elements[0],
+        )
 
         while True:  # Try adjusting lamda until we converge
 
@@ -347,9 +353,7 @@ def test_tle_fit_normalized_equinoctial(
             ATWA_acc = np.zeros((7, 7))
             ATWb_acc = np.zeros(7)
 
-            for offset_idx in offset_idxs:
-
-                A = np.zeros((6, 7)) # Initialize the Jacobian matrix
+            for offset_idx, A in zip(offset_idxs, jacobians, strict=True):
 
                 # Obs - Nom
                 b = np.ravel(
@@ -359,38 +363,6 @@ def test_tle_fit_normalized_equinoctial(
 
                 bs.append(np.linalg.norm(b[0:3]))
                 btwbs.append(b.T @ W @ b)
-
-                # Build the Jacobian using Finite Differencing
-
-                for idx, element in enumerate(elements):
-
-                    if idx == 6: # B* is a snowflake
-                        delta_amt = np.copysign(max(abs(element * percent_chg), 1e-9), element)
-                        pert_element = element + delta_amt
-                    else:
-                        delta_amt, pert_element = finite_diff(
-                            element, percent_chg=percent_chg, delta_amt_chg=delta_amt_chg
-                        )
-
-                    deltas = np.zeros(7)
-
-                    deltas[idx] = delta_amt
-
-                    if central_diff:
-                        res = central_difference(
-                            jd, jdf, elements, deltas, offsets[offset_idx]
-                        )
-                    else:
-                        res = forward_difference(
-                            calc_sat, elements, deltas, offsets[offset_idx]
-                        )
-
-                    if idx == 0:
-                        delta_amt /= wgs72.radiusearthkm
-
-                    A[0:3, idx] = res[0] / wgs72.radiusearthkm
-                    A[3:6, idx] = res[1] / np.sqrt(wgs72.mu / orig_elements[0])
-                    A[:, idx] /= delta_amt
 
                 ATWA_acc += A.T @ W_scaled @ A
                 ATWb_acc += A.T @ W_scaled @ (b * b_scale)
@@ -601,7 +573,7 @@ def test_tle_fit_normalized_equinoctial(
         b_new_epoch,
         b_end,
         P,
-        A,
+        A.copy(),
     ), converged=solution)
 
 

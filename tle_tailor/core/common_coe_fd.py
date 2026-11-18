@@ -213,10 +213,9 @@ def residuals(satellite, elements, offsets, W):
 
     bs = []
 
+    calc_sat = create_sgp4_sat(elements, satellite)
+
     for offset in offsets:
-
-        calc_sat = create_sgp4_sat(elements, satellite)
-
         # Obs - Nom
         res = np.array(satellite.model.sgp4_tsince(offset)[1:]) - np.array(
             calc_sat.model.sgp4_tsince(offset)[1:]

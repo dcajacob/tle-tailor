@@ -172,3 +172,113 @@ def test_export_tiny_drag_in_fixed_width_field(bstar):
     verify_checksum(*lines)
     assert abs(Satrec.twoline2rv(*lines).bstar - bstar) <= 0.5e-14
     assert sat.bstar == bstar
+
+
+@pytest.mark.parametrize("equinoctial", [False, True])
+def test_batched_near_earth_derivatives_match_scalar_at_each_time(equinoctial):
+    from tle_tailor.fitting._numerics import fit_jacobians
+
+    core = importlib.import_module("tle_tailor.core.common_jax" if equinoctial
+                                   else "tle_tailor.core.common_coe_jax")
+    minutes = np.array([90., -45., 0., 90.])
+    epoch = datetime(2024, 2, 11, tzinfo=timezone.utc)
+    for a in (7000., 7100.):
+        coe = [a, *ELEMENTS[1:]]
+        values = np.array([*coe2eqn(*coe[:6]), coe[6]] if equinoctial else coe)
+        sat = model(coe, epoch)
+        assert sat.method == "n"
+        grid = fit_jacobians(sat, values, minutes, core.batch_jacobian, equinoctial=equinoctial)
+        expected = [np.asarray(core.J(*values, t)).T for t in minutes]
+        np.testing.assert_allclose(grid, expected, rtol=2e-12, atol=2e-11)
+        np.testing.assert_array_equal(grid[0], grid[-1])
+
+
+@pytest.mark.parametrize("central", [False, True])
+@pytest.mark.parametrize("equinoctial", [False, True])
+@pytest.mark.parametrize("a,e", [(7100., .01), (26600., .69)])
+def test_fd_prepares_each_orbit_once_and_uses_its_fit_epoch(a, e, equinoctial, central):
+    from types import SimpleNamespace
+    from tle_tailor.core.common import finite_diff
+    from tle_tailor.fitting._numerics import finite_difference_jacobians
+
+    epoch = datetime(2006, 6, 25, tzinfo=timezone.utc)
+    coe = [a, e, *ELEMENTS[2:]]
+    values = np.array([*coe2eqn(*coe[:6]), coe[6]] if equinoctial else coe)
+    times = [720., -90., 0., 720.]
+    initialized = []
+
+    def create(parameters):
+        initialized.append(tuple(parameters))
+        return SimpleNamespace(model=model(parameters, epoch))
+
+    def at(parameters, t):
+        classical = [*eqn2coe(*parameters[:6]), parameters[6]] if equinoctial else parameters
+        return np.asarray(model(classical, epoch).sgp4_tsince(t)[1:]).ravel()
+
+    # Include a non-default spacing and compare all entries against scalar,
+    # independently reconstructed native states at the supplied orbit epoch.
+    delta_min = 1e-5
+    nominal_coe = [*eqn2coe(*values[:6]), values[6]] if equinoctial else values
+    grid = finite_difference_jacobians(values, times, model(nominal_coe, epoch), create,
+        equinoctial=equinoctial, central=central, percent_chg=.001, delta_amt_chg=delta_min)
+    assert len(initialized) == (14 if central else 7)
+    for column, value in enumerate(values):
+        width = (finite_diff(value, .001, delta_min)[0] if column < 6 else
+                 np.copysign(max(abs(value * .001), 1e-9), value))
+        step = np.zeros(7)
+        step[column] = width / 2 if central else width
+        expected = [(at(values + step, t) - at(values - step if central else values, t)) / width
+                    for t in times]
+        np.testing.assert_array_equal(grid[:, :, column], expected)
+
+
+def test_deep_space_batch_checks_drag_linearity_at_each_observation():
+    from tle_tailor.fitting._numerics import fit_jacobians
+
+    epoch = datetime(2025, 3, 14, tzinfo=timezone.utc)
+    coe = np.array([26560., .01, .95, .9, .35, 1.2, 1e-6])
+    times = [1440., 0., -720., 1440.]
+    grid = fit_jacobians(model(coe, epoch), coe, times, None, equinoctial=False)
+    assert grid.shape == (4, 6, 7)
+    np.testing.assert_array_equal(grid[0], grid[-1])
+    drag = np.array([0., 0., 0., 0., 0., 0., .004])
+    for row, t in zip(grid, times, strict=True):
+        high = model(coe + drag, epoch).sgp4_tsince(t)[1:]
+        low = model(coe - drag, epoch).sgp4_tsince(t)[1:]
+        expected = (np.asarray(high) - low).ravel() / (2 * drag[-1])
+        np.testing.assert_allclose(row[:3, 6], expected[:3], rtol=0, atol=2e-7)
+        np.testing.assert_allclose(row[3:, 6], expected[3:], rtol=0, atol=3e-11)
+
+
+@pytest.mark.parametrize("coordinates,normalized",
+                         [("coe", False), ("coe", True), ("equinoctial", True)])
+@pytest.mark.parametrize("method", ["fd", "jax"])
+def test_tle_fit_prepares_one_grid_for_each_accepted_iterate(monkeypatch, coordinates, normalized, method):
+    from skyfield.api import EarthSatellite, load
+    from tle_tailor.fitting import _numerics
+
+    module = importlib.import_module(f"tle_tailor.fitting.tlefit_{coordinates}_{method}")
+    name = ("test_tle_fit_normalized_equinoctial" if coordinates == "equinoctial" else
+            "test_tle_fit_normalized" if normalized else "test_tle_fit")
+    sat = EarthSatellite.from_satrec(model(ELEMENTS, datetime(2006, 6, 25, tzinfo=timezone.utc)),
+                                     load.timescale(builtin=True))
+    grids = []
+    if method == "fd":
+        def prepare(elements, minutes, nominal, create, **options):
+            def checked_create(coe):
+                perturbed = create(coe)
+                assert perturbed.model.jdsatepoch == sat.model.jdsatepoch
+                assert perturbed.model.jdsatepochF == sat.model.jdsatepochF
+                return perturbed
+            grids.append(len(minutes))
+            return _numerics.finite_difference_jacobians(elements, minutes, nominal, checked_create, **options)
+        monkeypatch.setattr(module, "finite_difference_jacobians", prepare)
+    else:
+        def prepare(nominal, elements, minutes, automatic, **options):
+            grids.append(len(minutes))
+            return _numerics.fit_jacobians(nominal, elements, minutes, automatic, **options)
+        monkeypatch.setattr(module, "fit_jacobians", prepare)
+    result = getattr(module, name)(sat, fit_span=1, max_iter=2, lamda=1.)
+    assert grids == [100] * len(result[3])  # One grid per accepted parameter step.
+    assert result[-1].shape == (6, 7)
+    assert result[-1].base is None

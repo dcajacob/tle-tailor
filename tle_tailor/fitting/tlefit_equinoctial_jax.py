@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import numpy as np
-from tle_tailor.fitting._numerics import select_jacobian
+from tle_tailor.fitting._numerics import fit_jacobians
 
 from skyfield.api import EarthSatellite, load
 
@@ -140,7 +140,10 @@ def test_tle_fit_normalized_equinoctial(
         coe_elements = a, ecc, incl, omega, argp, m, bstar
 
         calc_sat = create_sgp4_sat(coe_elements, satellite)
-        jacobian = select_jacobian(calc_sat.model, elements, J, equinoctial=True)
+        jacobians = fit_jacobians(calc_sat.model, elements, offsets, batch_jacobian,
+                                  equinoctial=True)
+        jacobians[:, :3, :] /= wgs72.radiusearthkm
+        jacobians[:, 3:, :] /= np.sqrt(wgs72.mu / orig_elements[0])
 
         while True: # Try adjusting lamda until we converge
 
@@ -149,9 +152,7 @@ def test_tle_fit_normalized_equinoctial(
             ATWA_acc = np.zeros((7, 7))
             ATWb_acc = np.zeros(7)
 
-            for offset in offsets:
-
-                A = np.zeros((6, 7)) # Initialize the Jacobian matrix
+            for offset, A in zip(offsets, jacobians, strict=True):
 
                 # Obs - Nom
                 b = np.ravel(
@@ -161,12 +162,6 @@ def test_tle_fit_normalized_equinoctial(
 
                 bs.append(np.linalg.norm(b[0:3]))
                 btwbs.append(b.T @ W @ b) # km
-
-                # Build the Jacobian using Jax
-                A = jacobian(offset)
-
-                A[0:3, :] /= wgs72.radiusearthkm
-                A[3:6, :] /= np.sqrt(wgs72.mu / orig_elements[0])
 
                 ATWA_acc += A.T @ W_scaled @ A # ER
                 ATWb_acc += A.T @ W_scaled @ (b * b_scale) # ER
@@ -372,7 +367,7 @@ def test_tle_fit_normalized_equinoctial(
     # FIXME: Seems like scaling blows it up. Check this.
     P[0, 0]  # *= wgs72.radiusearthkm**2
 
-    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A
+    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A.copy()
 
 
 if __name__ == "__main__":

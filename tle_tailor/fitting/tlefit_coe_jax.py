@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import numpy as np
-from tle_tailor.fitting._numerics import select_jacobian
+from tle_tailor.fitting._numerics import fit_jacobians
 
 from skyfield.api import EarthSatellite, load
 from sgp4.api import Satrec, WGS72
@@ -114,7 +114,8 @@ def test_tle_fit(
         n = np.sqrt(wgs72.mu / a**3)
 
         calc_sat = create_sgp4_sat(elements, satellite)
-        jacobian = select_jacobian(calc_sat.model, elements, J, equinoctial=False)
+        jacobians = fit_jacobians(calc_sat.model, elements, offsets, batch_jacobian,
+                                  equinoctial=False)
 
         while True:  # Try adjusting lamda until we converge
 
@@ -123,9 +124,7 @@ def test_tle_fit(
             ATWA_acc = np.zeros((7, 7))
             ATWb_acc = np.zeros(7)
 
-            for offset in offsets:
-
-                A = np.zeros((6, 7))  # Initialize the Jacobian matrix
+            for offset, A in zip(offsets, jacobians, strict=True):
 
                 # Obs - Nom
                 b = np.ravel(
@@ -135,9 +134,6 @@ def test_tle_fit(
 
                 bs.append(np.linalg.norm(b[0:3]))
                 btwbs.append(b.T @ W @ b)
-
-                # Build the Jacobian using JAX
-                A = jacobian(offset)
 
                 ATWA_acc += A.T @ W @ A
                 ATWb_acc += A.T @ W @ b
@@ -334,7 +330,7 @@ def test_tle_fit(
 
     iterations = x
 
-    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A
+    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A.copy()
 
 
 def test_tle_fit_normalized(
@@ -445,7 +441,10 @@ def test_tle_fit_normalized(
         a, ecc, incl, omega, argp, m, bstar = elements
 
         calc_sat = create_sgp4_sat(elements, satellite)
-        jacobian = select_jacobian(calc_sat.model, elements, J, equinoctial=False)
+        jacobians = fit_jacobians(calc_sat.model, elements, offsets, batch_jacobian,
+                                  equinoctial=False)
+        jacobians[:, :3, :] /= wgs72.radiusearthkm
+        jacobians[:, 3:, :] /= np.sqrt(wgs72.mu / orig_elements[0])
 
         while True:  # Try adjusting lamda until we converge
 
@@ -454,9 +453,7 @@ def test_tle_fit_normalized(
             ATWA_acc = np.zeros((7, 7))
             ATWb_acc = np.zeros(7)
 
-            for offset in offsets:
-
-                A = np.zeros((6, 7)) # Initialize the Jacobian matrix
+            for offset, A in zip(offsets, jacobians, strict=True):
 
                 # Obs - Nom
                 b = np.ravel(
@@ -466,13 +463,6 @@ def test_tle_fit_normalized(
 
                 bs.append(np.linalg.norm(b[0:3]))
                 btwbs.append(b.T @ W @ b)
-
-                # Build the Jacobian using JAX
-
-                A = jacobian(offset)
-
-                A[0:3, :] /= wgs72.radiusearthkm
-                A[3:6, :] /= np.sqrt(wgs72.mu / orig_elements[0])
 
                 ATWA_acc += A.T @ W_scaled @ A
                 ATWb_acc += A.T @ W_scaled @ (b * b_scale)
@@ -669,7 +659,7 @@ def test_tle_fit_normalized(
     # Re-scale P?
     P[0, 0] *= wgs72.radiusearthkm**2
 
-    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A
+    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A.copy()
 
 
 if __name__ == "__main__":

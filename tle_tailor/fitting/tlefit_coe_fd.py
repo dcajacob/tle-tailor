@@ -1,6 +1,9 @@
 #!/usr/bin/python3
 
+from functools import partial
+
 import numpy as np
+from tle_tailor.fitting._numerics import finite_difference_jacobians
 
 from skyfield.api import EarthSatellite, load
 from sgp4.api import Satrec, WGS72
@@ -119,6 +122,11 @@ def test_tle_fit(
         n = np.sqrt(wgs72.mu / a**3)
 
         calc_sat = create_sgp4_sat(elements, satellite)
+        jacobians = finite_difference_jacobians(
+            elements, offsets, calc_sat.model, partial(create_sgp4_sat, satellite=satellite),
+            equinoctial=False, central=central_diff, percent_chg=percent_chg,
+            delta_amt_chg=delta_amt_chg,
+        )
 
         while True:  # Try adjusting lamda until we converge
 
@@ -127,9 +135,7 @@ def test_tle_fit(
             ATWA_acc = np.zeros((7, 7))
             ATWb_acc = np.zeros(7)
 
-            for offset in offsets:
-
-                A = np.zeros((6, 7))  # Initialize the Jacobian matrix
+            for offset, A in zip(offsets, jacobians, strict=True):
 
                 # Obs - Nom
                 b = np.ravel(
@@ -139,31 +145,6 @@ def test_tle_fit(
 
                 bs.append(np.linalg.norm(b[0:3]))
                 btwbs.append(b.T @ W @ b)
-
-                # Build the Jacobian using Finite Differencing
-                for idx, element in enumerate(elements):
-
-                    if idx == 6:  # B* is a snowflake
-                        delta_amt = np.copysign(max(abs(element * percent_chg), 1e-9), element)
-                    else:
-                        delta_amt, _ = finite_diff(
-                            element,
-                            percent_chg=percent_chg,
-                            delta_amt_chg=delta_amt_chg,
-                        )
-
-                    deltas = np.zeros(7)
-
-                    deltas[idx] = delta_amt
-
-                    if central_diff:
-                        res = central_difference(elements, deltas, offset)
-                    else:
-                        res = forward_difference(calc_sat, elements, deltas, offset)
-
-                    A[0:3, idx] = res[0]
-                    A[3:6, idx] = res[1]
-                    A[:, idx] /= delta_amt
 
                 ATWA_acc += A.T @ W @ A
                 ATWb_acc += A.T @ W @ b
@@ -364,7 +345,7 @@ def test_tle_fit(
 
     iterations = x
 
-    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A
+    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A.copy()
 
 
 def test_tle_fit_normalized(
@@ -481,6 +462,11 @@ def test_tle_fit_normalized(
         a, ecc, incl, omega, argp, m, bstar = elements
 
         calc_sat = create_sgp4_sat(elements, satellite)
+        jacobians = finite_difference_jacobians(
+            elements, offsets, calc_sat.model, partial(create_sgp4_sat, satellite=satellite),
+            equinoctial=False, central=central_diff, percent_chg=percent_chg,
+            reference_a=orig_elements[0],
+        )
 
         while True:  # Try adjusting lamda until we converge
 
@@ -489,9 +475,7 @@ def test_tle_fit_normalized(
             ATWA_acc = np.zeros((7, 7))
             ATWb_acc = np.zeros(7)
 
-            for offset in offsets:
-
-                A = np.zeros((6, 7))  # Initialize the Jacobian matrix
+            for offset, A in zip(offsets, jacobians, strict=True):
 
                 # Obs - Nom
                 b = np.ravel(
@@ -501,34 +485,6 @@ def test_tle_fit_normalized(
 
                 bs.append(np.linalg.norm(b[0:3]))
                 btwbs.append(b.T @ W @ b)
-
-                # Build the Jacobian using Finite Differencing
-
-                for idx, element in enumerate(elements):
-
-                    if idx == 6:  # B* is a snowflake
-                        delta_amt = np.copysign(max(abs(element * percent_chg), 1e-9), element)
-                        pert_element = element + delta_amt
-                    else:
-                        delta_amt, pert_element = finite_diff(
-                            element, percent_chg=percent_chg
-                        )
-
-                    deltas = np.zeros(7)
-
-                    deltas[idx] = delta_amt
-
-                    if central_diff:
-                        res = central_difference(elements, deltas, offset)
-                    else:
-                        res = forward_difference(calc_sat, elements, deltas, offset)
-
-                    if idx == 0:
-                        delta_amt /= wgs72.radiusearthkm
-
-                    A[0:3, idx] = res[0] / wgs72.radiusearthkm
-                    A[3:6, idx] = res[1] / np.sqrt(wgs72.mu / orig_elements[0])
-                    A[:, idx] /= delta_amt
 
                 ATWA_acc += A.T @ W_scaled @ A
                 ATWb_acc += A.T @ W_scaled @ (b * b_scale)
@@ -729,7 +685,7 @@ def test_tle_fit_normalized(
     # Re-scale P?
     P[0, 0] *= wgs72.radiusearthkm**2
 
-    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A
+    return iterations, sigma_new, sigmas, dxs, bs, lamdas, b_epoch, b_new_epoch, b, P, A.copy()
 
 
 if __name__ == "__main__":

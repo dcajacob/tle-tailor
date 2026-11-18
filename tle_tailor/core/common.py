@@ -75,13 +75,11 @@ def residuals(satellite, elements, offsets, W):
 
     bs = []
 
+    elements_coe = (*eqn2coe(*elements[:-1]), elements[-1])
+
+    calc_sat = create_sgp4_sat(elements_coe, satellite)
+
     for offset in offsets:
-
-        elements_coe = (*eqn2coe(*elements[:-1]), elements[-1])
-        a, ecc, incl, omega, argp, m, bstar = elements_coe
-
-        calc_sat = create_sgp4_sat(elements_coe, satellite)
-
         # Obs - Nom
         b = np.ravel(
             np.array(satellite.model.sgp4_tsince(offset)[1:])

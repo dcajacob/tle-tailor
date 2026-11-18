@@ -16,6 +16,7 @@ jax_config.update("jax_enable_x64", True)
 
 import jax.numpy as jnp
 from jax import jacfwd, jacrev, jit
+from tle_tailor.fitting._numerics import make_batch_jacobian
 
 
 ts = load.timescale()
@@ -118,17 +119,7 @@ def blah(a, ecc, incl, omega, argp, m, bstar, offset):
 
 
 J = jit(jacfwd(blah, argnums=(0, 1, 2, 3, 4, 5, 6)))
-
-J(
-    satellite.model.a * wgs72.radiusearthkm,
-    satellite.model.ecco,
-    satellite.model.inclo,
-    satellite.model.nodeo,
-    satellite.model.argpo,
-    satellite.model.mo,
-    satellite.model.bstar,
-    1 / 86400,
-)
+batch_jacobian = make_batch_jacobian(blah)
 
 
 def residuals(satellite, elements, offsets, W):
@@ -146,10 +137,9 @@ def residuals(satellite, elements, offsets, W):
 
     bs = []
 
+    calc_sat = create_sgp4_sat(elements, satellite)
+
     for offset in offsets:
-
-        calc_sat = create_sgp4_sat(elements, satellite)
-
         # Obs - Nom
         b = np.ravel(
             np.array(satellite.model.sgp4_tsince(offset)[1:])

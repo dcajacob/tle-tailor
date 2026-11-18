@@ -15,6 +15,7 @@ jax_config.update("jax_enable_x64", True)
 
 import jax.numpy as jnp
 from jax import jacfwd, jacrev, jit
+from tle_tailor.fitting._numerics import make_batch_jacobian
 
 
 ts = load.timescale()
@@ -178,27 +179,7 @@ def blah(ae, ke, he, le, pe, qe, bstar, offset):
 
 
 J = jit(jacfwd(blah, argnums=(0, 1, 2, 3, 4, 5, 6)))
-
-#jnp.asarray(
-J(
-    *coe2eqn(
-        satellite.model.a * wgs72.radiusearthkm,
-        satellite.model.ecco,
-        satellite.model.inclo,
-        satellite.model.nodeo,
-        satellite.model.argpo,
-        satellite.model.mo,
-    ),
-    satellite.model.bstar,
-    1 / 86400,
-)
-#)
-
-
-# # FIXME: This AOT procedure works, but it seems to be twice as slow as the normal JIT procedure. The benefit is you don't go super slow on the first round.
-# a, ecc, incl, omega, argp, m, bstar, offset = satellite.model.a * wgs72.radiusearthkm, satellite.model.ecco, satellite.model.inclo, satellite.model.nodeo, satellite.model.argpo, satellite.model.mo, satellite.model.bstar, 1/86400
-# lowered = jit(jacfwd(blah, argnums=(0, 1, 2, 3, 4, 5, 6))).lower(a, ecc, incl, omega, argp, m, bstar, offset)
-# J = lowered.compile()
+batch_jacobian = make_batch_jacobian(blah)
 
 
 def residuals(satellite, elements, offsets, W):
@@ -216,12 +197,11 @@ def residuals(satellite, elements, offsets, W):
 
     bs = []
 
+    elements_coe = (*eqn2coe(*elements[:-1]), elements[-1])
+
+    calc_sat = create_sgp4_sat(elements_coe, satellite)
+
     for offset in offsets:
-
-        elements_coe = (*eqn2coe(*elements[:-1]), elements[-1])
-
-        calc_sat = create_sgp4_sat(elements_coe, satellite)
-
         # Obs - Nom
         b = np.ravel(
             np.array(satellite.model.sgp4_tsince(offset)[1:])
